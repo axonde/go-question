@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/core/widgets/buttons/go_button.dart';
 
 class GoQuestionApp extends StatelessWidget {
   const GoQuestionApp({super.key});
@@ -105,6 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            GoButton(onPressed: () {}, text: 'мама'),
           ],
         ),
       ),
