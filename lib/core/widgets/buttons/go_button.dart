@@ -18,9 +18,9 @@ class GoButton extends StatefulWidget {
     required this.text,
     this.backgroundColor,
     this.foregroundColor,
-    this.width,
-    this.height = 48,
-    this.fontSize = 16,
+    this.width = 161,
+    this.height = 108,
+    this.fontSize = 24,
     this.borderRadius,
     this.padding,
     this.textStyle,
@@ -55,7 +55,7 @@ class _GoButtonState extends State<GoButton> {
         ),
         textStyle:
             widget.textStyle ??
-            TextStyle(fontSize: widget.fontSize, fontWeight: FontWeight.w600),
+            TextStyle(fontSize: widget.fontSize, fontWeight: FontWeight.w600, value)),
       ),
       child: isLoading
           ? SizedBox(
