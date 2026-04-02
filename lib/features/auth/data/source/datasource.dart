@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import '../models/user_model.dart';
 
+/// Контракт удалённого источника данных.
+/// Только email/password аутентификация.
 abstract class IAuthRemoteDataSource {
-  // Получить текущую модель
+  /// Текущая модель пользователя из кэша Firebase
   UserModel? getCurrentUser();
 
-  // Состояние аутентификации
+  /// Поток uid авторизованного пользователя
   Stream<String?> get authStateChanges;
 
   // Вход по почте/паролю
@@ -21,14 +23,7 @@ abstract class IAuthRemoteDataSource {
     required String name,
   });
 
-  // Вход по номеру телефона
-  Future<void> signInWithPhoneNumber({
-    required String phoneNumber,
-    required Function(String code) onCodeSent,
-    required Function(String error) onError,
-  });
-
-  // Выход
+  /// Выход из аккаунта
   Future<void> signOut();
 }
 
@@ -46,27 +41,6 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
   @override
   Stream<String?> get authStateChanges =>
       _firebaseAuth.authStateChanges().map((user) => user?.uid);
-
-  @override
-  Future<void> signInWithPhoneNumber({
-    required String phoneNumber,
-    required Function(String code) onCodeSent,
-    required Function(String error) onError,
-  }) async {
-    await _firebaseAuth.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: (credential) async {
-        await _firebaseAuth.signInWithCredential(credential);
-      },
-      verificationFailed: (e) {
-        onError(e.message ?? 'Ошибка верификации');
-      },
-      codeSent: (verificationId, resendToken) {
-        onCodeSent(verificationId);
-      },
-      codeAutoRetrievalTimeout: (verificationId) {},
-    );
-  }
 
   @override
   Future<UserModel?> signInWithEmailAndPassword({
@@ -91,6 +65,7 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
       password: password,
     );
     if (result.user != null) {
+      // Сохраняем displayName в Firebase Auth
       await result.user!.updateDisplayName(name);
       await result.user!.reload();
       final updatedUser = _firebaseAuth.currentUser;

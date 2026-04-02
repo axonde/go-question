@@ -1,7 +1,9 @@
 import '../entities/user_entity.dart';
 
+/// Контракт репозитория аутентификации.
+/// Только email/password — телефонная аутентификация убрана (платная).
 abstract class IAuthRepository {
-  // Получить текущего пользователя
+  /// Текущий залогиненный пользователь (синхронно из кэша Firebase)
   UserEntity? getCurrentUser();
 
   // Состояние аутентификации
@@ -20,13 +22,6 @@ abstract class IAuthRepository {
     required String name,
   });
 
-  // Вход по номеру телефона
-  Future<void> signInWithPhoneNumber({
-    required String phoneNumber,
-    required Function(String code) onCodeSent,
-    required Function(String error) onError,
-  });
-
-  // Выход
+  /// Выход из аккаунта
   Future<void> signOut();
 }
