@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/repositories/i_auth_repository.dart';
-import 'auth_state.dart';
+import 'package:go_question/features/auth/domain/repositories/i_auth_repository.dart';
+import 'package:go_question/features/auth/presentation/cubit/auth_state.dart';
 
 /// Управляет состоянием аутентификации.
 /// Поддерживает только email/password вход и регистрацию.

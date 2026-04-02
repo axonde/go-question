@@ -1,27 +1,24 @@
-import '../entities/user_entity.dart';
+import 'package:go_question/features/user/domain/entities/user_entity.dart';
 
 /// Контракт репозитория аутентификации.
 /// Только email/password — телефонная аутентификация убрана (платная).
 abstract class IAuthRepository {
-  /// Текущий залогиненный пользователь (синхронно из кэша Firebase)
+  /// Текущий авторизованный пользователь (если есть)
   UserEntity? getCurrentUser();
 
-  // Состояние аутентификации
-  Stream<String?> get authStateChanges;
-
-  // Вход по почте/паролю
+  /// Вход по почте и паролю
   Future<UserEntity?> signInWithEmailAndPassword({
     required String email,
     required String password,
   });
 
-  // Регистрация
+  /// Регистрация по почте, паролю и имени
   Future<UserEntity?> signUpWithEmailAndPassword({
     required String email,
     required String password,
     required String name,
   });
 
-  /// Выход из аккаунта
+  /// Выход
   Future<void> signOut();
 }

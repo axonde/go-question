@@ -1,10 +1,9 @@
-import '../../domain/entities/user_entity.dart';
-import '../../domain/repositories/i_auth_repository.dart';
-import '../source/datasource.dart';
+import 'package:go_question/features/user/domain/entities/user_entity.dart';
+import 'package:go_question/features/auth/domain/repositories/i_auth_repository.dart';
+import 'package:go_question/features/auth/data/source/datasource.dart';
 
 /// Реализация репозитория аутентификации.
-/// Делегирует вызовы в [IAuthRemoteDataSource] и конвертирует
-/// DataLayer-модели (UserModel) в Domain-сущности (UserEntity).
+/// Взаимодействует с удалённым источником данных (Firebase Auth).
 class AuthRepositoryImpl implements IAuthRepository {
   final IAuthRemoteDataSource _remoteDataSource;
 
@@ -12,22 +11,20 @@ class AuthRepositoryImpl implements IAuthRepository {
 
   @override
   UserEntity? getCurrentUser() {
-    return _remoteDataSource.getCurrentUser()?.toDomain();
+    final userModel = _remoteDataSource.getCurrentUser();
+    return userModel?.toDomain();
   }
-
-  @override
-  Stream<String?> get authStateChanges => _remoteDataSource.authStateChanges;
 
   @override
   Future<UserEntity?> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
-    final model = await _remoteDataSource.signInWithEmailAndPassword(
+    final userModel = await _remoteDataSource.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
-    return model?.toDomain();
+    return userModel?.toDomain();
   }
 
   @override
@@ -36,12 +33,12 @@ class AuthRepositoryImpl implements IAuthRepository {
     required String password,
     required String name,
   }) async {
-    final model = await _remoteDataSource.signUpWithEmailAndPassword(
+    final userModel = await _remoteDataSource.signUpWithEmailAndPassword(
       email: email,
       password: password,
       name: name,
     );
-    return model?.toDomain();
+    return userModel?.toDomain();
   }
 
   @override

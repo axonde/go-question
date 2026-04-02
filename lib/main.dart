@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
-import 'core/network/network_info.dart';
-import 'features/auth/data/repositories/auth_repository_impl.dart';
-import 'features/auth/data/source/datasource.dart';
-import 'features/auth/presentation/cubit/auth_cubit.dart';
-import 'features/auth/presentation/cubit/auth_state.dart';
-import 'firebase_options.dart';
+import 'package:go_question/core/network/network_info.dart';
+import 'package:go_question/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:go_question/features/auth/data/source/datasource.dart';
+import 'package:go_question/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:go_question/features/auth/presentation/cubit/auth_state.dart';
+import 'package:go_question/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -24,6 +24,12 @@ mixin _$UserModel {
   String get uid => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
+  String? get photoUrl => throw _privateConstructorUsedError;
+  String? get bio => throw _privateConstructorUsedError;
+  int? get yearsOld => throw _privateConstructorUsedError;
+  String? get city => throw _privateConstructorUsedError;
+  String? get username => throw _privateConstructorUsedError;
+  Map<String, String>? get socialMedia => throw _privateConstructorUsedError;
 
   /// Serializes this UserModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -40,7 +46,17 @@ abstract class $UserModelCopyWith<$Res> {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) then) =
       _$UserModelCopyWithImpl<$Res, UserModel>;
   @useResult
-  $Res call({String uid, String name, String email});
+  $Res call({
+    String uid,
+    String name,
+    String email,
+    String? photoUrl,
+    String? bio,
+    int? yearsOld,
+    String? city,
+    String? username,
+    Map<String, String>? socialMedia,
+  });
 }
 
 /// @nodoc
@@ -57,7 +73,17 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? uid = null, Object? name = null, Object? email = null}) {
+  $Res call({
+    Object? uid = null,
+    Object? name = null,
+    Object? email = null,
+    Object? photoUrl = freezed,
+    Object? bio = freezed,
+    Object? yearsOld = freezed,
+    Object? city = freezed,
+    Object? username = freezed,
+    Object? socialMedia = freezed,
+  }) {
     return _then(
       _value.copyWith(
             uid: null == uid
@@ -72,6 +98,30 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
                 ? _value.email
                 : email // ignore: cast_nullable_to_non_nullable
                       as String,
+            photoUrl: freezed == photoUrl
+                ? _value.photoUrl
+                : photoUrl // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            bio: freezed == bio
+                ? _value.bio
+                : bio // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            yearsOld: freezed == yearsOld
+                ? _value.yearsOld
+                : yearsOld // ignore: cast_nullable_to_non_nullable
+                      as int?,
+            city: freezed == city
+                ? _value.city
+                : city // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            username: freezed == username
+                ? _value.username
+                : username // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            socialMedia: freezed == socialMedia
+                ? _value.socialMedia
+                : socialMedia // ignore: cast_nullable_to_non_nullable
+                      as Map<String, String>?,
           )
           as $Val,
     );
@@ -87,7 +137,17 @@ abstract class _$$UserModelImplCopyWith<$Res>
   ) = __$$UserModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String uid, String name, String email});
+  $Res call({
+    String uid,
+    String name,
+    String email,
+    String? photoUrl,
+    String? bio,
+    int? yearsOld,
+    String? city,
+    String? username,
+    Map<String, String>? socialMedia,
+  });
 }
 
 /// @nodoc
@@ -103,7 +163,17 @@ class __$$UserModelImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? uid = null, Object? name = null, Object? email = null}) {
+  $Res call({
+    Object? uid = null,
+    Object? name = null,
+    Object? email = null,
+    Object? photoUrl = freezed,
+    Object? bio = freezed,
+    Object? yearsOld = freezed,
+    Object? city = freezed,
+    Object? username = freezed,
+    Object? socialMedia = freezed,
+  }) {
     return _then(
       _$UserModelImpl(
         uid: null == uid
@@ -118,6 +188,30 @@ class __$$UserModelImplCopyWithImpl<$Res>
             ? _value.email
             : email // ignore: cast_nullable_to_non_nullable
                   as String,
+        photoUrl: freezed == photoUrl
+            ? _value.photoUrl
+            : photoUrl // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        bio: freezed == bio
+            ? _value.bio
+            : bio // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        yearsOld: freezed == yearsOld
+            ? _value.yearsOld
+            : yearsOld // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        city: freezed == city
+            ? _value.city
+            : city // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        username: freezed == username
+            ? _value.username
+            : username // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        socialMedia: freezed == socialMedia
+            ? _value._socialMedia
+            : socialMedia // ignore: cast_nullable_to_non_nullable
+                  as Map<String, String>?,
       ),
     );
   }
@@ -130,7 +224,14 @@ class _$UserModelImpl extends _UserModel {
     required this.uid,
     required this.name,
     required this.email,
-  }) : super._();
+    this.photoUrl,
+    this.bio,
+    this.yearsOld,
+    this.city,
+    this.username,
+    final Map<String, String>? socialMedia,
+  }) : _socialMedia = socialMedia,
+       super._();
 
   factory _$UserModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserModelImplFromJson(json);
@@ -141,10 +242,29 @@ class _$UserModelImpl extends _UserModel {
   final String name;
   @override
   final String email;
+  @override
+  final String? photoUrl;
+  @override
+  final String? bio;
+  @override
+  final int? yearsOld;
+  @override
+  final String? city;
+  @override
+  final String? username;
+  final Map<String, String>? _socialMedia;
+  @override
+  Map<String, String>? get socialMedia {
+    final value = _socialMedia;
+    if (value == null) return null;
+    if (_socialMedia is EqualUnmodifiableMapView) return _socialMedia;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, name: $name, email: $email)';
+    return 'UserModel(uid: $uid, name: $name, email: $email, photoUrl: $photoUrl, bio: $bio, yearsOld: $yearsOld, city: $city, username: $username, socialMedia: $socialMedia)';
   }
 
   @override
@@ -154,12 +274,35 @@ class _$UserModelImpl extends _UserModel {
             other is _$UserModelImpl &&
             (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.email, email) || other.email == email));
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.photoUrl, photoUrl) ||
+                other.photoUrl == photoUrl) &&
+            (identical(other.bio, bio) || other.bio == bio) &&
+            (identical(other.yearsOld, yearsOld) ||
+                other.yearsOld == yearsOld) &&
+            (identical(other.city, city) || other.city == city) &&
+            (identical(other.username, username) ||
+                other.username == username) &&
+            const DeepCollectionEquality().equals(
+              other._socialMedia,
+              _socialMedia,
+            ));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, uid, name, email);
+  int get hashCode => Object.hash(
+    runtimeType,
+    uid,
+    name,
+    email,
+    photoUrl,
+    bio,
+    yearsOld,
+    city,
+    username,
+    const DeepCollectionEquality().hash(_socialMedia),
+  );
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -180,6 +323,12 @@ abstract class _UserModel extends UserModel {
     required final String uid,
     required final String name,
     required final String email,
+    final String? photoUrl,
+    final String? bio,
+    final int? yearsOld,
+    final String? city,
+    final String? username,
+    final Map<String, String>? socialMedia,
   }) = _$UserModelImpl;
   const _UserModel._() : super._();
 
@@ -192,6 +341,18 @@ abstract class _UserModel extends UserModel {
   String get name;
   @override
   String get email;
+  @override
+  String? get photoUrl;
+  @override
+  String? get bio;
+  @override
+  int? get yearsOld;
+  @override
+  String? get city;
+  @override
+  String? get username;
+  @override
+  Map<String, String>? get socialMedia;
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.

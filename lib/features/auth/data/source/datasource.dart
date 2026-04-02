@@ -1,57 +1,51 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
-import '../models/user_model.dart';
+import 'package:go_question/features/user/data/models/user_model.dart';
 
 /// Контракт удалённого источника данных.
 /// Только email/password аутентификация.
 abstract class IAuthRemoteDataSource {
-  /// Текущая модель пользователя из кэша Firebase
+  /// Получает информацию об авторизованном пользователи напрямую из Firebase Auth
   UserModel? getCurrentUser();
 
-  /// Поток uid авторизованного пользователя
-  Stream<String?> get authStateChanges;
-
-  // Вход по почте/паролю
+  /// Вход по почте и паролю
   Future<UserModel?> signInWithEmailAndPassword({
     required String email,
     required String password,
   });
 
-  // Регистрация
+  /// Регистрация и автоматическое логирование
   Future<UserModel?> signUpWithEmailAndPassword({
     required String email,
     required String password,
     required String name,
   });
 
-  /// Выход из аккаунта
+  /// Выход
   Future<void> signOut();
 }
 
+/// Реализация через Firebase Auth
 class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
-  final firebase.FirebaseAuth _firebaseAuth;
+  final firebase.FirebaseAuth _auth;
 
-  AuthRemoteDataSourceImpl(this._firebaseAuth);
+  AuthRemoteDataSourceImpl(this._auth);
 
   @override
   UserModel? getCurrentUser() {
-    final user = _firebaseAuth.currentUser;
+    final user = _auth.currentUser;
     return user != null ? UserModel.fromFirebaseUser(user) : null;
   }
 
   @override
-  Stream<String?> get authStateChanges =>
-      _firebaseAuth.authStateChanges().map((user) => user?.uid);
-
-  @override
   Future<UserModel?> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
-    final result = await _firebaseAuth.signInWithEmailAndPassword(
+    final credential = await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
-    return result.user != null ? UserModel.fromFirebaseUser(result.user!) : null;
+    return credential.user != null ? UserModel.fromFirebaseUser(credential.user!) : null;
   }
 
   @override
@@ -60,22 +54,20 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
     required String password,
     required String name,
   }) async {
-    final result = await _firebaseAuth.createUserWithEmailAndPassword(
+    final credential = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
-    if (result.user != null) {
-      // Сохраняем displayName в Firebase Auth
-      await result.user!.updateDisplayName(name);
-      await result.user!.reload();
-      final updatedUser = _firebaseAuth.currentUser;
-      return updatedUser != null ? UserModel.fromFirebaseUser(updatedUser) : null;
+    if (credential.user != null) {
+      // Обновляет displayName в профиле Firebase Auth
+      await credential.user!.updateDisplayName(name);
+      return UserModel.fromFirebaseUser(credential.user!);
     }
     return null;
   }
 
   @override
-  Future<void> signOut() async {
-    await _firebaseAuth.signOut();
+  Future<void> signOut() {
+    return _auth.signOut();
   }
 }
