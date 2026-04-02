@@ -4,15 +4,16 @@ import 'package:go_question/features/auth/presentation/cubit/auth_state.dart';
 
 import 'package:go_question/features/auth/presentation/cubit/auth_cubit.dart';
 import 'injection_container/injection_container.dart' as di;
+import 'package:go_question/config/main_scaffold.dart';
 
 class GoQuestionApp extends StatelessWidget {
   const GoQuestionApp({super.key});
 
-  // This widget is the root of application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Go Question',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -87,6 +88,7 @@ class MainPage extends StatelessWidget {
           );
         },
       ),
+      home: const MainScaffold(),
     );
   }
 }
