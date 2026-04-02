@@ -8,10 +8,13 @@ abstract class AuthState extends Equatable {
   List<Object?> get props => [];
 }
 
+/// Начальное состояние — пользователь не авторизован
 class AuthInitial extends AuthState {}
 
+/// Идёт загрузка (запрос к Firebase)
 class AuthLoading extends AuthState {}
 
+/// Пользователь успешно авторизован
 class AuthAuthenticated extends AuthState {
   final UserEntity user;
 
@@ -21,18 +24,10 @@ class AuthAuthenticated extends AuthState {
   List<Object?> get props => [user];
 }
 
-class AuthSuccess extends AuthState {}
-
-class AuthCodeSent extends AuthState {
-  final String verificationId;
-  const AuthCodeSent(this.verificationId);
-
-  @override
-  List<Object?> get props => [verificationId];
-}
-
+/// Ошибка аутентификации
 class AuthError extends AuthState {
   final String error;
+
   const AuthError(this.error);
 
   @override

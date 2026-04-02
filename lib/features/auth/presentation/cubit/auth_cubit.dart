@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/repositories/i_auth_repository.dart';
 import 'auth_state.dart';
 
+/// Управляет состоянием аутентификации.
+/// Поддерживает только email/password вход и регистрацию.
 class AuthCubit extends Cubit<AuthState> {
   final IAuthRepository _authRepository;
 
@@ -9,7 +11,7 @@ class AuthCubit extends Cubit<AuthState> {
     _init();
   }
 
-  // Инициализация: проверка текущего юзера
+  /// Проверяет при запуске — возможно пользователь уже залогинен
   void _init() {
     final user = _authRepository.getCurrentUser();
     if (user != null) {
@@ -24,8 +26,8 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       final user = await _authRepository.signInWithEmailAndPassword(
-        email: email, 
-        password: password
+        email: email,
+        password: password,
       );
       if (user != null) {
         emit(AuthAuthenticated(user));
@@ -33,11 +35,11 @@ class AuthCubit extends Cubit<AuthState> {
         emit(const AuthError('Не удалось войти'));
       }
     } catch (e) {
-      emit(AuthError(e.toString().replaceAll('Exception: ', '')));
+      emit(AuthError(_mapFirebaseError(e.toString())));
     }
   }
 
-  // Регистрация по email/password
+  /// Регистрация по email, паролю и имени
   Future<void> signUp(String email, String password, String name) async {
     emit(AuthLoading());
     try {
@@ -52,25 +54,24 @@ class AuthCubit extends Cubit<AuthState> {
         emit(const AuthError('Не удалось зарегистрироваться'));
       }
     } catch (e) {
-      emit(AuthError(e.toString().replaceAll('Exception: ', '')));
+      emit(AuthError(_mapFirebaseError(e.toString())));
     }
   }
 
-  // Выход
+  /// Выход из аккаунта
   Future<void> signOut() async {
     await _authRepository.signOut();
     emit(AuthInitial());
   }
 
-  // --- Заглушки для телефона (для напарника) ---
-
-  Future<void> verifyPhone(String phone) async {
-    emit(AuthLoading());
-    // TODO: логика напарника
-  }
-
-  Future<void> submitSmsCode(String code) async {
-    emit(AuthLoading());
-    // TODO: логика напарника
+  /// Переводит технические ошибки Firebase в понятные пользователю сообщения
+  String _mapFirebaseError(String error) {
+    if (error.contains('user-not-found')) return 'Пользователь не найден';
+    if (error.contains('wrong-password')) return 'Неверный пароль';
+    if (error.contains('email-already-in-use')) return 'Email уже используется';
+    if (error.contains('invalid-email')) return 'Некорректный email';
+    if (error.contains('weak-password')) return 'Слишком слабый пароль (минимум 6 символов)';
+    if (error.contains('network-request-failed')) return 'Нет подключения к интернету';
+    return 'Произошла ошибка. Попробуйте снова.';
   }
 }

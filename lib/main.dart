@@ -13,18 +13,13 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   final authDataSource = AuthRemoteDataSourceImpl(FirebaseAuth.instance);
   final authRepository = AuthRepositoryImpl(authDataSource);
   final networkInfo = NetworkInfoImpl(InternetConnection());
 
-  runApp(MyApp(
-    authRepository: authRepository,
-    networkInfo: networkInfo,
-  ));
+  runApp(MyApp(authRepository: authRepository, networkInfo: networkInfo));
 }
 
 class MyApp extends StatelessWidget {
@@ -88,18 +83,18 @@ class MyApp extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () => context.read<AuthCubit>().signUp(
-                            'test@test.ru',
-                            '123123',
-                            'Иван Иванов',
-                          ),
+                        'test@test.ru',
+                        '123123',
+                        'Иван Иванов',
+                      ),
                       child: const Text('Зарегистрироваться (Тест)'),
                     ),
                     const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () => context.read<AuthCubit>().signIn(
-                            'test@test.ru',
-                            '123123',
-                          ),
+                        'test@test.ru',
+                        '123123',
+                      ),
                       child: const Text('Войти (Тест)'),
                     ),
                   ],

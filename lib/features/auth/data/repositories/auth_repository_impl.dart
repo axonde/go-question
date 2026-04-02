@@ -2,6 +2,9 @@ import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/i_auth_repository.dart';
 import '../source/datasource.dart';
 
+/// Реализация репозитория аутентификации.
+/// Делегирует вызовы в [IAuthRemoteDataSource] и конвертирует
+/// DataLayer-модели (UserModel) в Domain-сущности (UserEntity).
 class AuthRepositoryImpl implements IAuthRepository {
   final IAuthRemoteDataSource _remoteDataSource;
 
@@ -13,20 +16,7 @@ class AuthRepositoryImpl implements IAuthRepository {
   }
 
   @override
-  Stream<String?> get authStateChanges => throw UnimplementedError();
-
-  @override
-  Future<void> signInWithPhoneNumber({
-    required String phoneNumber,
-    required Function(String code) onCodeSent,
-    required Function(String error) onError,
-  }) {
-    return _remoteDataSource.signInWithPhoneNumber(
-      phoneNumber: phoneNumber,
-      onCodeSent: onCodeSent,
-      onError: onError,
-    );
-  }
+  Stream<String?> get authStateChanges => _remoteDataSource.authStateChanges;
 
   @override
   Future<UserEntity?> signInWithEmailAndPassword({
