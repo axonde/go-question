@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/features/auth/presentation/cubit/auth_state.dart';
 
-import 'features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:go_question/features/auth/presentation/cubit/auth_cubit.dart';
 import 'injection_container/injection_container.dart' as di;
 
 class GoQuestionApp extends StatelessWidget {
@@ -19,7 +19,7 @@ class GoQuestionApp extends StatelessWidget {
       ),
       home: BlocProvider(
         create: (context) => di.sl<AuthCubit>(),
-        child: MainPage(),
+        child: const MainPage(),
       ),
     );
   }

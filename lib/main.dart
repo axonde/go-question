@@ -11,5 +11,5 @@ void main() async {
 
   await di.init();
 
-  runApp(GoQuestionApp());
+  runApp(const GoQuestionApp());
 }
