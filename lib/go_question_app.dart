@@ -88,7 +88,6 @@ class MainPage extends StatelessWidget {
           );
         },
       ),
-      home: const MainScaffold(),
     );
   }
 }
