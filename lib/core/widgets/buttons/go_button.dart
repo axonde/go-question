@@ -3,8 +3,14 @@ import 'package:flutter/material.dart';
 class GoButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
+  final GoButtonColors colors;
 
-  const GoButton({super.key, required this.onPressed, required this.text});
+  const GoButton({
+    super.key,
+    required this.onPressed,
+    required this.text,
+    required this.colors,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -12,46 +18,49 @@ class GoButton extends StatelessWidget {
       widthFactor: 0.8,
       child: AspectRatio(
         aspectRatio: 161 / 108,
-        child: CustomPaint(painter: _GoButtonPainter()),
+        child: CustomPaint(
+          painter: _GoButtonPainter(colors: colors, text: text),
+        ),
       ),
     );
   }
 }
 
 class _GoButtonPainter extends CustomPainter {
+  final GoButtonColors colors;
+  final String text;
+
+  const _GoButtonPainter({required this.colors, required this.text});
+
   @override
   void paint(Canvas canvas, Size size) {
     final w = size.width;
     final h = size.height;
 
-    // Вспомогательная функция для относительных координат
+    if (w <= 0 || h <= 0) return; // защита от нулевого размера
+
     double rx(double x) => x * w / 161;
     double ry(double y) => y * h / 108;
 
-    // 1. Тень (box-shadow: 0px 2px 0px 1px black) [checked]
+    // ---- 1. Тень ----
     final shadowRect = Rect.fromLTWH(0, ry(2), w, h);
-    final shadowPaint = Paint()..color = Colors.black;
     canvas.drawRRect(
       RRect.fromRectAndRadius(shadowRect, Radius.circular(rx(11))),
-      shadowPaint,
+      Paint()..color = colors.shadowColor,
     );
 
-    // 2. Внешний фон кнопки (тёмный градиент)
+    // ---- 2. Основной фон (тёмный градиент) ----
     final outerRect = Rect.fromLTWH(0, 0, w, h);
-    final outerGradient = LinearGradient(
-      begin: Alignment(-0.99, 0.0),
-      end: Alignment(1.0, 0.0),
-      colors: [Color(0xFFBF6700), Color(0xFFCC6800)],
-    ).createShader(outerRect);
-    final outerPaint = Paint()..shader = outerGradient;
+    final outerPaint = Paint()
+      ..shader = colors.outerGradient.createShader(outerRect);
     canvas.drawRRect(
       RRect.fromRectAndRadius(outerRect, Radius.circular(rx(11))),
       outerPaint,
     );
 
-    // 3. Внешняя чёрная обводка (border: 1.2px solid black)
+    // ---- 3. Внешняя обводка ----
     final borderPaint = Paint()
-      ..color = Colors.black
+      ..color = colors.borderColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = rx(1.2);
     canvas.drawRRect(
@@ -59,36 +68,30 @@ class _GoButtonPainter extends CustomPainter {
       borderPaint,
     );
 
-    // 4. Основной яркий градиент (Rectangle 8)
+    // ---- 4. Яркий градиент (Rectangle 8) ----
     final rect8Rect = Rect.fromLTWH(0, 0, w, ry(100));
-    final gradient8 = LinearGradient(
-      begin: Alignment(-0.8, 0.2),
-      end: Alignment(0.8, -0.2),
-      colors: [Color(0xFFFFA500), Color(0xFFFFA000)],
-    ).createShader(rect8Rect);
-    final paint8 = Paint()..shader = gradient8;
+    final paint8 = Paint()
+      ..shader = colors.mainGradient.createShader(rect8Rect);
     canvas.drawRRect(
       RRect.fromRectAndRadius(rect8Rect, Radius.circular(rx(10))),
       paint8,
     );
 
-    // 5. Внутренний жёлтый прямоугольник (Rectangle 10)
+    // ---- 5. Внутренняя жёлтая панель (Rectangle 10) ----
     final rect10Rect = Rect.fromLTWH(rx(6), ry(5), rx(149), ry(90));
-    final paint10 = Paint()..color = Color(0xFFFFC00F);
     canvas.drawRRect(
       RRect.fromRectAndRadius(rect10Rect, Radius.circular(rx(6))),
-      paint10,
+      Paint()..color = colors.innerPanelColor,
     );
 
-    // 6. Верхняя половина (Rectangle 11)
+    // ---- 6. Верхняя половина панели (Rectangle 11) ----
     final rect11Rect = Rect.fromLTWH(rx(6), ry(5), rx(149), ry(44));
-    final paint11 = Paint()..color = Color(0xFFFFCD41);
     canvas.drawRRect(
       RRect.fromRectAndRadius(rect11Rect, Radius.circular(rx(6))),
-      paint11,
+      Paint()..color = colors.innerPanelTopColor,
     );
 
-    // 8. Блик (Ellipse 1) – белое пятно, повёрнутое
+    // ---- 8. Блик (Ellipse 1) ----
     canvas.save();
     canvas.translate(rx(148), ry(12));
     canvas.rotate(-45.87 * 3.14159 / 180);
@@ -101,54 +104,135 @@ class _GoButtonPainter extends CustomPainter {
     );
     canvas.restore();
 
-    // 9. Текст "Поиск" с тенью и обводкой
-    final textSpan = TextSpan(
-      text: 'Поиск',
-      style: TextStyle(
-        fontFamily: 'Clash',
-        fontSize: rx(24),
-        fontWeight: FontWeight.w400,
-        color: Colors.white,
-        shadows: [
-          Shadow(
-            offset: Offset(0, ry(1.43615)),
-            blurRadius: 0,
-            color: Colors.black.withOpacity(0.9),
-          ),
-        ],
-        // Обводка через foreground - не работает в Canvas напрямую. Нарисуем дважды: сначала обводку, потом текст.
-      ),
+    // ========== 10. ТЕКСТ – ЦЕНТРИРОВАННЫЙ И ВИДИМЫЙ ==========
+    // Используем стандартный шрифт на случай, если 'Clash' не загружен
+    final textStyle = TextStyle(
+      fontFamily: 'Clash',
+      fontSize: rx(24),
+      fontWeight: FontWeight.w400,
+      color: colors.textColor,
+      shadows: [
+        Shadow(
+          offset: Offset(0, ry(1.43615)),
+          blurRadius: 0,
+          color: colors.textShadowColor,
+        ),
+      ],
+      // fallback на системный шрифт
+      fontFamilyFallback: ['Roboto', 'sans-serif'],
     );
+
+    final strokeStyle = TextStyle(
+      fontFamily: 'Clash',
+      fontSize: rx(24),
+      fontWeight: FontWeight.w400,
+      foreground: Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = rx(0.86169)
+        ..color = colors.textStrokeColor,
+      fontFamilyFallback: ['Roboto', 'sans-serif'],
+    );
+
     final textPainter = TextPainter(
-      text: textSpan,
+      text: TextSpan(text: text, style: textStyle),
       textDirection: TextDirection.ltr,
     );
-    textPainter.layout(maxWidth: rx(84));
-    // Позиция left:38, top:39
-    final textOffset = Offset(rx(43), ry(36));
-    // Рисуем обводку (толщина 0.86)
-    final strokeTextSpan = TextSpan(
-      text: 'Поиск',
-      style: TextStyle(
-        fontFamily: 'Clash',
-        fontSize: rx(24),
-        fontWeight: FontWeight.w400,
-        foreground: Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = rx(0.86169)
-          ..color = Colors.black,
-      ),
-    );
+    // Ограничиваем ширину – отступы по краям (20px в исходных координатах)
+    final maxTextWidth = w - rx(20);
+    textPainter.layout(maxWidth: maxTextWidth > 0 ? maxTextWidth : w);
+
     final strokePainter = TextPainter(
-      text: strokeTextSpan,
+      text: TextSpan(text: text, style: strokeStyle),
       textDirection: TextDirection.ltr,
     );
-    strokePainter.layout(maxWidth: rx(84));
+    strokePainter.layout(maxWidth: maxTextWidth > 0 ? maxTextWidth : w);
+
+    // Центрируем
+    final centerX = (w - textPainter.width) / 2;
+    final centerY = (h - textPainter.height) / 2;
+    final textOffset = Offset(centerX, centerY);
+
     strokePainter.paint(canvas, textOffset);
     textPainter.paint(canvas, textOffset);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _GoButtonPainter oldDelegate) {
+    return oldDelegate.colors != colors || oldDelegate.text != text;
+  }
+}
+
+class GoButtonColors {
+  final Color shadowColor;
+  final Color borderColor;
+  final Gradient outerGradient;
+  final Gradient mainGradient;
+  final Color innerPanelColor;
+  final Color innerPanelTopColor;
+  final Color textColor;
+  final Color textShadowColor;
+  final Color textStrokeColor;
+
+  const GoButtonColors({
+    required this.shadowColor,
+    required this.borderColor,
+    required this.outerGradient,
+    required this.mainGradient,
+    required this.innerPanelColor,
+    required this.innerPanelTopColor,
+    required this.textColor,
+    required this.textShadowColor,
+    required this.textStrokeColor,
+  });
+
+  // Можно добавить фабричный конструктор для стандартной темы
+  factory GoButtonColors.standard() {
+    return GoButtonColors(
+      shadowColor: Colors.black,
+      borderColor: Colors.black,
+      outerGradient: LinearGradient(
+        begin: Alignment(-0.99, 0.0),
+        end: Alignment(1.0, 0.0),
+        colors: [Color(0xFFBF6700), Color(0xFFCC6800)],
+      ),
+      mainGradient: LinearGradient(
+        begin: Alignment(-0.8, 0.2),
+        end: Alignment(0.8, -0.2),
+        colors: [Color(0xFFFFA500), Color(0xFFFFA000)],
+      ),
+      innerPanelColor: Color(0xFFFFC00F),
+      innerPanelTopColor: Color(0xFFFFCD41),
+      textColor: Colors.white,
+      textShadowColor: Colors.black.withOpacity(0.9),
+      textStrokeColor: Colors.black,
+    );
+  }
+
+  // Метод для создания копии с изменениями (удобно для кастомизации)
+  GoButtonColors copyWith({
+    Color? shadowColor,
+    Color? borderColor,
+    Gradient? outerGradient,
+    Gradient? mainGradient,
+    Color? innerPanelColor,
+    Color? innerPanelTopColor,
+    Color? line3Color,
+    Color? line4Color,
+    Color? textColor,
+    Color? textShadowColor,
+    Color? textStrokeColor,
+  }) {
+    return GoButtonColors(
+      shadowColor: shadowColor ?? this.shadowColor,
+      borderColor: borderColor ?? this.borderColor,
+      outerGradient: outerGradient ?? this.outerGradient,
+      mainGradient: mainGradient ?? this.mainGradient,
+      innerPanelColor: innerPanelColor ?? this.innerPanelColor,
+      innerPanelTopColor: innerPanelTopColor ?? this.innerPanelTopColor,
+      textColor: textColor ?? this.textColor,
+      textShadowColor: textShadowColor ?? this.textShadowColor,
+      textStrokeColor: textStrokeColor ?? this.textStrokeColor,
+    );
+  }
 }
 
