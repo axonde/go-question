@@ -2,7 +2,7 @@ name: go_question
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -40,10 +40,10 @@ dependencies:
   firebase_auth: ^6.3.0
   cloud_firestore: ^6.2.0
   flutter_bloc: ^9.0.0
-  equatable: ^2.0.5
   internet_connection_checker_plus: ^2.5.1
   freezed_annotation: ^2.4.4
   json_annotation: ^4.9.0
+  get_it: ^9.2.1
 
 dev_dependencies:
   flutter_test:
@@ -64,7 +64,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -102,10 +101,10 @@ flutter:
   # see https://flutter.dev/to/font-from-package
 
 flutter_native_splash:
-  color: "#FFFFFF"                # фоновый цвет
-  image: assets/splash_logo.png   # путь к логотипу
+  color: "#FFFFFF" # фоновый цвет
+  image: assets/splash_logo.png # путь к логотипу
   android: true
   ios: true
   android_12:
-    color: "#FFFFFF"                # фон – такой же, как и для старых версий
+    color: "#FFFFFF" # фон – такой же, как и для старых версий
     image: assets/splash_logo.png
