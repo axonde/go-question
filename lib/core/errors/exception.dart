@@ -1,3 +1,5 @@
+import '../constants/messages.dart';
+
 enum AppExceptionType {
   network,
   timeout,
@@ -23,33 +25,48 @@ class BaseAppException implements AppException {
   final String message;
 
   const BaseAppException({required this.type, String? message})
-    : message = message ?? 'Unexpected exception occurred';
+    : message = message ?? unexpectedExceptionMessage;
 
   @override
   String toString() => 'BaseAppException(type: $type, message: $message)';
 }
 
 final class NetworkException extends BaseAppException {
-  const NetworkException({super.message})
-    : super(type: AppExceptionType.network);
+  const NetworkException({String? message})
+    : super(
+        type: AppExceptionType.network,
+        message: message ?? networkExceptionMessage,
+      );
 }
 
 final class ServerException extends BaseAppException {
-  const ServerException({super.message})
-    : super(type: AppExceptionType.firebaseFirestore);
+  const ServerException({String? message})
+    : super(
+        type: AppExceptionType.firebaseFirestore,
+        message: message ?? serverExceptionMessage,
+      );
 }
 
 final class AuthException extends BaseAppException {
-  const AuthException({super.message})
-    : super(type: AppExceptionType.firebaseAuth);
+  const AuthException({String? message})
+    : super(
+        type: AppExceptionType.firebaseAuth,
+        message: message ?? authExceptionMessage,
+      );
 }
 
 final class ValidationException extends BaseAppException {
-  const ValidationException({super.message})
-    : super(type: AppExceptionType.validation);
+  const ValidationException({String? message})
+    : super(
+        type: AppExceptionType.validation,
+        message: message ?? validationExceptionMessage,
+      );
 }
 
 final class UnknownException extends BaseAppException {
-  const UnknownException({super.message})
-    : super(type: AppExceptionType.unknown);
+  const UnknownException({String? message})
+    : super(
+        type: AppExceptionType.unknown,
+        message: message ?? unexpectedExceptionMessage,
+      );
 }

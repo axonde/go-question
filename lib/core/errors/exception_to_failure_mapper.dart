@@ -1,15 +1,29 @@
+import '../constants/messages.dart';
 import 'exception.dart';
 import 'failures.dart';
 
 Failure mapExceptionToFailure(Object error) {
-  if (error is AppException) {
-    return Failure.fromType(
-      _mapAppExceptionType(error.type),
-      message: error.message,
-    );
+  if (error is! AppException) {
+    return Failure.fromType(FailureType.unknownError);
   }
 
-  return Failure.fromType(FailureType.unknownError);
+  final failureType = _mapAppExceptionType(error.type);
+  final specificMessage = _extractSpecificExceptionMessage(error.message);
+
+  if (specificMessage == null) {
+    return Failure.fromType(failureType);
+  }
+
+  return Failure.fromType(failureType, message: specificMessage);
+}
+
+String? _extractSpecificExceptionMessage(String message) {
+  final normalized = message.trim();
+  if (normalized.isEmpty || normalized == unexpectedExceptionMessage) {
+    return null;
+  }
+
+  return normalized;
 }
 
 FailureType _mapAppExceptionType(AppExceptionType type) {

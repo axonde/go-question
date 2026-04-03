@@ -6,3 +6,9 @@ const userNotFoundMessage = 'User not found';
 const authOperationErrorMessage = 'Authentication operation failed';
 const unauthorizedErrorMessage = 'Authorization error occurred';
 const validationErrorMessage = 'Validation error occurred';
+
+const unexpectedExceptionMessage = 'Unexpected exception occurred';
+const networkExceptionMessage = 'Network exception occurred';
+const serverExceptionMessage = 'Server exception occurred';
+const authExceptionMessage = 'Authentication exception occurred';
+const validationExceptionMessage = 'Validation exception occurred';
