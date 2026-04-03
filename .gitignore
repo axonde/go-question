@@ -96,6 +96,7 @@ lib/firebase_options.dart
 
 
 # Flutter/Build
+**/devtools_options.yaml
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
