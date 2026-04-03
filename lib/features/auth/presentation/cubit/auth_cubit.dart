@@ -175,9 +175,11 @@ class AuthCubit extends Cubit<AuthState> {
   // ──────────────────────────────────────────────
 
   /// Сохраняет данные в Firestore в фоне, не блокируя UI.
-  /// Ошибки (правила безопасности, сеть) не влияют на авторизацию.
   void _saveToFirestoreInBackground() {
-    _repo.saveUserToFirestore().catchError((_) {});
+    _repo.saveUserToFirestore().catchError((e) {
+      // ignore: avoid_print
+      print('[Firestore] Не удалось сохранить пользователя: $e');
+    });
   }
 
   // ──────────────────────────────────────────────
