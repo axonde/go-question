@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:google_sign_in/google_sign_in.dart';
-import '../models/user_model.dart';
+import '../../../user/data/models/user_model.dart';
 
 abstract class IAuthRemoteDataSource {
   UserModel? getCurrentUser();
@@ -79,7 +79,16 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
       email: email,
       password: password,
     );
-    return result.user != null ? UserModel.fromFirebaseUser(result.user!) : null;
+    
+    if (result.user != null) {
+      // Пытаемся получить профиль из Firestore
+      final userDoc = await _firestore.collection('users').doc(result.user!.uid).get();
+      if (userDoc.exists) {
+        return UserModel.fromFirestore(userDoc);
+      }
+      return UserModel.fromFirebaseUser(result.user!);
+    }
+    return null;
   }
 
   /// Регистрация: создаёт аккаунт, устанавливает displayName, отправляет
@@ -97,6 +106,18 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
     );
     if (result.user != null) {
       await result.user!.updateDisplayName(name);
+      
+      // Сразу создаем документ в Firestore
+      final newUser = UserModel(
+        uid: result.user!.uid,
+        name: name,
+        email: email,
+      );
+      await _firestore.collection('users').doc(result.user!.uid).set(
+        newUser.toMap(),
+        SetOptions(merge: true),
+      );
+      
       await result.user!.sendEmailVerification();
     }
     return email;
@@ -117,7 +138,15 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
       idToken: googleAuth.idToken,
     );
     final result = await _firebaseAuth.signInWithCredential(credential);
-    return result.user != null ? UserModel.fromFirebaseUser(result.user!) : null;
+    
+    if (result.user != null) {
+      // Синхронизируем Google-профиль с Firestore
+      await saveUserToFirestore();
+      
+      final userDoc = await _firestore.collection('users').doc(result.user!.uid).get();
+      return UserModel.fromFirestore(userDoc);
+    }
+    return null;
   }
 
   // ──────────────────────────────────────────────
@@ -149,12 +178,9 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
     final user = _firebaseAuth.currentUser;
     if (user == null) return;
 
+    final userModel = UserModel.fromFirebaseUser(user);
     await _firestore.collection('users').doc(user.uid).set(
-      {
-        'name': user.displayName ?? '',
-        'mail': user.email ?? '',
-        'photo': user.photoURL, // null для email/password, ссылка для Google
-      },
+      userModel.toMap(),
       SetOptions(merge: true),
     );
   }
