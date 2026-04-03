@@ -30,7 +30,10 @@ class _GoButtonPainter extends CustomPainter {
   final GoButtonColors colors;
   final String text;
 
-  const _GoButtonPainter({required this.colors, required this.text});
+  const _GoButtonPainter({
+    required this.colors,
+    required this.text,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -235,4 +238,3 @@ class GoButtonColors {
     );
   }
 }
-
