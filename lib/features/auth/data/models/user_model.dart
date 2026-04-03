@@ -15,7 +15,7 @@ class UserModel with _$UserModel {
     required String email,
   }) = _UserModel;
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => 
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
 
   factory UserModel.fromFirebaseUser(firebase.User user) {
@@ -27,10 +27,6 @@ class UserModel with _$UserModel {
   }
 
   UserEntity toDomain() {
-    return UserEntity(
-      uid: uid,
-      name: name,
-      email: email,
-    );
+    return UserEntity(uid: uid, name: name, email: email);
   }
 }

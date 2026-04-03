@@ -13,19 +13,12 @@ class MainScaffold extends StatefulWidget {
 class _MainScaffoldState extends State<MainScaffold> {
   int _currentIndex = 1; // home in the middle
 
-  static const _screens = [
-    FriendsScreen(),
-    HomeScreen(),
-    SettingsScreen(),
-  ];
+  static const _screens = [FriendsScreen(), HomeScreen(), SettingsScreen()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),

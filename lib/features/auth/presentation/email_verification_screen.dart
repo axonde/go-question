@@ -15,9 +15,9 @@ class EmailVerificationScreen extends StatelessWidget {
           current is AuthAwaitingVerification && current.hint != null,
       listener: (context, state) {
         if (state is AuthAwaitingVerification && state.hint != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.hint!)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.hint!)));
         }
       },
       child: Scaffold(
@@ -28,8 +28,11 @@ class EmailVerificationScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Icon(Icons.mark_email_unread_outlined,
-                    size: 72, color: Colors.deepPurple),
+                const Icon(
+                  Icons.mark_email_unread_outlined,
+                  size: 72,
+                  color: Colors.deepPurple,
+                ),
                 const SizedBox(height: 24),
 
                 const Text(
@@ -53,7 +56,8 @@ class EmailVerificationScreen extends StatelessWidget {
                     return ElevatedButton(
                       onPressed: loading
                           ? null
-                          : () => context.read<AuthCubit>().checkEmailVerified(),
+                          : () =>
+                                context.read<AuthCubit>().checkEmailVerified(),
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(52),
                       ),
@@ -77,8 +81,8 @@ class EmailVerificationScreen extends StatelessWidget {
                       onPressed: loading
                           ? null
                           : () => context
-                              .read<AuthCubit>()
-                              .resendVerificationEmail(),
+                                .read<AuthCubit>()
+                                .resendVerificationEmail(),
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size.fromHeight(52),
                       ),
