@@ -90,7 +90,7 @@ coverage/
 
 # Firebase
 android/app/google-services.json
-android/app/src/google-services.json
+**/google-services.json
 ios/Runner/GoogleService-Info.plist
 lib/firebase_options.dart
 
