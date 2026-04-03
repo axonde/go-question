@@ -79,7 +79,9 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
       email: email,
       password: password,
     );
-    return result.user != null ? UserModel.fromFirebaseUser(result.user!) : null;
+    return result.user != null
+        ? UserModel.fromFirebaseUser(result.user!)
+        : null;
   }
 
   /// Регистрация: создаёт аккаунт, устанавливает displayName, отправляет
@@ -117,7 +119,9 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
       idToken: googleAuth.idToken,
     );
     final result = await _firebaseAuth.signInWithCredential(credential);
-    return result.user != null ? UserModel.fromFirebaseUser(result.user!) : null;
+    return result.user != null
+        ? UserModel.fromFirebaseUser(result.user!)
+        : null;
   }
 
   // ──────────────────────────────────────────────
@@ -149,14 +153,11 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
     final user = _firebaseAuth.currentUser;
     if (user == null) return;
 
-    await _firestore.collection('users').doc(user.uid).set(
-      {
-        'name': user.displayName ?? '',
-        'mail': user.email ?? '',
-        'photo': user.photoURL, // null для email/password, ссылка для Google
-      },
-      SetOptions(merge: true),
-    );
+    await _firestore.collection('users').doc(user.uid).set({
+      'name': user.displayName ?? '',
+      'mail': user.email ?? '',
+      'photo': user.photoURL, // null для email/password, ссылка для Google
+    }, SetOptions(merge: true));
   }
 
   // ──────────────────────────────────────────────
@@ -165,9 +166,6 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
 
   @override
   Future<void> signOut() async {
-    await Future.wait([
-      _firebaseAuth.signOut(),
-      _googleSignIn.signOut(),
-    ]);
+    await Future.wait([_firebaseAuth.signOut(), _googleSignIn.signOut()]);
   }
 }

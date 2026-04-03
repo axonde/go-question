@@ -48,10 +48,7 @@ class _AuthScreenState extends State<AuthScreen> {
         listener: (context, state) {
           if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error),
-                backgroundColor: Colors.red,
-              ),
+              SnackBar(content: Text(state.error), backgroundColor: Colors.red),
             );
           }
         },
@@ -101,7 +98,8 @@ class _AuthScreenState extends State<AuthScreen> {
                       keyboardType: TextInputType.emailAddress,
                       autocorrect: false,
                       validator: (v) {
-                        if (v == null || v.trim().isEmpty) return 'Введите email';
+                        if (v == null || v.trim().isEmpty)
+                          return 'Введите email';
                         if (!v.contains('@')) return 'Некорректный email';
                         return null;
                       },
@@ -121,8 +119,9 @@ class _AuthScreenState extends State<AuthScreen> {
                                 ? Icons.visibility_outlined
                                 : Icons.visibility_off_outlined,
                           ),
-                          onPressed: () =>
-                              setState(() => _obscurePassword = !_obscurePassword),
+                          onPressed: () => setState(
+                            () => _obscurePassword = !_obscurePassword,
+                          ),
                         ),
                       ),
                       validator: (v) {
@@ -146,7 +145,9 @@ class _AuthScreenState extends State<AuthScreen> {
                               ? const SizedBox(
                                   height: 20,
                                   width: 20,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
                                 )
                               : Text(_isLogin ? 'Войти' : 'Зарегистрироваться'),
                         );
@@ -161,7 +162,9 @@ class _AuthScreenState extends State<AuthScreen> {
                         return OutlinedButton.icon(
                           onPressed: loading
                               ? null
-                              : () => context.read<AuthCubit>().signInWithGoogle(),
+                              : () => context
+                                    .read<AuthCubit>()
+                                    .signInWithGoogle(),
                           style: OutlinedButton.styleFrom(
                             minimumSize: const Size.fromHeight(52),
                           ),

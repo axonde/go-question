@@ -28,10 +28,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   void _showModeDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => const _ModeDialog(),
-    );
+    showDialog(context: context, builder: (_) => const _ModeDialog());
   }
 
   @override
@@ -65,8 +62,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, state) {
-                  final user =
-                      state is AuthAuthenticated ? state.user : null;
+                  final user = state is AuthAuthenticated ? state.user : null;
                   return OutlinedButton.icon(
                     onPressed: () {}, // TODO: profile screen
                     icon: const Icon(Icons.account_circle_outlined),

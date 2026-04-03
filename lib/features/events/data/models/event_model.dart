@@ -67,7 +67,7 @@ class EventModel extends EventEntity {
       'organizer': organizer,
       'status': status,
       'createdAt': createdAt,
-      'updatedAt': updatedAt, 
+      'updatedAt': updatedAt,
     };
   }
 }

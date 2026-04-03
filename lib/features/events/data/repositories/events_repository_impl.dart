@@ -6,13 +6,13 @@ import '../models/event_model.dart';
 
 class EventsRepositoryImpl implements IEventsRepository {
   final FirebaseFirestore firestore;
-  
+
   EventsRepositoryImpl(this.firestore);
 
   @override
   Future<void> createEvent(EventEntity event) async {
     final eventModel = EventModel.fromEntity(event);
-    
+
     await firestore
         .collection('events')
         .doc(eventModel.id)

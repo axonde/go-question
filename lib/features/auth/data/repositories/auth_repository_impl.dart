@@ -35,12 +35,11 @@ class AuthRepositoryImpl implements IAuthRepository {
     required String email,
     required String password,
     required String name,
-  }) =>
-      _remoteDataSource.signUpWithEmailAndPassword(
-        email: email,
-        password: password,
-        name: name,
-      );
+  }) => _remoteDataSource.signUpWithEmailAndPassword(
+    email: email,
+    password: password,
+    name: name,
+  );
 
   @override
   Future<UserEntity?> signInWithGoogle() async {

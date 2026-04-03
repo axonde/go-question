@@ -65,10 +65,12 @@ class AuthCubit extends Cubit<AuthState> {
         name: name,
       );
       // Письмо уже отправлено внутри datasource
-      emit(AuthAwaitingVerification(
-        registeredEmail,
-        hint: 'Письмо отправлено на $registeredEmail',
-      ));
+      emit(
+        AuthAwaitingVerification(
+          registeredEmail,
+          hint: 'Письмо отправлено на $registeredEmail',
+        ),
+      );
     } on FirebaseAuthException catch (e) {
       emit(AuthError(_mapError(e.code)));
     } catch (_) {
@@ -119,10 +121,12 @@ class AuthCubit extends Cubit<AuthState> {
           emit(const AuthError('Не удалось получить данные пользователя'));
         }
       } else {
-        emit(AuthAwaitingVerification(
-          currentEmail,
-          hint: 'Почта ещё не подтверждена. Проверьте входящие.',
-        ));
+        emit(
+          AuthAwaitingVerification(
+            currentEmail,
+            hint: 'Почта ещё не подтверждена. Проверьте входящие.',
+          ),
+        );
       }
     } catch (_) {
       emit(AuthAwaitingVerification(currentEmail));
@@ -136,17 +140,21 @@ class AuthCubit extends Cubit<AuthState> {
         : '';
     try {
       await _repo.sendEmailVerification();
-      emit(AuthAwaitingVerification(
-        currentEmail,
-        hint: 'Письмо отправлено повторно на $currentEmail',
-      ));
+      emit(
+        AuthAwaitingVerification(
+          currentEmail,
+          hint: 'Письмо отправлено повторно на $currentEmail',
+        ),
+      );
     } on FirebaseAuthException catch (e) {
       emit(AuthAwaitingVerification(currentEmail, hint: _mapError(e.code)));
     } catch (_) {
-      emit(AuthAwaitingVerification(
-        currentEmail,
-        hint: 'Не удалось отправить письмо',
-      ));
+      emit(
+        AuthAwaitingVerification(
+          currentEmail,
+          hint: 'Не удалось отправить письмо',
+        ),
+      );
     }
   }
 
