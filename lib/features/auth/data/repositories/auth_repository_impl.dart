@@ -2,18 +2,18 @@ import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/i_auth_repository.dart';
 import '../source/datasource.dart';
 
-/// Реализация репозитория аутентификации.
-/// Делегирует вызовы в [IAuthRemoteDataSource] и конвертирует
-/// DataLayer-модели (UserModel) в Domain-сущности (UserEntity).
 class AuthRepositoryImpl implements IAuthRepository {
   final IAuthRemoteDataSource _remoteDataSource;
 
   AuthRepositoryImpl(this._remoteDataSource);
 
   @override
-  UserEntity? getCurrentUser() {
-    return _remoteDataSource.getCurrentUser()?.toDomain();
-  }
+  UserEntity? getCurrentUser() =>
+      _remoteDataSource.getCurrentUser()?.toDomain();
+
+  @override
+  bool isCurrentUserEmailVerified() =>
+      _remoteDataSource.isCurrentUserEmailVerified();
 
   @override
   Stream<String?> get authStateChanges => _remoteDataSource.authStateChanges;
@@ -31,21 +31,36 @@ class AuthRepositoryImpl implements IAuthRepository {
   }
 
   @override
-  Future<UserEntity?> signUpWithEmailAndPassword({
+  Future<String> signUpWithEmailAndPassword({
     required String email,
     required String password,
     required String name,
-  }) async {
-    final model = await _remoteDataSource.signUpWithEmailAndPassword(
-      email: email,
-      password: password,
-      name: name,
-    );
+  }) =>
+      _remoteDataSource.signUpWithEmailAndPassword(
+        email: email,
+        password: password,
+        name: name,
+      );
+
+  @override
+  Future<UserEntity?> signInWithGoogle() async {
+    final model = await _remoteDataSource.signInWithGoogle();
     return model?.toDomain();
   }
 
   @override
-  Future<void> signOut() {
-    return _remoteDataSource.signOut();
-  }
+  Future<void> sendEmailVerification() =>
+      _remoteDataSource.sendEmailVerification();
+
+  @override
+  Future<bool> checkEmailVerified() => _remoteDataSource.checkEmailVerified();
+
+  @override
+  Future<void> deleteCurrentUser() => _remoteDataSource.deleteCurrentUser();
+
+  @override
+  Future<void> saveUserToFirestore() => _remoteDataSource.saveUserToFirestore();
+
+  @override
+  Future<void> signOut() => _remoteDataSource.signOut();
 }

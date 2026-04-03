@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_question/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:go_question/features/auth/presentation/cubit/auth_state.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -25,93 +28,95 @@ class HomeScreen extends StatelessWidget {
   }
 
   void _showModeDialog(BuildContext context) {
-    showDialog(context: context, builder: (_) => const _ModeDialog());
+    showDialog(
+      context: context,
+      builder: (_) => const _ModeDialog(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/background/background.png'),
-              fit: BoxFit.cover,
+        child: Column(
+          children: [
+            // Top bar: city + notifications
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.location_city),
+                    tooltip: 'Выбор города',
+                    onPressed: () => _showCitySelector(context),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.notifications_outlined),
+                    tooltip: 'Уведомления',
+                    onPressed: () => _showNotifications(context),
+                  ),
+                ],
+              ),
             ),
-          ),
-          child: Column(
-            children: [
-              // Top bar: city + notifications
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.location_city),
-                      tooltip: 'Выбор города',
-                      onPressed: () => _showCitySelector(context),
+
+            // Profile button — показывает данные авторизованного юзера
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, state) {
+                  final user =
+                      state is AuthAuthenticated ? state.user : null;
+                  return OutlinedButton.icon(
+                    onPressed: () {}, // TODO: profile screen
+                    icon: const Icon(Icons.account_circle_outlined),
+                    label: Text(
+                      user != null && user.name.isNotEmpty
+                          ? user.name
+                          : user?.email ?? 'Профиль',
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.notifications_outlined),
-                      tooltip: 'Уведомления',
-                      onPressed: () => _showNotifications(context),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
                     ),
-                  ],
+                  );
+                },
+              ),
+            ),
+
+            // Center placeholder
+            const Expanded(
+              child: Center(
+                child: Text(
+                  '[заглушка]',
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
                 ),
               ),
+            ),
 
-              // Profile button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: OutlinedButton.icon(
-                  onPressed: () {}, // TODO: profile screen
-                  icon: const Icon(Icons.account_circle_outlined),
-                  label: const Text('Профиль'),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(48),
+            // Two action buttons
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () => _showBattleSheet(context),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                    ),
+                    child: const Text('Кнопка 1 (снизу)'),
                   ),
-                ),
-              ),
-
-              // Center placeholder
-              const Expanded(
-                child: Center(
-                  child: Text(
-                    '[заглушка]',
-                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () => _showModeDialog(context),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                    ),
+                    child: const Text('Кнопка 2 (диалог)'),
                   ),
-                ),
+                ],
               ),
-
-              // Two action buttons
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => _showBattleSheet(context),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(48),
-                      ),
-                      child: const Text('Кнопка 1 (снизу)'),
-                    ),
-                    const SizedBox(height: 12),
-                    ElevatedButton(
-                      onPressed: () => _showModeDialog(context),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(48),
-                      ),
-                      child: const Text('Кнопка 2 (диалог)'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -151,12 +156,12 @@ class _NotificationsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
+    return const Padding(
+      padding: EdgeInsets.all(24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Text(
             'Уведомления',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
