@@ -96,7 +96,7 @@ class _GoButtonPainter extends CustomPainter {
     canvas.translate(rx(148), ry(12));
     canvas.rotate(-45.87 * 3.14159 / 180);
     final ellipsePaint = Paint()
-      ..color = Colors.white.withOpacity(0.9)
+      ..color = Colors.white.withValues(alpha: 0.9)
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, rx(1));
     canvas.drawOval(
       Rect.fromLTWH(-rx(5.69) / 2, -ry(8) / 2, rx(5.69), ry(8)),
@@ -203,7 +203,7 @@ class GoButtonColors {
       innerPanelColor: Color(0xFFFFC00F),
       innerPanelTopColor: Color(0xFFFFCD41),
       textColor: Colors.white,
-      textShadowColor: Colors.black.withOpacity(0.9),
+      textShadowColor: Colors.black.withValues(alpha: 0.9),
       textStrokeColor: Colors.black,
     );
   }

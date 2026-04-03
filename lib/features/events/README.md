@@ -1,45 +1,30 @@
-# Модуль Мероприятий (Events Feature)
+# Модуль Events (Мероприятия) 📅
 
-Модуль предназначен для работы с мероприятиями: создание новых карточек, чтение списка, удаление и обновление в базе данных Firestore (Коллекция `events`).
+Этот модуль управляет жизненным циклом мероприятий: созданием, отображением списка и детальной информации.
 
-## 📊 Структура БД (Сущность `EventEntity`)
+## Технологии
+- **Cloud Firestore**: Коллекция `events`.
+- **Firebase Storage**: Хранение изображений карточек.
+- **UUID**: Генерация уникальных идентификаторов.
 
-Каждый документ в коллекции `events` имеет следующие поля (столбцы). При отправке в БД `EventModel` сам конвертирует эти поля в правильный JSON:
+## Структура (Clean Architecture)
 
-- `id` (String) — Уникальный ID карточки мероприятия (Генерируется библиотекой uuid). Документ в БД имеет такой же ID.
-- `title` (String) — Название события (Например: "Концерт рок-группы").
-- `description` (String) — Подробное текстовое описание.
-- `imageUrl` (String) — Ссылка на картинку из Firebase Storage.
-- `date` (DateTime) — Дата и время проведения события.
-- `location` (String) — Геолокация (адрес или координаты).
-- `category` (String) — Категория ивента (Например: "Искусство", "Спорт", "Музыка").
-- `price` (double) — Цена билета (0.0 — бесплатно).
-- `participants` (int) — Текущее количество участников (по умолчанию 0).
-- `organizer` (String) — Имя или UID Создателя мероприятия.
-- `status` (String) — Статус события ("active", "cancelled", "completed").
-- `createdAt` (DateTime) — Время создания записи.
-- `updatedAt` (DateTime) — Время последнего редактирования.
+- **Domain**:
+  - `event_entity.dart`: Сущность мероприятия (id, title, description, date, location и др.).
+- **Data**:
+  - `event_model.dart`: Сериализация данных (fromFirestore/toMap).
+  - `events_repository_impl.dart`: Логика CRUD операций.
+- **Presentation**:
+  - Слой UI для отображения списка и создания ивентов.
 
----
-
-## 🛠 Как взаимодействовать (Гайд для верстальщика)
-
-На слое Data уже полностью готов `EventsRepositoryImpl`, который дергает Firebase. 
-*(Обычно его методы будут оборачиваться в EventsCubit/EventsBloc для управления загрузкой и ошибками на экране).* 
-
-### Доступные методы репозитория:
-Ты (или прослойка BLoC) можешь обращаться к методам интерфейса `IEventsRepository`:
-
-1. **Создание мероприятия**
-   ```dart
-   final event = EventEntity(id: 'uuid-123', title: 'test', ...);
-   await eventsRepository.createEvent(event);
-   ```
-   *Механика:* Репозиторий превратит `EventEntity` в `EventModel` (содержащий метод `.toMap()`) и положит документ в коллекцию `events`. ID документа будет равен `event.id`, так как применен метод `.set()`, а не `.add()`.
-
-2. **Получение мероприятий** *(В процессе реализации)*
-   `getEvents()` — вернёт массив `List<EventEntity>` всех карточек из коллекции `events`.
-3. **Получение одного по ID** *(В процессе)*
-   `getEventById(String id)` — вернёт данные конкретной карточки.
-4. **Удаление и Обновление** *(В процессе)*
-   `updateEvent(event)` / `deleteEvent(id)`
+## Состояние БД (Поля EventEntity)
+- `id`: String (UUID).
+- `title`: String.
+- `description`: String.
+- `imageUrl`: String.
+- `date`: DateTime.
+- `location`: String.
+- `category`: String ("Music", "Sport" и т.д.).
+- `price`: double (0.0 — бесплатно).
+- `organizer`: String (UID создателя).
+- `status`: String ("active", "cancelled", "completed").

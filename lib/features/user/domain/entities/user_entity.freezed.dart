@@ -20,7 +20,10 @@ mixin _$UserEntity {
   String get uid => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
-  String? get password => throw _privateConstructorUsedError;
+  String? get photoUrl => throw _privateConstructorUsedError;
+  String? get bio => throw _privateConstructorUsedError;
+  String? get username => throw _privateConstructorUsedError;
+  DateTime? get dateOfBirth => throw _privateConstructorUsedError;
 
   /// Create a copy of UserEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -36,7 +39,15 @@ abstract class $UserEntityCopyWith<$Res> {
     $Res Function(UserEntity) then,
   ) = _$UserEntityCopyWithImpl<$Res, UserEntity>;
   @useResult
-  $Res call({String uid, String name, String email, String? password});
+  $Res call({
+    String uid,
+    String name,
+    String email,
+    String? photoUrl,
+    String? bio,
+    String? username,
+    DateTime? dateOfBirth,
+  });
 }
 
 /// @nodoc
@@ -57,7 +68,10 @@ class _$UserEntityCopyWithImpl<$Res, $Val extends UserEntity>
     Object? uid = null,
     Object? name = null,
     Object? email = null,
-    Object? password = freezed,
+    Object? photoUrl = freezed,
+    Object? bio = freezed,
+    Object? username = freezed,
+    Object? dateOfBirth = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -73,10 +87,22 @@ class _$UserEntityCopyWithImpl<$Res, $Val extends UserEntity>
                 ? _value.email
                 : email // ignore: cast_nullable_to_non_nullable
                       as String,
-            password: freezed == password
-                ? _value.password
-                : password // ignore: cast_nullable_to_non_nullable
+            photoUrl: freezed == photoUrl
+                ? _value.photoUrl
+                : photoUrl // ignore: cast_nullable_to_non_nullable
                       as String?,
+            bio: freezed == bio
+                ? _value.bio
+                : bio // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            username: freezed == username
+                ? _value.username
+                : username // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            dateOfBirth: freezed == dateOfBirth
+                ? _value.dateOfBirth
+                : dateOfBirth // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
           )
           as $Val,
     );
@@ -92,7 +118,15 @@ abstract class _$$UserEntityImplCopyWith<$Res>
   ) = __$$UserEntityImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String uid, String name, String email, String? password});
+  $Res call({
+    String uid,
+    String name,
+    String email,
+    String? photoUrl,
+    String? bio,
+    String? username,
+    DateTime? dateOfBirth,
+  });
 }
 
 /// @nodoc
@@ -112,7 +146,10 @@ class __$$UserEntityImplCopyWithImpl<$Res>
     Object? uid = null,
     Object? name = null,
     Object? email = null,
-    Object? password = freezed,
+    Object? photoUrl = freezed,
+    Object? bio = freezed,
+    Object? username = freezed,
+    Object? dateOfBirth = freezed,
   }) {
     return _then(
       _$UserEntityImpl(
@@ -128,10 +165,22 @@ class __$$UserEntityImplCopyWithImpl<$Res>
             ? _value.email
             : email // ignore: cast_nullable_to_non_nullable
                   as String,
-        password: freezed == password
-            ? _value.password
-            : password // ignore: cast_nullable_to_non_nullable
+        photoUrl: freezed == photoUrl
+            ? _value.photoUrl
+            : photoUrl // ignore: cast_nullable_to_non_nullable
                   as String?,
+        bio: freezed == bio
+            ? _value.bio
+            : bio // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        username: freezed == username
+            ? _value.username
+            : username // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        dateOfBirth: freezed == dateOfBirth
+            ? _value.dateOfBirth
+            : dateOfBirth // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
       ),
     );
   }
@@ -144,7 +193,10 @@ class _$UserEntityImpl implements _UserEntity {
     required this.uid,
     required this.name,
     required this.email,
-    this.password,
+    this.photoUrl,
+    this.bio,
+    this.username,
+    this.dateOfBirth,
   });
 
   @override
@@ -154,11 +206,17 @@ class _$UserEntityImpl implements _UserEntity {
   @override
   final String email;
   @override
-  final String? password;
+  final String? photoUrl;
+  @override
+  final String? bio;
+  @override
+  final String? username;
+  @override
+  final DateTime? dateOfBirth;
 
   @override
   String toString() {
-    return 'UserEntity(uid: $uid, name: $name, email: $email, password: $password)';
+    return 'UserEntity(uid: $uid, name: $name, email: $email, photoUrl: $photoUrl, bio: $bio, username: $username, dateOfBirth: $dateOfBirth)';
   }
 
   @override
@@ -169,12 +227,26 @@ class _$UserEntityImpl implements _UserEntity {
             (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.password, password) ||
-                other.password == password));
+            (identical(other.photoUrl, photoUrl) ||
+                other.photoUrl == photoUrl) &&
+            (identical(other.bio, bio) || other.bio == bio) &&
+            (identical(other.username, username) ||
+                other.username == username) &&
+            (identical(other.dateOfBirth, dateOfBirth) ||
+                other.dateOfBirth == dateOfBirth));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, uid, name, email, password);
+  int get hashCode => Object.hash(
+    runtimeType,
+    uid,
+    name,
+    email,
+    photoUrl,
+    bio,
+    username,
+    dateOfBirth,
+  );
 
   /// Create a copy of UserEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -190,7 +262,10 @@ abstract class _UserEntity implements UserEntity {
     required final String uid,
     required final String name,
     required final String email,
-    final String? password,
+    final String? photoUrl,
+    final String? bio,
+    final String? username,
+    final DateTime? dateOfBirth,
   }) = _$UserEntityImpl;
 
   @override
@@ -200,7 +275,13 @@ abstract class _UserEntity implements UserEntity {
   @override
   String get email;
   @override
-  String? get password;
+  String? get photoUrl;
+  @override
+  String? get bio;
+  @override
+  String? get username;
+  @override
+  DateTime? get dateOfBirth;
 
   /// Create a copy of UserEntity
   /// with the given fields replaced by the non-null parameter values.
