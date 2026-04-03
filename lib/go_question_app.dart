@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/main_scaffold.dart';
-import 'package:go_question/features/auth/presentation/auth_screen.dart';
+import 'package:go_question/core/widgets/app_background.dart';
 import 'package:go_question/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:go_question/features/auth/presentation/cubit/auth_state.dart';
-import 'package:go_question/features/auth/presentation/email_verification_screen.dart';
+import 'package:go_question/features/auth/presentation/pages/auth_page.dart';
+import 'package:go_question/features/auth/presentation/pages/email_verification_page.dart';
 import 'injection_container/injection_container.dart' as di;
 
 class GoQuestionApp extends StatelessWidget {
@@ -18,7 +19,9 @@ class GoQuestionApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        scaffoldBackgroundColor: Colors.transparent,
       ),
+      builder: (context, child) => AppBackground(child: child!),
       home: BlocProvider(
         create: (_) => di.sl<AuthCubit>(),
         child: const _AuthGate(),
@@ -27,7 +30,6 @@ class GoQuestionApp extends StatelessWidget {
   }
 }
 
-/// Переключает экраны в зависимости от состояния авторизации.
 class _AuthGate extends StatelessWidget {
   const _AuthGate();
 
@@ -44,9 +46,9 @@ class _AuthGate extends StatelessWidget {
           return const MainScaffold();
         }
         if (state is AuthAwaitingVerification) {
-          return EmailVerificationScreen(email: state.email);
+          return EmailVerificationPage(email: state.email);
         }
-        return const AuthScreen();
+        return const AuthPage();
       },
     );
   }

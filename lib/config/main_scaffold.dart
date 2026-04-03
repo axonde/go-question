@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_question/features/friends/presentation/friends_screen.dart';
-import 'package:go_question/features/home/presentation/home_screen.dart';
-import 'package:go_question/features/settings/presentation/settings_screen.dart';
+import 'package:go_question/features/friends/presentation/pages/friends_page.dart';
+import 'package:go_question/features/home/presentation/pages/home_page.dart';
+import 'package:go_question/features/settings/presentation/pages/settings_page.dart';
 
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});
@@ -11,9 +11,9 @@ class MainScaffold extends StatefulWidget {
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
-  int _currentIndex = 1; // home in the middle
+  int _currentIndex = 1;
 
-  static const _screens = [FriendsScreen(), HomeScreen(), SettingsScreen()];
+  static const _screens = [FriendsPage(), HomePage(), SettingsPage()];
 
   @override
   Widget build(BuildContext context) {
