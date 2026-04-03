@@ -11,18 +11,13 @@ class _AuthSubmitButton extends StatelessWidget {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         final loading = state is AuthLoading;
-        return ElevatedButton(
-          onPressed: loading ? null : onPressed,
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size.fromHeight(52),
+        return SizedBox(
+          height: 100,
+          child: GoButton(
+            onPressed: loading ? () {} : onPressed,
+            text: isLogin ? 'Войти' : 'Зарегистрироваться',
+            colors: GoButtonColors.standard(),
           ),
-          child: loading
-              ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text(isLogin ? 'Войти' : 'Зарегистрироваться'),
         );
       },
     );

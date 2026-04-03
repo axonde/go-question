@@ -8,12 +8,12 @@ class _AuthSwitchButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onToggle,
-      child: Text(
-        isLogin
-            ? 'Нет аккаунта? Зарегистрироваться'
-            : 'Уже есть аккаунт? Войти',
+    return SizedBox(
+      height: 60,
+      child: GoButton(
+        onPressed: onToggle,
+        text: isLogin ? 'Зарегистрироваться' : 'Войти',
+        colors: GoButtonColors.standard(),
       ),
     );
   }

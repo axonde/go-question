@@ -8,6 +8,7 @@ class AppColors {
 
   static const Color background = Colors.transparent;
   static const Color surface = Color(0xFF07377F);
+  static const Color inputBackground = Color(0xF00E3457);
 
   static const Color textPrimary = Color(0xFFFFFFFF);
   static const Color textSecondary = Color(0xFFABAAAA);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'cubit/auth_cubit.dart';
 import 'cubit/auth_state.dart';
 
@@ -97,7 +98,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             _obscurePassword = !_obscurePassword;
                           }),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 40),
                         _AuthSubmitButton(
                           isLogin: _isLogin,
                           onPressed: _submit,
