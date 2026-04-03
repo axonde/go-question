@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_question/core/theme/app_theme.dart';
 import 'package:go_question/features/auth/presentation/cubit/auth_state.dart';
 
 import 'package:go_question/features/auth/presentation/cubit/auth_cubit.dart';
 import 'injection_container/injection_container.dart' as di;
+import 'package:go_question/config/main_scaffold.dart';
 
 class GoQuestionApp extends StatelessWidget {
   const GoQuestionApp({super.key});
@@ -14,7 +14,10 @@ class GoQuestionApp extends StatelessWidget {
     return MaterialApp(
       title: 'Go Question',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.main(),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
       home: BlocProvider(
         create: (context) => di.sl<AuthCubit>(),
         child: const MainPage(),
