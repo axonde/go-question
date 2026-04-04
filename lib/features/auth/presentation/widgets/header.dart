@@ -1,12 +1,13 @@
-part of '../auth_screen.dart';
+part of '../pages/login_page.dart';
 
-class _AuthHeader extends StatelessWidget {
-  const _AuthHeader();
+class _Header extends StatelessWidget {
+  final bool isLogin;
+
+  const _Header.login() : isLogin = true;
+  const _Header.signin() : isLogin = false;
 
   @override
   Widget build(BuildContext context) {
-    final isLogin =
-        (context.findAncestorStateOfType<_AuthScreenState>()?._isLogin) ?? true;
     return Text(
       isLogin ? 'Го?' : 'Введите данные',
       style: Theme.of(context).textTheme.displayLarge,

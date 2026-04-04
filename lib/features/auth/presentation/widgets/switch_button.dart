@@ -1,10 +1,11 @@
-part of '../auth_screen.dart';
+part of '../pages/login_page.dart';
 
-class _AuthSwitchButton extends StatelessWidget {
+class _SwitchButton extends StatelessWidget {
   final bool isLogin;
   final VoidCallback onToggle;
 
-  const _AuthSwitchButton({required this.isLogin, required this.onToggle});
+  const _SwitchButton.login({required this.onToggle}) : isLogin = true;
+  const _SwitchButton.signin({required this.onToggle}) : isLogin = false;
 
   @override
   Widget build(BuildContext context) {

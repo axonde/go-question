@@ -5,7 +5,6 @@ import 'package:go_question/config/theme/app_theme.dart';
 import 'package:go_question/features/auth/presentation/auth_screen.dart';
 import 'package:go_question/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:go_question/features/auth/presentation/cubit/auth_state.dart';
-import 'package:go_question/features/auth/presentation/email_verification_screen.dart';
 import 'injection_container/injection_container.dart' as di;
 
 class GoQuestionApp extends StatelessWidget {
