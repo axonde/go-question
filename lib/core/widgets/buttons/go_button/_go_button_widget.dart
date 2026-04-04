@@ -1,24 +1,29 @@
 part of '../go_button.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GoButton — единственная ответственность: анимация нажатия + управление
-// размером. Делегирует рисование → _GoButtonPainter, палитру → GoButtonColors.
+// GoButton — единственная ответственность: палитра + размер + компоновка.
+// Анимация нажатия делегирована → Pressable (core/widgets/pressable.dart).
 // ─────────────────────────────────────────────────────────────────────────────
 
-class GoButton extends StatefulWidget {
+class GoButton extends StatelessWidget {
   final VoidCallback onPressed;
+
+  // Контент (одно из трёх обязательно)
   final String? text;
   final IconData? icon;
+  final String? assetPath;
+
+  /// Размер текста. null → пропорциональный дефолт: 24 × ширина / 161.
+  final double? fontSize;
   final double iconSizeFactor;
 
   // Размеры
-  final double? widthFactor; // доля от родителя (0.0 – 1.0)
-  final double? width;       // фиксированная ширина
-  final double? height;      // фиксированная высота
-  final double aspectRatio;  // соотношение сторон (по умолчанию 161/108)
+  final double? widthFactor;
+  final double? width;
+  final double? height;
+  final double aspectRatio;
 
-  // Цвета — если задан baseColor, остальные рассчитываются автоматически;
-  // конкретный цвет переопределяет расчётное значение.
+  // Цвета
   final Color? baseColor;
   final Color? shadowColor;
   final Color? borderColor;
@@ -35,6 +40,8 @@ class GoButton extends StatefulWidget {
     required this.onPressed,
     this.text,
     this.icon,
+    this.assetPath,
+    this.fontSize,
     this.iconSizeFactor = 0.4,
     this.widthFactor = 0.8,
     this.width,
@@ -50,98 +57,68 @@ class GoButton extends StatefulWidget {
     this.textColor,
     this.textShadowColor,
     this.textStrokeColor,
-  }) : assert(text != null || icon != null, 'Нужен text или icon');
-
-  @override
-  State<GoButton> createState() => _GoButtonState();
-}
-
-class _GoButtonState extends State<GoButton>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _scale;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 50),
-      vsync: this,
-    );
-    _scale = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _onTapDown(TapDownDetails _) => _controller.forward();
-  void _onTapUp(TapUpDetails _) {
-    _controller.reverse();
-    widget.onPressed();
-  }
-  void _onTapCancel() => _controller.reverse();
+  }) : assert(
+          text != null || icon != null || assetPath != null,
+          'GoButton требует text, icon или assetPath',
+        );
 
   GoButtonColors _buildColors() {
-    final base = widget.baseColor ?? const Color(0xFFFFC00F);
+    final base = baseColor ?? const Color(0xFFFFC00F);
     return GoButtonColors.fromBaseColor(base).copyWith(
-      shadowColor: widget.shadowColor,
-      borderColor: widget.borderColor,
-      outerGradient: widget.outerGradient,
-      mainGradient: widget.mainGradient,
-      innerPanelColor: widget.innerPanelColor,
-      innerPanelTopColor: widget.innerPanelTopColor,
-      textColor: widget.textColor,
-      textShadowColor: widget.textShadowColor,
-      textStrokeColor: widget.textStrokeColor,
+      shadowColor: shadowColor,
+      borderColor: borderColor,
+      outerGradient: outerGradient,
+      mainGradient: mainGradient,
+      innerPanelColor: innerPanelColor,
+      innerPanelTopColor: innerPanelTopColor,
+      textColor: textColor,
+      textShadowColor: textShadowColor,
+      textStrokeColor: textStrokeColor,
     );
   }
 
   Widget _content(GoButtonColors colors) => CustomPaint(
-        painter: _GoButtonPainter(
+        painter: _GoButtonPainter(colors: colors),
+        child: _GoButtonContent(
+          text: text,
+          icon: icon,
+          assetPath: assetPath,
+          fontSize: fontSize,
+          iconSizeFactor: iconSizeFactor,
           colors: colors,
-          text: widget.text,
-          icon: widget.icon,
-          iconSizeFactor: widget.iconSizeFactor,
         ),
       );
 
   Widget _sized(GoButtonColors colors) {
     final content = _content(colors);
 
-    if (widget.width != null && widget.height != null) {
-      return SizedBox(width: widget.width, height: widget.height, child: content);
+    if (width != null && height != null) {
+      return SizedBox(width: width, height: height, child: content);
     }
-    if (widget.width != null) {
+    if (width != null) {
       return SizedBox(
-        width: widget.width,
-        child: AspectRatio(aspectRatio: widget.aspectRatio, child: content),
+        width: width,
+        child: AspectRatio(aspectRatio: aspectRatio, child: content),
       );
     }
-    if (widget.height != null) {
+    if (height != null) {
       return SizedBox(
-        height: widget.height,
-        child: AspectRatio(aspectRatio: widget.aspectRatio, child: content),
+        height: height,
+        child: AspectRatio(aspectRatio: aspectRatio, child: content),
       );
     }
-    if (widget.widthFactor != null) {
+    if (widthFactor != null) {
       return FractionallySizedBox(
-        widthFactor: widget.widthFactor,
-        child: AspectRatio(aspectRatio: widget.aspectRatio, child: content),
+        widthFactor: widthFactor,
+        child: AspectRatio(aspectRatio: aspectRatio, child: content),
       );
     }
-    return AspectRatio(aspectRatio: widget.aspectRatio, child: content);
+    return AspectRatio(aspectRatio: aspectRatio, child: content);
   }
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTapDown: _onTapDown,
-        onTapUp: _onTapUp,
-        onTapCancel: _onTapCancel,
-        child: ScaleTransition(scale: _scale, child: _sized(_buildColors())),
+  Widget build(BuildContext context) => Pressable(
+        onTap: onPressed,
+        child: _sized(_buildColors()),
       );
 }

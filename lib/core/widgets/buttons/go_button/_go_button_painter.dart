@@ -1,22 +1,14 @@
 part of '../go_button.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _GoButtonPainter — единственная ответственность: рисование визуального хрома
-// (тень, градиенты, панели, блик) и контента (текст / иконка) на Canvas.
+// _GoButtonPainter — единственная ответственность: визуальный хром кнопки.
+// Контент (текст / иконка / ассет) рендерится отдельно через CustomPaint.child.
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _GoButtonPainter extends CustomPainter {
   final GoButtonColors colors;
-  final String? text;
-  final IconData? icon;
-  final double iconSizeFactor;
 
-  const _GoButtonPainter({
-    required this.colors,
-    this.text,
-    this.icon,
-    this.iconSizeFactor = 0.4,
-  });
+  const _GoButtonPainter({required this.colors});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -34,15 +26,7 @@ class _GoButtonPainter extends CustomPainter {
     _drawInnerPanel(canvas, rx, ry);
     _drawInnerPanelTop(canvas, rx, ry);
     _drawHighlight(canvas, rx, ry);
-
-    if (icon != null) {
-      _drawIcon(canvas, size, rx, ry);
-    } else if (text != null) {
-      _drawText(canvas, size, rx, ry);
-    }
   }
-
-  // ── Слои хрома ─────────────────────────────────────────────────────────────
 
   void _drawShadow(Canvas canvas, double w, double h,
       double Function(double) rx, double Function(double) ry) {
@@ -123,113 +107,6 @@ class _GoButtonPainter extends CustomPainter {
     canvas.restore();
   }
 
-  // ── Контент ────────────────────────────────────────────────────────────────
-
-  void _drawIcon(Canvas canvas, Size size, double Function(double) rx,
-      double Function(double) ry) {
-    final w = size.width;
-    final h = size.height;
-    final iconSize = h * iconSizeFactor;
-
-    final strokePainter = TextPainter(
-      text: TextSpan(
-        text: String.fromCharCode(icon!.codePoint),
-        style: TextStyle(
-          fontFamily: icon!.fontFamily,
-          package: icon!.fontPackage,
-          fontSize: iconSize,
-          foreground: Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = rx(1.2)
-            ..color = colors.textStrokeColor,
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-
-    final iconPainter = TextPainter(
-      text: TextSpan(
-        text: String.fromCharCode(icon!.codePoint),
-        style: TextStyle(
-          fontFamily: icon!.fontFamily,
-          package: icon!.fontPackage,
-          fontSize: iconSize,
-          color: colors.textColor,
-          shadows: [
-            Shadow(
-              offset: Offset(0, ry(2)),
-              blurRadius: 0,
-              color: colors.textShadowColor,
-            ),
-          ],
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-
-    final offset = Offset(
-      (w - iconPainter.width) / 2,
-      (h - iconPainter.height) / 2,
-    );
-
-    strokePainter.paint(canvas, offset);
-    iconPainter.paint(canvas, offset);
-  }
-
-  void _drawText(Canvas canvas, Size size, double Function(double) rx,
-      double Function(double) ry) {
-    final w = size.width;
-    final h = size.height;
-    final maxTextWidth = w - rx(20);
-
-    final strokePainter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: TextStyle(
-          fontFamily: 'Clash',
-          fontSize: rx(24),
-          fontWeight: FontWeight.w400,
-          foreground: Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = rx(2)
-            ..color = colors.textStrokeColor,
-          fontFamilyFallback: const ['Roboto', 'sans-serif'],
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout(maxWidth: maxTextWidth > 0 ? maxTextWidth : w);
-
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: TextStyle(
-          fontFamily: 'Clash',
-          fontSize: rx(24),
-          fontWeight: FontWeight.w400,
-          color: colors.textColor,
-          shadows: [
-            Shadow(
-              offset: Offset(0, ry(2)),
-              blurRadius: 0,
-              color: colors.textShadowColor,
-            ),
-          ],
-          fontFamilyFallback: const ['Roboto', 'sans-serif'],
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout(maxWidth: maxTextWidth > 0 ? maxTextWidth : w);
-
-    final offset = Offset(
-      (w - textPainter.width) / 2,
-      (h - textPainter.height) / 2,
-    );
-
-    strokePainter.paint(canvas, offset);
-    textPainter.paint(canvas, offset);
-  }
-
   @override
-  bool shouldRepaint(covariant _GoButtonPainter old) =>
-      old.colors != colors || old.text != text || old.icon != icon;
+  bool shouldRepaint(covariant _GoButtonPainter old) => old.colors != colors;
 }

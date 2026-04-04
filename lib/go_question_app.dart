@@ -6,6 +6,7 @@ import 'package:go_question/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:go_question/features/auth/presentation/cubit/auth_state.dart';
 import 'package:go_question/features/auth/presentation/pages/auth_page.dart';
 import 'package:go_question/features/auth/presentation/pages/email_verification_page.dart';
+import 'package:go_question/features/score/presentation/cubit/score_cubit.dart';
 import 'injection_container/injection_container.dart' as di;
 
 class GoQuestionApp extends StatelessWidget {
@@ -43,7 +44,11 @@ class _AuthGate extends StatelessWidget {
           );
         }
         if (state is AuthAuthenticated) {
-          return const MainScaffold();
+          // ScoreCubit живёт только в авторизованной части приложения
+          return BlocProvider(
+            create: (_) => di.sl<ScoreCubit>(),
+            child: const MainScaffold(),
+          );
         }
         if (state is AuthAwaitingVerification) {
           return EmailVerificationPage(email: state.email);
