@@ -3,9 +3,9 @@ import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 
-part 'home_top_bar/_achievement_button.dart';
-part 'home_top_bar/_city_button.dart';
-part 'home_top_bar/_notifications_button.dart';
+part 'home_top_bar/achievement_button.dart';
+part 'home_top_bar/city_button.dart';
+part 'home_top_bar/notifications_button.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Общий стиль рамки для элементов верхней панели.
