@@ -7,10 +7,13 @@ class AppColors {
   static const Color secondaryVariant = Color(0xFFEC7E00);
 
   static const Color background = Colors.transparent;
+  static const Color redBackground = Color(0xFFC50006);
   static const Color surface = Color(0xFF07377F);
 
   static const Color textPrimary = Color(0xFFFFFFFF);
   static const Color textSecondary = Color(0xFFABAAAA);
+
+  static const Color stroke = Color(0xFF202020);
 
   static const Color success = Color(0xFF09B103);
   static const Color error = Color(0xFFFE4450);

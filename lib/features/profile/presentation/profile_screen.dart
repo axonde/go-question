@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
-
-part 'components/close_button.dart';
+import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -35,7 +34,7 @@ class _ProfileContent extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.max,
               children: [
-                CloseButton(onPressed: () => print('press close button')),
+                GqCloseButton(onPressed: () => print('press close button')),
               ],
             ),
 
