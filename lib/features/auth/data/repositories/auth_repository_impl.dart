@@ -1,15 +1,18 @@
-import '../../domain/entities/user_entity.dart';
+import '../../../../core/types/result.dart';
+import '../../domain/entities/registration_input_entity.dart';
+import '../../domain/errors/auth_exception_to_failure_mapper.dart';
+import '../../domain/errors/auth_failure.dart';
 import '../../domain/repositories/i_auth_repository.dart';
 import '../source/datasource.dart';
 
 class AuthRepositoryImpl implements IAuthRepository {
   final IAuthRemoteDataSource _remoteDataSource;
+  final AuthExceptionToFailureMapper _errorMapper;
 
-  AuthRepositoryImpl(this._remoteDataSource);
+  AuthRepositoryImpl(this._remoteDataSource, this._errorMapper);
 
   @override
-  UserEntity? getCurrentUser() =>
-      _remoteDataSource.getCurrentUser()?.toDomain();
+  RegistrationInput? getCurrentUser() => _remoteDataSource.getCurrentUser();
 
   @override
   bool isCurrentUserEmailVerified() =>
@@ -19,47 +22,74 @@ class AuthRepositoryImpl implements IAuthRepository {
   Stream<String?> get authStateChanges => _remoteDataSource.authStateChanges;
 
   @override
-  Future<UserEntity?> signInWithEmailAndPassword({
+  Future<Result<RegistrationInput?, AuthFailure>> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
-    final model = await _remoteDataSource.signInWithEmailAndPassword(
-      email: email,
-      password: password,
+    return _guard<RegistrationInput?>(
+      () => _remoteDataSource.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      ),
     );
-    return model?.toDomain();
   }
 
   @override
-  Future<String> signUpWithEmailAndPassword({
+  Future<Result<String, AuthFailure>> signUpWithEmailAndPassword({
     required String email,
     required String password,
     required String name,
-  }) => _remoteDataSource.signUpWithEmailAndPassword(
-    email: email,
-    password: password,
-    name: name,
-  );
-
-  @override
-  Future<UserEntity?> signInWithGoogle() async {
-    final model = await _remoteDataSource.signInWithGoogle();
-    return model?.toDomain();
+  }) {
+    return _guard<String>(
+      () => _remoteDataSource.signUpWithEmailAndPassword(
+        email: email,
+        password: password,
+        name: name,
+      ),
+    );
   }
 
   @override
-  Future<void> sendEmailVerification() =>
-      _remoteDataSource.sendEmailVerification();
+  Future<Result<RegistrationInput?, AuthFailure>> signInWithGoogle() {
+    return _guard<RegistrationInput?>(
+      () => _remoteDataSource.signInWithGoogle(),
+    );
+  }
 
   @override
-  Future<bool> checkEmailVerified() => _remoteDataSource.checkEmailVerified();
+  Future<Result<Null, AuthFailure>> sendEmailVerification() {
+    return _guard<Null>(() async {
+      await _remoteDataSource.sendEmailVerification();
+      return null;
+    });
+  }
 
   @override
-  Future<void> deleteCurrentUser() => _remoteDataSource.deleteCurrentUser();
+  Future<Result<bool, AuthFailure>> checkEmailVerified() {
+    return _guard<bool>(() => _remoteDataSource.checkEmailVerified());
+  }
 
   @override
-  Future<void> saveUserToFirestore() => _remoteDataSource.saveUserToFirestore();
+  Future<Result<Null, AuthFailure>> deleteCurrentUser() {
+    return _guard<Null>(() async {
+      await _remoteDataSource.deleteCurrentUser();
+      return null;
+    });
+  }
 
   @override
-  Future<void> signOut() => _remoteDataSource.signOut();
+  Future<Result<Null, AuthFailure>> signOut() {
+    return _guard<Null>(() async {
+      await _remoteDataSource.signOut();
+      return null;
+    });
+  }
+
+  Future<Result<T, AuthFailure>> _guard<T>(Future<T> Function() action) async {
+    try {
+      return Success<T, AuthFailure>(await action());
+    } catch (error) {
+      return Failure<T, AuthFailure>(_errorMapper.map(error));
+    }
+  }
 }

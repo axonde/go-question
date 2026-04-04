@@ -1,10 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'user_entity.freezed.dart';
+part 'registration_input_entity.freezed.dart';
 
 @freezed
-class UserEntity with _$UserEntity {
-  const factory UserEntity({
+class RegistrationInput with _$RegistrationInput {
+  const factory RegistrationInput({
     required String uid,
     required String name,
     required String email,
