@@ -1,6 +1,8 @@
-import '../constants/messages.dart';
+abstract interface class Failure<TType> {
+  TType get type;
+}
 
-enum FailureType {
+enum AppFailureType {
   serverError,
   connectionError,
   cacheUpdateError,
@@ -12,41 +14,26 @@ enum FailureType {
   unknownError,
 }
 
-class Failure {
-  final FailureType type;
-  final String message;
+class GlobalFailure implements Failure<AppFailureType> {
+  @override
+  final AppFailureType type;
 
-  const Failure(this.type, [String? message])
-    : message = message ?? _fallbackMessage;
+  const GlobalFailure(this.type);
 
-  factory Failure.fromType(FailureType type, {String? message}) {
-    return Failure(type, message ?? _defaultMessages[type]);
+  factory GlobalFailure.fromType(AppFailureType type) {
+    return GlobalFailure(type);
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is Failure && other.type == type && other.message == message;
+    return other is GlobalFailure && other.type == type;
   }
 
   @override
-  int get hashCode => Object.hash(type, message);
+  int get hashCode => type.hashCode;
 
   @override
-  String toString() => 'Failure(type: $type, message: $message)';
-
-  static const String _fallbackMessage = 'Unknown error occurred';
-
-  static const Map<FailureType, String> _defaultMessages = {
-    FailureType.serverError: serverFailureMessage,
-    FailureType.connectionError: connectionFailureMessage,
-    FailureType.cacheUpdateError: cacheUpdateFailureMessage,
-    FailureType.emailAlreadyInUseError: emailAlreadyInUseMessage,
-    FailureType.userNotFoundError: userNotFoundMessage,
-    FailureType.authOperationError: authOperationErrorMessage,
-    FailureType.unauthorizedError: unauthorizedErrorMessage,
-    FailureType.validationError: validationErrorMessage,
-    FailureType.unknownError: _fallbackMessage,
-  };
+  String toString() => 'Failure(type: $type)';
 }
