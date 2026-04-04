@@ -1,10 +1,10 @@
-part of '../pages/login_page.dart';
+import 'package:flutter/material.dart';
 
-class _Header extends StatelessWidget {
+class Header extends StatelessWidget {
   final bool isLogin;
 
-  const _Header.login() : isLogin = true;
-  const _Header.signin() : isLogin = false;
+  const Header.login() : isLogin = true;
+  const Header.signin() : isLogin = false;
 
   @override
   Widget build(BuildContext context) {

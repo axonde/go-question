@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
-import 'package:go_question/core/widgets/buttons/go_button.dart';
-import 'package:go_question/features/auth/presentation/widgets/email_field.dart';
 
-part '../widgets/error_snackbar.dart';
-part '../widgets/header.dart';
-part '../widgets/name_field.dart';
-part '../widgets/password_field.dart';
-part '../widgets/submit_button.dart';
-part '../widgets/switch_button.dart';
-part '../widgets/google_button.dart';
+import '../widgets/email_field.dart';
+import '../widgets/header.dart';
+import '../widgets/switch_button.dart';
+import '../widgets/google_button.dart';
+import '../widgets/name_field.dart';
+import '../widgets/password_field.dart';
+import '../widgets/submit_button.dart';
 
 class LoginPage extends StatefulWidget {
   final GlobalKey<FormState> _formKey;
@@ -49,24 +47,24 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const _Header.login(),
+                      const Header.login(),
                       const SizedBox(height: 32),
-                      _NameField(),
+                      NameField(),
                       const SizedBox(height: 16),
                       EmailField(),
                       const SizedBox(height: 16),
-                      _PasswordField(),
+                      PasswordField(),
                       const SizedBox(height: 40),
-                      _SubmitButton.login(
+                      SubmitButton.login(
                         isLoading: false,
                         onPressed: () => submit(),
                       ),
                       const SizedBox(height: 12),
-                      _GoogleButton(isLoading: false, onPressed: () {}),
+                      GoogleButton(isLoading: false, onPressed: () {}),
                     ],
                   ),
                 ),
-                _SwitchButton.login(
+                SwitchButton.login(
                   onToggle: () {
                     widget._formKey.currentState?.reset();
                     widget.onMoveToSignIn();

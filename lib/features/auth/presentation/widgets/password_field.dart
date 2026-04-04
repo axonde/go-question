@@ -1,13 +1,13 @@
-part of '../pages/login_page.dart';
+import 'package:flutter/material.dart';
 
-class _PasswordField extends StatefulWidget {
-  const _PasswordField();
+class PasswordField extends StatefulWidget {
+  const PasswordField();
 
   @override
-  State<_PasswordField> createState() => _PasswordFieldState();
+  State<PasswordField> createState() => PasswordFieldState();
 }
 
-class _PasswordFieldState extends State<_PasswordField> {
+class PasswordFieldState extends State<PasswordField> {
   bool isObscured = true;
 
   @override

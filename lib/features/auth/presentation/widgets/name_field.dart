@@ -1,6 +1,6 @@
-part of '../pages/login_page.dart';
+import 'package:flutter/material.dart';
 
-class _NameField extends StatelessWidget {
+class NameField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(

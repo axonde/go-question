@@ -55,8 +55,8 @@ class _ProfileCard extends StatelessWidget {
       builder: (context) {
         final name = 'maximka';
 
-        return BlocBuilder<ScoreCubit, ScoreState>(
-          builder: (context, scoreState) {
+        return Builder(
+          builder: (context) {
             return DecoratedBox(
               decoration: BoxDecoration(
                 color: const Color(0xFF0E3457).withValues(alpha: 0.7),
@@ -94,7 +94,7 @@ class _ProfileCard extends StatelessWidget {
                     ),
                     SizedBox(width: UiConstants.boxUnit),
                     _ProfileScoreBadge(
-                      score: scoreState.value,
+                      score: 13, // mock
                       slotHeight: slotHeight,
                     ),
                   ],

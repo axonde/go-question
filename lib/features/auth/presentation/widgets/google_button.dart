@@ -1,10 +1,9 @@
-part of '../pages/login_page.dart';
+import 'package:flutter/material.dart';
 
-class _GoogleButton extends StatelessWidget {
+class GoogleButton extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onPressed;
-
-  const _GoogleButton({required this.isLoading, required this.onPressed});
+  const GoogleButton({required this.isLoading, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

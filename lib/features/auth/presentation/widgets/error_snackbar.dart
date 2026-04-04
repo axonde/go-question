@@ -1,9 +1,9 @@
-part of '../pages/login_page.dart';
+import 'package:flutter/material.dart';
 
-class _ErrorSnackBar extends StatelessWidget {
+class ErrorSnackBar extends StatelessWidget {
   final String message;
 
-  const _ErrorSnackBar({required this.message});
+  const ErrorSnackBar({required this.message});
 
   @override
   Widget build(BuildContext context) {

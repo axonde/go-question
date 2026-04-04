@@ -1,11 +1,12 @@
-part of '../pages/login_page.dart';
+import 'package:flutter/widgets.dart';
+import 'package:go_question/core/widgets/buttons/go_button.dart';
 
-class _SwitchButton extends StatelessWidget {
+class SwitchButton extends StatelessWidget {
   final bool isLogin;
   final VoidCallback onToggle;
 
-  const _SwitchButton.login({required this.onToggle}) : isLogin = true;
-  const _SwitchButton.signin({required this.onToggle}) : isLogin = false;
+  const SwitchButton.login({required this.onToggle}) : isLogin = true;
+  const SwitchButton.signin({required this.onToggle}) : isLogin = false;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,6 @@ class _SwitchButton extends StatelessWidget {
       child: GoButton(
         onPressed: onToggle,
         text: isLogin ? 'Зарегистрироваться' : 'Войти',
-        colors: GoButtonColors.standard(),
       ),
     );
   }
