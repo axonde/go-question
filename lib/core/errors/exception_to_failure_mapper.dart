@@ -1,47 +1,45 @@
-import '../constants/messages.dart';
 import 'exception.dart';
 import 'failures.dart';
 
-Failure mapExceptionToFailure(Object error) {
-  if (error is! AppException) {
-    return Failure.fromType(FailureType.unknownError);
-  }
-
-  final failureType = _mapAppExceptionType(error.type);
-  final specificMessage = _extractSpecificExceptionMessage(error.message);
-
-  if (specificMessage == null) {
-    return Failure.fromType(failureType);
-  }
-
-  return Failure.fromType(failureType, message: specificMessage);
+abstract interface class ExceptionToFailureMapper<F> {
+  F map(Object error);
 }
 
-String? _extractSpecificExceptionMessage(String message) {
-  final normalized = message.trim();
-  if (normalized.isEmpty || normalized == unexpectedExceptionMessage) {
-    return null;
-  }
+final class DefaultExceptionToFailureMapper
+    implements ExceptionToFailureMapper<GlobalFailure> {
+  const DefaultExceptionToFailureMapper();
 
-  return normalized;
+  @override
+  GlobalFailure map(Object error) {
+    if (error is! AppException) {
+      return GlobalFailure.fromType(AppFailureType.unknownError);
+    }
+
+    final failureType = _mapAppExceptionType(error.type);
+    return GlobalFailure.fromType(failureType);
+  }
 }
 
-FailureType _mapAppExceptionType(AppExceptionType type) {
+GlobalFailure mapExceptionToFailure(Object error) {
+  return const DefaultExceptionToFailureMapper().map(error);
+}
+
+AppFailureType _mapAppExceptionType(AppExceptionType type) {
   switch (type) {
     case AppExceptionType.network:
     case AppExceptionType.timeout:
-      return FailureType.connectionError;
+      return AppFailureType.connectionError;
     case AppExceptionType.firebaseFirestore:
-      return FailureType.serverError;
+      return AppFailureType.serverError;
     case AppExceptionType.firebaseAuth:
     case AppExceptionType.unauthorized:
-      return FailureType.unauthorizedError;
+      return AppFailureType.unauthorizedError;
     case AppExceptionType.serialization:
     case AppExceptionType.validation:
-      return FailureType.validationError;
+      return AppFailureType.validationError;
     case AppExceptionType.cache:
-      return FailureType.cacheUpdateError;
+      return AppFailureType.cacheUpdateError;
     case AppExceptionType.unknown:
-      return FailureType.unknownError;
+      return AppFailureType.unknownError;
   }
 }
