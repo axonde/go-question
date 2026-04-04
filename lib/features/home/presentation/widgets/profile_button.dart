@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
-import 'package:go_question/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:go_question/features/auth/presentation/cubit/auth_state.dart';
 import 'package:go_question/features/score/presentation/cubit/score_cubit.dart';
 
 part 'profile_button/_profile_avatar.dart';
@@ -53,10 +51,9 @@ class _ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthCubit, AuthState>(
-      builder: (context, authState) {
-        final user = authState is AuthAuthenticated ? authState.user : null;
-        final name = (user?.name.isNotEmpty ?? false) ? user!.name : null;
+    return Builder(
+      builder: (context) {
+        final name = 'maximka';
 
         return BlocBuilder<ScoreCubit, ScoreState>(
           builder: (context, scoreState) {
