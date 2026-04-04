@@ -21,6 +21,25 @@ class SigninPage extends StatefulWidget {
 
 class _SigninPageState extends State<SigninPage> {
   bool _isLoading = false;
+  late final TextEditingController _nameController;
+  late final TextEditingController _emailController;
+  late final TextEditingController _passwordController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   void submit() {
     throw UnimplementedError();
@@ -48,18 +67,18 @@ class _SigninPageState extends State<SigninPage> {
                     children: [
                       const Header.login(),
                       const SizedBox(height: 32),
-                      NameField(),
+                      NameField(controller: _nameController),
                       const SizedBox(height: 16),
-                      EmailField(),
+                      EmailField(controller: _emailController),
                       const SizedBox(height: 16),
-                      PasswordField(),
+                      PasswordField(controller: _passwordController),
                       const SizedBox(height: 40),
                       SubmitButton.login(
-                        isLoading: false,
+                        isLoading: _isLoading,
                         onPressed: () => submit(),
                       ),
                       const SizedBox(height: 12),
-                      GoogleButton(isLoading: false, onPressed: () {}),
+                      GoogleButton(isLoading: _isLoading, onPressed: () {}),
                     ],
                   ),
                 ),

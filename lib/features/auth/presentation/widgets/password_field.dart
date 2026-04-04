@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/features/auth/presentation/validators/auth_field_validators.dart';
 
 class PasswordField extends StatefulWidget {
-  const PasswordField();
+  final TextEditingController controller;
+
+  const PasswordField({super.key, required this.controller});
 
   @override
   State<PasswordField> createState() => PasswordFieldState();
 }
 
 class PasswordFieldState extends State<PasswordField> {
-  bool isObscured = true;
+  bool isObscure = true;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      obscureText: isObscured,
+      controller: widget.controller,
+      obscureText: isObscure,
       decoration: InputDecoration(
         labelText: 'Пароль',
         border: const OutlineInputBorder(),
         suffixIcon: IconButton(
           icon: Icon(
-            isObscured
+            isObscure
                 ? Icons.visibility_outlined
                 : Icons.visibility_off_outlined,
           ),
-          onPressed: () => setState(() => isObscured = !isObscured),
+          onPressed: () => setState(() => isObscure = !isObscure),
         ),
       ),
-      validator: (v) {
-        if (v == null || v.isEmpty) return 'Введите пароль';
-        if (v.length < 6) return 'Минимум 6 символов';
-        return null;
-      },
+      validator: AuthFieldValidators.password,
     );
   }
 }

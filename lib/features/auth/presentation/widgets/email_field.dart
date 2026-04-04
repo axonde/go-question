@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/features/auth/presentation/validators/auth_field_validators.dart';
 
 class EmailField extends StatelessWidget {
-  final _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  final TextEditingController controller;
+
+  const EmailField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       decoration: const InputDecoration(
         labelText: 'Почта',
         border: OutlineInputBorder(),
       ),
       keyboardType: TextInputType.emailAddress,
       autocorrect: false,
-      validator: (v) {
-        if (v == null || v.trim().isEmpty) {
-          return 'Введите email';
-        }
-        if (!_emailRegex.hasMatch(v)) {
-          return 'Некорректный email';
-        }
-        return null;
-      },
+      validator: AuthFieldValidators.email,
     );
   }
 }

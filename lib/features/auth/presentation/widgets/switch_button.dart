@@ -5,14 +5,16 @@ class SwitchButton extends StatelessWidget {
   final bool isLogin;
   final VoidCallback onToggle;
 
-  const SwitchButton.login({required this.onToggle}) : isLogin = true;
-  const SwitchButton.signin({required this.onToggle}) : isLogin = false;
+  const SwitchButton.login({super.key, required this.onToggle})
+    : isLogin = true;
+  const SwitchButton.signin({super.key, required this.onToggle})
+    : isLogin = false;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 60,
-      child: GoButton(
+      child: GQButton(
         onPressed: onToggle,
         text: isLogin ? 'Зарегистрироваться' : 'Войти',
       ),

@@ -57,18 +57,18 @@ class AppTheme {
 
       // input
       inputDecorationTheme: InputDecorationTheme(
-        labelStyle: TextStyle(color: AppColors.textSecondary),
-        floatingLabelStyle: TextStyle(color: AppColors.textPrimary),
+        labelStyle: const TextStyle(color: AppColors.textSecondary),
+        floatingLabelStyle: const TextStyle(color: AppColors.textPrimary),
         filled: true,
         fillColor: AppColors.inputBackground,
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFF5EA3D3), width: 1.2),
+          borderSide: BorderSide(color: AppColors.inputBorder, width: 1.2),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.blue, width: 2.2),
+          borderSide: BorderSide(color: AppColors.inputFocused, width: 2.2),
         ),
         errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFFFE4450), width: 1.0),
+          borderSide: BorderSide(color: AppColors.error, width: 1.0),
         ),
       ),
     );

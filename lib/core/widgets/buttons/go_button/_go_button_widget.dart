@@ -1,11 +1,11 @@
 part of '../go_button.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GoButton — единственная ответственность: палитра + размер + компоновка.
+// GQButton — единственная ответственность: палитра + размер + компоновка.
 // Анимация нажатия делегирована → Pressable (core/widgets/pressable.dart).
 // ─────────────────────────────────────────────────────────────────────────────
 
-class GoButton extends StatelessWidget {
+class GQButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   // Контент (одно из трёх обязательно)
@@ -35,7 +35,7 @@ class GoButton extends StatelessWidget {
   final Color? textShadowColor;
   final Color? textStrokeColor;
 
-  const GoButton({
+  const GQButton({
     super.key,
     required this.onPressed,
     this.text,
@@ -58,9 +58,9 @@ class GoButton extends StatelessWidget {
     this.textShadowColor,
     this.textStrokeColor,
   }) : assert(
-          text != null || icon != null || assetPath != null,
-          'GoButton требует text, icon или assetPath',
-        );
+         text != null || icon != null || assetPath != null,
+         'GQButton требует text, icon или assetPath',
+       );
 
   GoButtonColors _buildColors() {
     final base = baseColor ?? const Color(0xFFFFC00F);
@@ -78,16 +78,16 @@ class GoButton extends StatelessWidget {
   }
 
   Widget _content(GoButtonColors colors) => CustomPaint(
-        painter: _GoButtonPainter(colors: colors),
-        child: _GoButtonContent(
-          text: text,
-          icon: icon,
-          assetPath: assetPath,
-          fontSize: fontSize,
-          iconSizeFactor: iconSizeFactor,
-          colors: colors,
-        ),
-      );
+    painter: _GoButtonPainter(colors: colors),
+    child: _GoButtonContent(
+      text: text,
+      icon: icon,
+      assetPath: assetPath,
+      fontSize: fontSize,
+      iconSizeFactor: iconSizeFactor,
+      colors: colors,
+    ),
+  );
 
   Widget _sized(GoButtonColors colors) {
     final content = _content(colors);
@@ -117,8 +117,6 @@ class GoButton extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => Pressable(
-        onTap: onPressed,
-        child: _sized(_buildColors()),
-      );
+  Widget build(BuildContext context) =>
+      Pressable(onTap: onPressed, child: _sized(_buildColors()));
 }
