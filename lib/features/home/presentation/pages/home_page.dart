@@ -10,7 +10,7 @@ import '../widgets/mode_dialog.dart';
 import '../widgets/notifications_sheet.dart';
 import '../widgets/profile_button.dart';
 
-part 'home_page/_home_layout_delegate.dart';
+part 'home_page/home_layout_delegate.dart';
 
 /// Главная страница приложения.
 class HomePage extends StatelessWidget {

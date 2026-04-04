@@ -1,8 +1,8 @@
 part of '../home_top_bar.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _NotificationsButton — кнопка уведомлений в стиле GoButton (зелёная).
-// LayoutBuilder берёт реальную ширину от Flexible-родителя и передаёт в GoButton.
+// _NotificationsButton — кнопка уведомлений в стиле GQButton (зелёная).
+// LayoutBuilder берёт реальную ширину от Flexible-родителя и передаёт в GQButton.
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _NotificationsButton extends StatelessWidget {
@@ -16,7 +16,7 @@ class _NotificationsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (_, constraints) => GoButton(
+      builder: (_, constraints) => GQButton(
         onPressed: onTap,
         text: 'Уведомления',
         fontSize: UiConstants.textSize,

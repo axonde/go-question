@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 // Pressable — обёртка с анимацией нажатия (масштаб → 0.95).
 // Единственная ответственность: tap-анимация для любого дочернего виджета.
-// Тот же эффект, что у GoButton.
+// Тот же эффект, что у GQButton.
 // ─────────────────────────────────────────────────────────────────────────────
 
 class Pressable extends StatefulWidget {
@@ -28,9 +28,10 @@ class _PressableState extends State<Pressable>
       duration: const Duration(milliseconds: 50),
       vsync: this,
     );
-    _scale = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scale = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -44,13 +45,14 @@ class _PressableState extends State<Pressable>
     _controller.reverse();
     widget.onTap();
   }
+
   void _onTapCancel() => _controller.reverse();
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTapDown: _onTapDown,
-        onTapUp: _onTapUp,
-        onTapCancel: _onTapCancel,
-        child: ScaleTransition(scale: _scale, child: widget.child),
-      );
+    onTapDown: _onTapDown,
+    onTapUp: _onTapUp,
+    onTapCancel: _onTapCancel,
+    child: ScaleTransition(scale: _scale, child: widget.child),
+  );
 }

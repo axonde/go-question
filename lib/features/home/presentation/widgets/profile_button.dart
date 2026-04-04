@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
-import 'package:go_question/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:go_question/features/auth/presentation/cubit/auth_state.dart';
 import 'package:go_question/features/score/presentation/cubit/score_cubit.dart';
 
-part 'profile_button/_profile_avatar.dart';
-part 'profile_button/_profile_user_info.dart';
-part 'profile_button/_profile_score_badge.dart';
+part 'profile_button/profile_avatar.dart';
+part 'profile_button/profile_user_info.dart';
+part 'profile_button/profile_score_badge.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ProfileButton — карточка профиля на главном экране.
@@ -53,13 +51,12 @@ class _ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthCubit, AuthState>(
-      builder: (context, authState) {
-        final user = authState is AuthAuthenticated ? authState.user : null;
-        final name = (user?.name.isNotEmpty ?? false) ? user!.name : null;
+    return Builder(
+      builder: (context) {
+        final name = 'maximka';
 
-        return BlocBuilder<ScoreCubit, ScoreState>(
-          builder: (context, scoreState) {
+        return Builder(
+          builder: (context) {
             return DecoratedBox(
               decoration: BoxDecoration(
                 color: const Color(0xFF0E3457).withValues(alpha: 0.7),
@@ -97,7 +94,7 @@ class _ProfileCard extends StatelessWidget {
                     ),
                     SizedBox(width: UiConstants.boxUnit),
                     _ProfileScoreBadge(
-                      score: scoreState.value,
+                      score: 13, // mock
                       slotHeight: slotHeight,
                     ),
                   ],

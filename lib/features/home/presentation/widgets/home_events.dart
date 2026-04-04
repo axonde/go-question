@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 
-part 'home_events/_event_card.dart';
-part 'home_events/_events_list.dart';
+part 'home_events/event_card.dart';
+part 'home_events/events_list.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Временные захардкоженные события.
