@@ -5,6 +5,7 @@ import 'package:go_question/features/auth/presentation/auth_screen.dart';
 import 'package:go_question/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:go_question/features/auth/presentation/cubit/auth_state.dart';
 import 'package:go_question/features/auth/presentation/email_verification_screen.dart';
+import 'package:go_question/features/profile/presentation/profile_screen.dart';
 import 'injection_container/injection_container.dart' as di;
 
 class GoQuestionApp extends StatelessWidget {
@@ -35,18 +36,19 @@ class _AuthGate extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
-        if (state is AuthLoading) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-        if (state is AuthAuthenticated) {
-          return const MainScaffold();
-        }
-        if (state is AuthAwaitingVerification) {
-          return EmailVerificationScreen(email: state.email);
-        }
-        return const AuthScreen();
+        // if (state is AuthLoading) {
+        //   return const Scaffold(
+        //     body: Center(child: CircularProgressIndicator()),
+        //   );
+        // }
+        // if (state is AuthAuthenticated) {
+        //   return const MainScaffold();
+        // }
+        // if (state is AuthAwaitingVerification) {
+        //   return EmailVerificationScreen(email: state.email);
+        // // }
+        // return const AuthScreen();
+        return ProfileScreen();
       },
     );
   }
