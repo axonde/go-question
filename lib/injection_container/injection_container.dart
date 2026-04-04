@@ -6,6 +6,7 @@ import 'package:go_question/features/auth/data/repositories/auth_repository_impl
 import 'package:go_question/features/auth/data/source/datasource.dart';
 import 'package:go_question/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:go_question/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:go_question/features/score/presentation/cubit/score_cubit.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
@@ -15,6 +16,7 @@ Future<void> init() async {
   //! Features - Auth
 
   sl.registerFactory(() => AuthCubit(sl()));
+  sl.registerFactory(() => ScoreCubit());
 
   sl.registerLazySingleton<IAuthRepository>(() => AuthRepositoryImpl(sl()));
 
