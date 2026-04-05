@@ -1,28 +1,29 @@
-import '../entities/user_entity.dart';
+import '../../../../core/types/result.dart';
+import '../entities/registration_input_entity.dart';
+import '../errors/auth_failure.dart';
 
 abstract class IAuthRepository {
-  UserEntity? getCurrentUser();
+  RegistrationInput? getCurrentUser();
   bool isCurrentUserEmailVerified();
   Stream<String?> get authStateChanges;
 
-  Future<UserEntity?> signInWithEmailAndPassword({
+  Future<Result<RegistrationInput?, AuthFailure>> signInWithEmailAndPassword({
     required String email,
     required String password,
   });
 
   /// Возвращает email (не UserEntity) — пользователь ещё не верифицирован
-  Future<String> signUpWithEmailAndPassword({
+  Future<Result<String, AuthFailure>> signUpWithEmailAndPassword({
     required String email,
     required String password,
     required String name,
   });
 
-  Future<UserEntity?> signInWithGoogle();
+  Future<Result<RegistrationInput?, AuthFailure>> signInWithGoogle();
 
-  Future<void> sendEmailVerification();
-  Future<bool> checkEmailVerified();
-  Future<void> deleteCurrentUser();
-  Future<void> saveUserToFirestore();
+  Future<Result<Null, AuthFailure>> sendEmailVerification();
+  Future<Result<bool, AuthFailure>> checkEmailVerified();
+  Future<Result<Null, AuthFailure>> deleteCurrentUser();
 
-  Future<void> signOut();
+  Future<Result<Null, AuthFailure>> signOut();
 }
