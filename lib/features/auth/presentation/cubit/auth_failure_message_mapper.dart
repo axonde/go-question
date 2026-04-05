@@ -25,4 +25,3 @@ String mapAuthFailureToMessage(AuthFailure failure) {
       return authUnexpectedErrorMessage;
   }
 }
-
