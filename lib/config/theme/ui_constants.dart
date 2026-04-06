@@ -15,4 +15,6 @@ class UiConstants {
 
   static const double boxUnit = 8;
   static const double textSize = boxUnit * 2.0; // 16px — базовый размер текста
+
+  static const double minInputHeight = 57;
 }
