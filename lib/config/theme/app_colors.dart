@@ -20,6 +20,7 @@ class AppColors {
   /// Фон экранов с кастомным градиентом/изображением.
   /// Пример: `Scaffold(backgroundColor: AppColors.background)`.
   static const Color background = Colors.transparent;
+  static const Color scaffoldBackgroundColor = Colors.transparent;
   static const Color redBackground = Color(0xFFC50006);
 
   /// Базовый цвет поверхностей карточек и панелей.
