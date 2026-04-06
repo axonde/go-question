@@ -9,8 +9,15 @@ class AppTextStyles {
 
   static const TextStyle bodyMedium = TextStyle(fontSize: 16);
 
+  static const TextStyle button = TextStyle(fontSize: 24);
+
   static const TextStyle labelLarge = TextStyle(
     fontFamily: 'Clash',
     fontSize: 16,
+  );
+
+  static const TextStyle labelMedium = TextStyle(
+    fontFamily: 'Clash',
+    fontSize: 13,
   );
 }
