@@ -3,8 +3,8 @@ import 'package:go_question/core/types/result.dart';
 
 import '../../../../core/constants/auth_messages.dart';
 import '../../domain/repositories/i_auth_repository.dart';
+import '../../domain/services/auth_page_memory.dart';
 import '../validators/auth_field_validators.dart';
-import 'auth_page_memory.dart';
 import 'auth_state.dart';
 
 part 'auth_event.dart';
@@ -43,17 +43,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await _pageMemory.saveLastPage(pageToOpen);
       }
 
-      emit(
-        state.copyWith(
-          status: AuthStatus.unauthenticated,
-          currentPage: pageToOpen,
-          lastPage: pageToOpen,
-          clearUser: true,
-          clearHint: true,
-          clearError: true,
-          clearVerificationEmail: true,
-        ),
-      );
+      emit(_resetSessionState(page: pageToOpen));
       return;
     }
 
@@ -438,15 +428,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             : state.lastPage;
 
         await _setCurrentPage(emit, targetPage);
-        emit(
-          state.copyWith(
-            status: AuthStatus.unauthenticated,
-            clearUser: true,
-            clearError: true,
-            clearHint: true,
-            clearVerificationEmail: true,
-          ),
-        );
+        emit(_resetSessionState(page: targetPage));
       },
       onFailure: (failure) {
         emit(
@@ -467,15 +449,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await _repo.signOut();
     result.fold(
       onSuccess: (_) {
-        emit(
-          state.copyWith(
-            status: AuthStatus.unauthenticated,
-            clearUser: true,
-            clearError: true,
-            clearHint: true,
-            clearVerificationEmail: true,
-          ),
-        );
+        emit(_resetSessionState(page: AuthPage.login));
       },
       onFailure: (failure) {
         emit(
@@ -499,6 +473,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthState _loadingState() {
     return state.copyWith(
       status: AuthStatus.loading,
+      clearError: true,
+      clearHint: true,
+    );
+  }
+
+  AuthState _resetSessionState({required AuthPage page}) {
+    return state.copyWith(
+      status: AuthStatus.unauthenticated,
+      currentPage: page,
+      lastPage: page,
+      loginEmail: '',
+      loginPassword: '',
+      signUpName: '',
+      signUpEmail: '',
+      signUpPassword: '',
+      clearUser: true,
+      clearVerificationEmail: true,
       clearError: true,
       clearHint: true,
     );

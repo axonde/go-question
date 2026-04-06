@@ -1,6 +1,7 @@
+import '../../domain/entities/auth_page.dart';
 import '../../domain/entities/registration_input_entity.dart';
 
-enum AuthPage { login, signUp, verifyEmail }
+export '../../domain/entities/auth_page.dart';
 
 enum AuthStatus {
   initial,

@@ -1,0 +1,43 @@
+// dart format width=80
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+// **************************************************************************
+// AutoRouterGenerator
+// **************************************************************************
+
+// ignore_for_file: type=lint
+// coverage:ignore-file
+
+part of 'router.dart';
+
+/// generated route for
+/// [AuthFlowPage]
+class AuthFlowRoute extends PageRouteInfo<void> {
+  const AuthFlowRoute({List<PageRouteInfo>? children})
+    : super(AuthFlowRoute.name, initialChildren: children);
+
+  static const String name = 'AuthFlowRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const AuthFlowPage();
+    },
+  );
+}
+
+/// generated route for
+/// [MainNavPage]
+class MainRoute extends PageRouteInfo<void> {
+  const MainRoute({List<PageRouteInfo>? children})
+    : super(MainRoute.name, initialChildren: children);
+
+  static const String name = 'MainRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const MainNavPage();
+    },
+  );
+}

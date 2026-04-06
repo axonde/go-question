@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 
 /// Кнопка выхода из аккаунта.
 class SignOutButton extends StatelessWidget {
@@ -9,7 +11,8 @@ class SignOutButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: OutlinedButton.icon(
-        onPressed: () => () {}, // sign out mock
+        onPressed: () =>
+            context.read<AuthBloc>().add(const AuthSignOutRequested()),
         icon: const Icon(Icons.logout, color: Colors.red),
         label: const Text(
           'Выйти из аккаунта',
