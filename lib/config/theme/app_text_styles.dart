@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/config/theme/app_colors.dart';
 
 class AppTextStyles {
   static const TextStyle displayLarge = TextStyle(fontSize: 36);
