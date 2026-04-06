@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/core/widgets/app_background.dart';
 import 'package:go_question/core/widgets/bottom_nav_bar.dart';
 import 'package:go_question/features/friends/presentation/pages/friends_page.dart';
 import 'package:go_question/features/home/presentation/pages/home_page.dart';
@@ -18,11 +19,13 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _screens),
-      bottomNavigationBar: ClashNavBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+    return AppBackground(
+      child: Scaffold(
+        body: IndexedStack(index: _currentIndex, children: _screens),
+        bottomNavigationBar: ClashNavBar(
+          currentIndex: _currentIndex,
+          onTap: (index) => setState(() => _currentIndex = index),
+        ),
       ),
     );
   }
