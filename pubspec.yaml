@@ -74,6 +74,9 @@ flutter:
   assets:
     - assets/splash_logo.png
     - assets/images/background/background.webp
+    - assets/images/icons/battle.png
+    - assets/images/icons/friends.png
+    - assets/images/icons/settings.png
   
 
   # An image asset can refer to one or more resolution-specific "variants", see
