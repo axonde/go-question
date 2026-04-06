@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_question/config/router/app_router.dart';
+import 'package:go_question/config/router/guards/already_logged_in_guard.dart';
+import 'package:go_question/config/router/guards/auth_guard.dart';
+import 'package:go_question/config/router/guards/verify_mail_guard.dart';
 import 'package:go_question/core/network/network_info.dart';
 import 'package:go_question/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:go_question/features/auth/data/source/datasource.dart';
@@ -14,6 +18,23 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  //! Router
+
+  sl.registerLazySingleton<AuthGuard>(() => AuthGuard(firebaseAuth: sl()));
+  sl.registerLazySingleton<AlreadyLoggedInGuard>(
+    () => AlreadyLoggedInGuard(firebaseAuth: sl()),
+  );
+  sl.registerLazySingleton<VerifyMailGuard>(
+    () => VerifyMailGuard(firebaseAuth: sl()),
+  );
+  sl.registerLazySingleton<AppRouter>(
+    () => AppRouter(
+      authGuard: sl(),
+      alreadyLoggedInGuard: sl(),
+      verifyMailGuard: sl(),
+    ),
+  );
+
   //! Features - Auth
 
   sl.registerFactory(() => AuthCubit(sl()));

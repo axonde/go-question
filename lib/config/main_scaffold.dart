@@ -1,9 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:go_question/core/widgets/bottom_nav_bar.dart';
 import 'package:go_question/features/friends/presentation/pages/friends_page.dart';
 import 'package:go_question/features/home/presentation/pages/home_page.dart';
 import 'package:go_question/features/settings/presentation/pages/settings_page.dart';
 
+@RoutePage()
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});
 

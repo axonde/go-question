@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/features/auth/presentation/widgets/email_field.dart';
@@ -8,11 +9,12 @@ import 'package:go_question/features/auth/presentation/widgets/password_field.da
 import 'package:go_question/features/auth/presentation/widgets/submit_button.dart';
 import 'package:go_question/features/auth/presentation/widgets/switch_button.dart';
 
+@RoutePage()
 class SigninPage extends StatefulWidget {
   final GlobalKey<FormState> _formKey;
-  final VoidCallback onMoveToSignIn;
+  final VoidCallback? onMoveToSignIn;
 
-  SigninPage({super.key, required this.onMoveToSignIn})
+  SigninPage({super.key, this.onMoveToSignIn})
     : _formKey = GlobalKey<FormState>();
 
   @override
@@ -85,7 +87,11 @@ class _SigninPageState extends State<SigninPage> {
                 SwitchButton.login(
                   onToggle: () {
                     widget._formKey.currentState?.reset();
-                    widget.onMoveToSignIn();
+                    if (widget.onMoveToSignIn != null) {
+                      widget.onMoveToSignIn!();
+                    } else {
+                      context.router.pushNamed('/login');
+                    }
                   },
                 ),
               ],
