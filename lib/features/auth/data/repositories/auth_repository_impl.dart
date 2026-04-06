@@ -1,3 +1,5 @@
+import 'package:go_question/core/network/network_info.dart';
+
 import '../../../../core/types/result.dart';
 import '../../domain/entities/registration_input_entity.dart';
 import '../../domain/errors/auth_exception_to_failure_mapper.dart';
@@ -8,8 +10,13 @@ import '../source/datasource.dart';
 class AuthRepositoryImpl implements IAuthRepository {
   final IAuthRemoteDataSource _remoteDataSource;
   final AuthExceptionToFailureMapper _errorMapper;
+  final NetworkInfo _networkInfo;
 
-  AuthRepositoryImpl(this._remoteDataSource, this._errorMapper);
+  AuthRepositoryImpl(
+    this._remoteDataSource,
+    this._errorMapper,
+    this._networkInfo,
+  );
 
   @override
   RegistrationInput? getCurrentUser() => _remoteDataSource.getCurrentUser();
@@ -86,6 +93,12 @@ class AuthRepositoryImpl implements IAuthRepository {
   }
 
   Future<Result<T, AuthFailure>> _guard<T>(Future<T> Function() action) async {
+    if (!await _networkInfo.isConnected) {
+      return Failure<T, AuthFailure>(
+        const AuthFailure(AuthFailureType.network),
+      );
+    }
+
     try {
       return Success<T, AuthFailure>(await action());
     } catch (error) {

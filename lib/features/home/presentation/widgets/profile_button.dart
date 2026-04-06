@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/core/widgets/pressable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/features/score/presentation/cubit/score_cubit.dart';
 
@@ -16,7 +15,9 @@ part 'profile_button/profile_score_badge.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 
 class ProfileButton extends StatelessWidget {
-  const ProfileButton({super.key});
+  final VoidCallback? onPressed;
+
+  const ProfileButton({super.key, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class ProfileButton extends StatelessWidget {
             horizontal: UiConstants.leftPadding * 2,
           ),
           child: Pressable(
-            onTap: () {}, // TODO: переход на страницу профиля
+            onTap: onPressed ?? () {},
             child: _ProfileCard(slotHeight: h - vPad * 2),
           ),
         );

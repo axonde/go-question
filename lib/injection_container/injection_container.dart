@@ -23,7 +23,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<IAuthRepository>(
-    () => AuthRepositoryImpl(sl(), sl()),
+    () => AuthRepositoryImpl(sl(), sl(), sl()),
   );
 
   sl.registerLazySingleton<IAuthRemoteDataSource>(
