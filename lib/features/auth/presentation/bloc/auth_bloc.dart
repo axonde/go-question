@@ -396,6 +396,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     final currentEmail = state.verificationEmail ?? '';
 
+    emit(_loadingState());
+
     final result = await _repo.sendEmailVerification();
     result.fold(
       onSuccess: (_) {
