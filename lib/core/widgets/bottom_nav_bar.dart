@@ -9,13 +9,9 @@ const _kFriendsAsset = 'assets/images/icons/friends.png';
 const _kBattleAsset = 'assets/images/icons/battle.png';
 const _kSettingsAsset = 'assets/images/icons/settings.png';
 
-const double _kBarHeight = UiConstants.boxUnit * 13; // 104px
+const double _kBarHeight = UiConstants.boxUnit * 13;
 const double _kDividerWidth = 3.0;
 const Color _kDividerColor = Color(0xFF7C9DA4);
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ClashNavBar — нижняя навигация в стиле Clash Royale.
-// ─────────────────────────────────────────────────────────────────────────────
 
 class ClashNavBar extends StatelessWidget {
   final int currentIndex;
@@ -83,11 +79,6 @@ class ClashNavBar extends StatelessWidget {
     );
   }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// _Divider — вертикальный разделитель между вкладками.
-// Тянется на всю высоту включая зону SafeArea.
-// ─────────────────────────────────────────────────────────────────────────────
 
 class _Divider extends StatelessWidget {
   const _Divider();
