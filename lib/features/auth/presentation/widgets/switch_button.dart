@@ -7,7 +7,7 @@ class SwitchButton extends StatelessWidget {
 
   const SwitchButton.login({super.key, required this.onToggle})
     : isLogin = true;
-  const SwitchButton.signin({super.key, required this.onToggle})
+  const SwitchButton.signUp({super.key, required this.onToggle})
     : isLogin = false;
 
   @override

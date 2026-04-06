@@ -1,3 +1,5 @@
+import 'dart:async';
+
 sealed class Result<TSuccess, TFailure> {
   const Result();
 }
@@ -25,6 +27,16 @@ extension ResultX<TSuccess, TFailure> on Result<TSuccess, TFailure> {
     return switch (this) {
       Success<TSuccess, TFailure>(:final value) => onSuccess(value),
       Failure<TSuccess, TFailure>(:final failure) => onFailure(failure),
+    };
+  }
+
+  Future<R> foldAsync<R>({
+    required FutureOr<R> Function(TSuccess value) onSuccess,
+    required FutureOr<R> Function(TFailure failure) onFailure,
+  }) async {
+    return switch (this) {
+      Success<TSuccess, TFailure>(:final value) => await onSuccess(value),
+      Failure<TSuccess, TFailure>(:final failure) => await onFailure(failure),
     };
   }
 }

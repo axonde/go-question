@@ -11,7 +11,7 @@ class SubmitButton extends StatelessWidget {
     required this.isLoading,
     required this.onPressed,
   }) : isLogin = true;
-  const SubmitButton.signin({
+  const SubmitButton.signUp({
     super.key,
     required this.isLoading,
     required this.onPressed,

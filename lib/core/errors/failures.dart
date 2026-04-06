@@ -1,5 +1,6 @@
 abstract interface class Failure<TType> {
   TType get type;
+  String get message;
 }
 
 enum AppFailureType {
@@ -18,10 +19,13 @@ class GlobalFailure implements Failure<AppFailureType> {
   @override
   final AppFailureType type;
 
-  const GlobalFailure(this.type);
+  @override
+  final String message;
 
-  factory GlobalFailure.fromType(AppFailureType type) {
-    return GlobalFailure(type);
+  const GlobalFailure(this.type, {this.message = ''});
+
+  factory GlobalFailure.fromType(AppFailureType type, {String message = ''}) {
+    return GlobalFailure(type, message: message);
   }
 
   @override
@@ -35,5 +39,5 @@ class GlobalFailure implements Failure<AppFailureType> {
   int get hashCode => type.hashCode;
 
   @override
-  String toString() => 'Failure(type: $type)';
+  String toString() => 'Failure(type: $type, message: $message)';
 }

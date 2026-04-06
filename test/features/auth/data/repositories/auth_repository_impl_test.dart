@@ -87,4 +87,32 @@ void main() {
       expect(success, equals(tUser));
     });
   });
+
+  group('signOut без проверки сети', () {
+    test('signOut должен работать без интернета (не проверять сеть)', () async {
+      when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => false);
+      when(() => mockRemoteDataSource.signOut()).thenAnswer((_) async {});
+
+      final result = await repository.signOut();
+
+      // Сетевой guard НЕ должен вызываться для signOut
+      verifyNever(() => mockNetworkInfo.isConnected);
+      // DataSource должен быть вызван напрямую
+      verify(() => mockRemoteDataSource.signOut()).called(1);
+
+      expect(result, isA<Success<Null, AuthFailure>>());
+    });
+
+    test('signOut должен вернуть Failure при исключении', () async {
+      when(() => mockRemoteDataSource.signOut()).thenThrow(Exception('error'));
+      final tFailure = const AuthFailure(AuthFailureType.unknown);
+      when(() => mockErrorMapper.map(any())).thenReturn(tFailure);
+
+      final result = await repository.signOut();
+
+      expect(result, isA<Failure<Null, AuthFailure>>());
+      final failure = (result as Failure).failure as AuthFailure;
+      expect(failure.type, equals(AuthFailureType.unknown));
+    });
+  });
 }
