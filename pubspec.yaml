@@ -79,14 +79,10 @@ flutter:
     - assets/icons/close.svg
     - assets/icons/edit.svg
     - assets/images/background/background.webp
-<<<<<<< HEAD
     - assets/images/presets/default_ava.png
-=======
     - assets/images/icons/battle.png
     - assets/images/icons/friends.png
     - assets/images/icons/settings.png
->>>>>>> master
-  
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

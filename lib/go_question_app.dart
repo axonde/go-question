@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/app_theme.dart';
-import 'package:go_question/core/widgets/app_background.dart';
-import 'package:go_question/features/profile/presentation/profile_screen.dart';
 import 'package:go_question/features/auth/presentation/pages/auth_flow_page.dart';
 
 class GoQuestionApp extends StatelessWidget {
