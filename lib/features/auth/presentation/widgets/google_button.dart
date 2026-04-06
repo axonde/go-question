@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/config/theme/app_text_styles.dart';
+import 'package:go_question/core/widgets/buttons/go_button.dart';
 
 class GoogleButton extends StatelessWidget {
   final bool isLoading;
@@ -12,11 +14,13 @@ class GoogleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton.icon(
+    return GQButton(
+      icon: Icons.g_mobiledata,
+      text: 'Войти через Google',
+      fontSize: AppTextStyles.button.fontSize,
+      aspectRatio: 110 / 20,
       onPressed: onPressed,
-      style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(52)),
-      icon: const Icon(Icons.g_mobiledata, size: 24),
-      label: const Text('Войти через Google'),
+      widthFactor: 1,
     );
   }
 }
