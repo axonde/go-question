@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../../core/errors/exception.dart';
-import '../../../../core/utills/auth_remote_exception_mapper.dart';
+import '../../../../core/utils/auth_remote_exception_mapper.dart';
 import '../../domain/entities/registration_input_entity.dart';
 import '../models/registration_input_model.dart';
 
