@@ -52,7 +52,7 @@ final class AuthExceptionToFailureMapperImpl
     final commonFailure = _commonMapper.map(error);
     return AuthFailure(
       _mapCommonFailure(commonFailure.type),
-      message: _mapCommonMessage(commonFailure.type, commonFailure.message),
+      message: commonFailure.message,
     );
   }
 
@@ -73,30 +73,6 @@ final class AuthExceptionToFailureMapperImpl
       case AppFailureType.userNotFoundError:
       case AppFailureType.authOperationError:
         return AuthFailureType.unknown;
-    }
-  }
-
-  String _mapCommonMessage(AppFailureType type, String message) {
-    if (message.isNotEmpty) {
-      return message;
-    }
-
-    switch (type) {
-      case AppFailureType.serverError:
-        return authSignInFailedMessage;
-      case AppFailureType.connectionError:
-        return authNoInternetMessage;
-      case AppFailureType.unauthorizedError:
-        return authUserNotAuthorizedMessage;
-      case AppFailureType.validationError:
-        return authInvalidEmailMessage;
-      case AppFailureType.unknownError:
-        return authUnexpectedErrorMessage;
-      case AppFailureType.cacheUpdateError:
-      case AppFailureType.emailAlreadyInUseError:
-      case AppFailureType.userNotFoundError:
-      case AppFailureType.authOperationError:
-        return authUnexpectedErrorMessage;
     }
   }
 }
