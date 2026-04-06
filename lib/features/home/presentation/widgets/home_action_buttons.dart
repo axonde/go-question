@@ -22,28 +22,37 @@ class HomeActionButtons extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            child: GQButton(
-              width: UiConstants.boxUnit * 20,
-              height: UiConstants.boxUnit * 12.5,
-              onPressed: onBattleSheetTap,
-              text: 'Поиск',
-              baseColor: AppColors.secondary,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: UiConstants.leftPadding * 3,
+                right: UiConstants.rightPadding,
+              ),
+              child: GQButton(
+                height: UiConstants.boxUnit * 12.5,
+                onPressed: onBattleSheetTap,
+                text: 'Поиск',
+                baseColor: AppColors.secondary,
+              ),
             ),
           ),
-          const SizedBox(width: UiConstants.middlePadding * 2),
           Expanded(
-            child: GQButton(
-              width: UiConstants.boxUnit * 20,
-              height: UiConstants.boxUnit * 12.5,
-              onPressed: onModeDialogTap,
-              baseColor: AppColors.primary,
-              mainGradient: const LinearGradient(
-                colors: [Color(0xFF0092F5), Color(0xFF008FF2)],
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: UiConstants.leftPadding,
+                right: UiConstants.rightPadding * 3,
               ),
-              outerGradient: const LinearGradient(
-                colors: [Color(0xFF005BC0), Color(0xFF0055B8)],
+              child: GQButton(
+                height: UiConstants.boxUnit * 12.5,
+                onPressed: onModeDialogTap,
+                baseColor: AppColors.primary,
+                mainGradient: const LinearGradient(
+                  colors: [Color(0xFF0092F5), Color(0xFF008FF2)],
+                ),
+                outerGradient: const LinearGradient(
+                  colors: [Color(0xFF005BC0), Color(0xFF0055B8)],
+                ),
+                text: 'Новое',
               ),
-              text: 'Новое',
             ),
           ),
         ],
