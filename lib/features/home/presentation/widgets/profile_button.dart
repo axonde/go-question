@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:go_question/core/widgets/pressable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/features/score/presentation/cubit/score_cubit.dart';
 
 part 'profile_button/profile_avatar.dart';
-part 'profile_button/profile_user_info.dart';
 part 'profile_button/profile_score_badge.dart';
+part 'profile_button/profile_user_info.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ProfileButton — карточка профиля на главном экране.
