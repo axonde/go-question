@@ -1,6 +1,4 @@
-import 'package:go_question/core/constants/auth_messages.dart';
-
-import '../../../../core/network/network_info.dart';
+import 'package:go_question/core/network/network_info.dart';
 import '../../../../core/types/result.dart';
 import '../../domain/entities/registration_input_entity.dart';
 import '../../domain/errors/auth_exception_to_failure_mapper.dart';
@@ -94,13 +92,9 @@ class AuthRepositoryImpl implements IAuthRepository {
   }
 
   Future<Result<T, AuthFailure>> _guard<T>(Future<T> Function() action) async {
-    final isConnected = await _networkInfo.isConnected;
-    if (!isConnected) {
+    if (!await _networkInfo.isConnected) {
       return Failure<T, AuthFailure>(
-        const AuthFailure(
-          AuthFailureType.network,
-          message: authNoInternetMessage,
-        ),
+        const AuthFailure(AuthFailureType.network),
       );
     }
 

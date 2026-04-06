@@ -42,10 +42,9 @@ class _EventCard extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(h * 0.05),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 // Иконка
-                Flexible(
+                Expanded(
                   flex: 3,
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
@@ -61,7 +60,7 @@ class _EventCard extends StatelessWidget {
                   ),
                 ),
                 // Заголовок
-                Flexible(
+                Expanded(
                   flex: 2,
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
@@ -81,7 +80,7 @@ class _EventCard extends StatelessWidget {
                   ),
                 ),
                 // Лейблы
-                Flexible(
+                Expanded(
                   flex: 2,
                   child: FittedBox(
                     fit: BoxFit.scaleDown,

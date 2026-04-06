@@ -60,6 +60,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  mocktail: ^1.0.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -75,6 +76,9 @@ flutter:
   assets:
     - assets/splash_logo.png
     - assets/images/background/background.webp
+    - assets/images/icons/battle.png
+    - assets/images/icons/friends.png
+    - assets/images/icons/settings.png
   
 
   # An image asset can refer to one or more resolution-specific "variants", see
