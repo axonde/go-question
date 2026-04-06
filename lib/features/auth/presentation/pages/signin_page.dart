@@ -8,42 +8,25 @@ import 'package:go_question/features/auth/presentation/widgets/password_field.da
 import 'package:go_question/features/auth/presentation/widgets/submit_button.dart';
 import 'package:go_question/features/auth/presentation/widgets/switch_button.dart';
 
-class SigninPage extends StatefulWidget {
-  final GlobalKey<FormState> _formKey;
-  final VoidCallback onMoveToSignIn;
+class SigninPage extends StatelessWidget {
+  final bool isLoading;
+  final VoidCallback onMoveToLogin;
+  final ValueChanged<String> onNameChanged;
+  final ValueChanged<String> onEmailChanged;
+  final ValueChanged<String> onPasswordChanged;
+  final VoidCallback onSubmit;
+  final VoidCallback onGoogleSignIn;
 
-  SigninPage({super.key, required this.onMoveToSignIn})
-    : _formKey = GlobalKey<FormState>();
-
-  @override
-  State<StatefulWidget> createState() => _SigninPageState();
-}
-
-class _SigninPageState extends State<SigninPage> {
-  bool _isLoading = false;
-  late final TextEditingController _nameController;
-  late final TextEditingController _emailController;
-  late final TextEditingController _passwordController;
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController();
-    _emailController = TextEditingController();
-    _passwordController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void submit() {
-    throw UnimplementedError();
-  }
+  const SigninPage({
+    super.key,
+    required this.isLoading,
+    required this.onMoveToLogin,
+    required this.onNameChanged,
+    required this.onEmailChanged,
+    required this.onPasswordChanged,
+    required this.onSubmit,
+    required this.onGoogleSignIn,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -55,42 +38,32 @@ class _SigninPageState extends State<SigninPage> {
           top: UiConstants.topPadding,
           bottom: UiConstants.bottomPadding,
         ),
-        child: Center(
-          child: Form(
-            key: widget._formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Header.login(),
-                      const SizedBox(height: 32),
-                      NameField(controller: _nameController),
-                      const SizedBox(height: 16),
-                      EmailField(controller: _emailController),
-                      const SizedBox(height: 16),
-                      PasswordField(controller: _passwordController),
-                      const SizedBox(height: 40),
-                      SubmitButton.login(
-                        isLoading: _isLoading,
-                        onPressed: () => submit(),
-                      ),
-                      const SizedBox(height: 12),
-                      GoogleButton(isLoading: _isLoading, onPressed: () {}),
-                    ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Header.signin(),
+                  const SizedBox(height: 32),
+                  NameField(onChanged: onNameChanged),
+                  const SizedBox(height: 16),
+                  EmailField(onChanged: onEmailChanged),
+                  const SizedBox(height: 16),
+                  PasswordField(onChanged: onPasswordChanged),
+                  const SizedBox(height: 40),
+                  SubmitButton.signin(
+                    isLoading: isLoading,
+                    onPressed: onSubmit,
                   ),
-                ),
-                SwitchButton.login(
-                  onToggle: () {
-                    widget._formKey.currentState?.reset();
-                    widget.onMoveToSignIn();
-                  },
-                ),
-              ],
+                  const SizedBox(height: 12),
+                  GoogleButton(isLoading: isLoading, onPressed: onGoogleSignIn),
+                ],
+              ),
             ),
-          ),
+            SwitchButton.signin(onToggle: onMoveToLogin),
+          ],
         ),
       ),
     );

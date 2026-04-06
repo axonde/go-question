@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 class GoogleButton extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onPressed;
-  const GoogleButton({required this.isLoading, required this.onPressed});
+
+  const GoogleButton({
+    super.key,
+    required this.isLoading,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {

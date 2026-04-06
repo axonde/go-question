@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class Header extends StatelessWidget {
   final bool isLogin;
 
-  const Header.login() : isLogin = true;
-  const Header.signin() : isLogin = false;
+  const Header.login({super.key}) : isLogin = true;
+  const Header.signin({super.key}) : isLogin = false;
 
   @override
   Widget build(BuildContext context) {
