@@ -21,26 +21,30 @@ class HomeActionButtons extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          GQButton(
-            width: UiConstants.boxUnit * 20,
-            height: UiConstants.boxUnit * 12.5,
-            onPressed: onBattleSheetTap,
-            text: 'Поиск',
-            baseColor: AppColors.secondary,
+          Expanded(
+            child: GQButton(
+              width: UiConstants.boxUnit * 20,
+              height: UiConstants.boxUnit * 12.5,
+              onPressed: onBattleSheetTap,
+              text: 'Поиск',
+              baseColor: AppColors.secondary,
+            ),
           ),
           const SizedBox(width: UiConstants.middlePadding * 2),
-          GQButton(
-            width: UiConstants.boxUnit * 20,
-            height: UiConstants.boxUnit * 12.5,
-            onPressed: onModeDialogTap,
-            baseColor: AppColors.primary,
-            mainGradient: const LinearGradient(
-              colors: [Color(0xFF0092F5), Color(0xFF008FF2)],
+          Expanded(
+            child: GQButton(
+              width: UiConstants.boxUnit * 20,
+              height: UiConstants.boxUnit * 12.5,
+              onPressed: onModeDialogTap,
+              baseColor: AppColors.primary,
+              mainGradient: const LinearGradient(
+                colors: [Color(0xFF0092F5), Color(0xFF008FF2)],
+              ),
+              outerGradient: const LinearGradient(
+                colors: [Color(0xFF005BC0), Color(0xFF0055B8)],
+              ),
+              text: 'Новое',
             ),
-            outerGradient: const LinearGradient(
-              colors: [Color(0xFF005BC0), Color(0xFF0055B8)],
-            ),
-            text: 'Новое',
           ),
         ],
       ),
