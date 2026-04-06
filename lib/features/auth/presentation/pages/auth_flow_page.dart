@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_question/config/main_nav_page.dart';
 
-import '../../../../config/main_scaffold.dart';
 import '../../../../injection_container/injection_container.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
@@ -36,7 +36,7 @@ class AuthFlowPage extends StatelessWidget {
         },
         builder: (context, state) {
           if (state.status == AuthStatus.authenticated) {
-            return const MainScaffold();
+            return const MainNavPage();
           }
 
           switch (state.currentPage) {
