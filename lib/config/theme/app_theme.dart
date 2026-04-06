@@ -54,6 +54,23 @@ class AppTheme {
           ),
         ),
       ),
+
+      // input
+      inputDecorationTheme: InputDecorationTheme(
+        labelStyle: const TextStyle(color: AppColors.textSecondary),
+        floatingLabelStyle: const TextStyle(color: AppColors.textPrimary),
+        filled: true,
+        fillColor: AppColors.inputBackground,
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.inputBorder, width: 1.2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.inputFocused, width: 2.2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.error, width: 1.0),
+        ),
+      ),
     );
   }
 }

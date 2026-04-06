@@ -1,4 +1,4 @@
-import '../../domain/entities/user_entity.dart';
+import '../../domain/entities/registration_input_entity.dart';
 
 abstract class AuthState {
   const AuthState();
@@ -12,7 +12,7 @@ class AuthLoading extends AuthState {}
 
 /// Пользователь успешно авторизован и верифицирован
 class AuthAuthenticated extends AuthState {
-  final UserEntity user;
+  final RegistrationInput user;
   const AuthAuthenticated(this.user);
 }
 
