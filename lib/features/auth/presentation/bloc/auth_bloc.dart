@@ -2,9 +2,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/core/types/result.dart';
 
 import '../../../../core/constants/auth_messages.dart';
+import '../../../../core/utills/mappers/auth_failure_message_mapper.dart';
 import '../../domain/repositories/i_auth_repository.dart';
+import '../../domain/services/auth_page_memory.dart';
 import '../validators/auth_field_validators.dart';
-import 'auth_page_memory.dart';
 import 'auth_state.dart';
 
 part 'auth_event.dart';
@@ -12,8 +13,10 @@ part 'auth_event.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final IAuthRepository _repo;
   final AuthPageMemory _pageMemory;
+  final AuthFailureMessageMapper _failureMessageMapper;
 
-  AuthBloc(this._repo, this._pageMemory) : super(const AuthState.initial()) {
+  AuthBloc(this._repo, this._pageMemory, this._failureMessageMapper)
+    : super(const AuthState.initial()) {
     on<AuthStarted>(_onStarted);
     on<AuthPageChanged>(_onPageChanged);
     on<AuthLoginEmailChanged>(_onLoginEmailChanged);
@@ -43,17 +46,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await _pageMemory.saveLastPage(pageToOpen);
       }
 
-      emit(
-        state.copyWith(
-          status: AuthStatus.unauthenticated,
-          currentPage: pageToOpen,
-          lastPage: pageToOpen,
-          clearUser: true,
-          clearHint: true,
-          clearError: true,
-          clearVerificationEmail: true,
-        ),
-      );
+      emit(_resetSessionState(page: pageToOpen));
       return;
     }
 
@@ -211,7 +204,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(
           state.copyWith(
             status: AuthStatus.failure,
-            error: failure.message,
+            error: _failureMessageMapper.errorMessage(failure),
             clearHint: true,
           ),
         );
@@ -283,7 +276,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(
           state.copyWith(
             status: AuthStatus.failure,
-            error: failure.message,
+            error: _failureMessageMapper.errorMessage(failure),
             clearHint: true,
           ),
         );
@@ -325,7 +318,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(
           state.copyWith(
             status: AuthStatus.failure,
-            error: failure.message,
+            error: _failureMessageMapper.errorMessage(failure),
             clearHint: true,
           ),
         );
@@ -382,7 +375,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           state.copyWith(
             status: AuthStatus.awaitingVerification,
             verificationEmail: currentEmail,
-            hint: failure.message,
+            hint: _failureMessageMapper.hintMessage(failure),
             clearError: true,
           ),
         );
@@ -413,7 +406,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           state.copyWith(
             status: AuthStatus.awaitingVerification,
             verificationEmail: currentEmail,
-            hint: failure.message,
+            hint: _failureMessageMapper.hintMessage(failure),
             clearError: true,
           ),
         );
@@ -433,15 +426,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         : state.lastPage;
 
     await _setCurrentPage(emit, targetPage);
-    emit(
-      state.copyWith(
-        status: AuthStatus.unauthenticated,
-        clearUser: true,
-        clearError: true,
-        clearHint: true,
-        clearVerificationEmail: true,
-      ),
-    );
+    emit(_resetSessionState(page: targetPage));
   }
 
   Future<void> _onSignOutRequested(
@@ -451,21 +436,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await _repo.signOut();
     result.fold(
       onSuccess: (_) {
-        emit(
-          state.copyWith(
-            status: AuthStatus.unauthenticated,
-            clearUser: true,
-            clearError: true,
-            clearHint: true,
-            clearVerificationEmail: true,
-          ),
-        );
+        emit(_resetSessionState(page: AuthPage.signIn));
       },
       onFailure: (failure) {
         emit(
           state.copyWith(
             status: AuthStatus.failure,
-            error: failure.message,
+            error: _failureMessageMapper.errorMessage(failure),
             clearHint: true,
           ),
         );
@@ -483,6 +460,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthState _loadingState() {
     return state.copyWith(
       status: AuthStatus.loading,
+      clearError: true,
+      clearHint: true,
+    );
+  }
+
+  AuthState _resetSessionState({required AuthPage page}) {
+    return state.copyWith(
+      status: AuthStatus.unauthenticated,
+      currentPage: page,
+      lastPage: page,
+      loginEmail: '',
+      loginPassword: '',
+      signUpName: '',
+      signUpEmail: '',
+      signUpPassword: '',
+      clearUser: true,
+      clearVerificationEmail: true,
       clearError: true,
       clearHint: true,
     );

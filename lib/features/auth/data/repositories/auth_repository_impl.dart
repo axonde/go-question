@@ -1,6 +1,6 @@
 import 'package:go_question/core/constants/auth_messages.dart';
+import 'package:go_question/core/network/network_info.dart';
 
-import '../../../../core/network/network_info.dart';
 import '../../../../core/types/result.dart';
 import '../../domain/entities/registration_input_entity.dart';
 import '../../domain/errors/auth_exception_to_failure_mapper.dart';
