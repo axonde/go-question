@@ -15,7 +15,6 @@ final class SharedPrefsAuthPageMemory implements AuthPageMemory {
     final value = _prefs.getString(_lastAuthPageKey);
     switch (value) {
       case 'login':
-      case 'signIn': // legacy key
         return AuthPage.login;
       case 'verifyEmail':
         return AuthPage.verifyEmail;
