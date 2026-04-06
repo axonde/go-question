@@ -37,7 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     if (user == null) {
       final pageToOpen = savedPage == AuthPage.verifyEmail
-          ? AuthPage.signIn
+          ? AuthPage.signUp
           : savedPage;
       if (pageToOpen != savedPage) {
         await _pageMemory.saveLastPage(pageToOpen);
@@ -427,22 +427,36 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthCancelVerificationRequested event,
     Emitter<AuthState> emit,
   ) async {
+    // Best-effort user deletion: proceed to sign out even if deletion fails.
     await _repo.deleteCurrentUser();
-    await _repo.signOut();
 
-    final targetPage = state.lastPage == AuthPage.verifyEmail
-        ? AuthPage.signIn
-        : state.lastPage;
+    final signOutResult = await _repo.signOut();
+    await signOutResult.foldAsync(
+      onSuccess: (_) async {
+        final targetPage = state.lastPage == AuthPage.verifyEmail
+            ? AuthPage.signUp
+            : state.lastPage;
 
-    await _setCurrentPage(emit, targetPage);
-    emit(
-      state.copyWith(
-        status: AuthStatus.unauthenticated,
-        clearUser: true,
-        clearError: true,
-        clearHint: true,
-        clearVerificationEmail: true,
-      ),
+        await _setCurrentPage(emit, targetPage);
+        emit(
+          state.copyWith(
+            status: AuthStatus.unauthenticated,
+            clearUser: true,
+            clearError: true,
+            clearHint: true,
+            clearVerificationEmail: true,
+          ),
+        );
+      },
+      onFailure: (failure) {
+        emit(
+          state.copyWith(
+            status: AuthStatus.failure,
+            error: failure.message,
+            clearHint: true,
+          ),
+        );
+      },
     );
   }
 

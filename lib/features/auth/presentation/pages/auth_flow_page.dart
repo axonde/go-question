@@ -6,7 +6,7 @@ import '../../../../injection_container/injection_container.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
 import 'login_page.dart';
-import 'signin_page.dart';
+import 'sign_up_page.dart';
 import 'verify_mail_page.dart';
 
 class AuthFlowPage extends StatelessWidget {
@@ -45,7 +45,7 @@ class AuthFlowPage extends StatelessWidget {
                 isLoading: state.isLoading,
                 onMoveToSignIn: () {
                   context.read<AuthBloc>().add(
-                    const AuthPageChanged(AuthPage.signIn),
+                    const AuthPageChanged(AuthPage.signUp),
                   );
                 },
                 onEmailChanged: (value) {
@@ -63,8 +63,8 @@ class AuthFlowPage extends StatelessWidget {
                   );
                 },
               );
-            case AuthPage.signIn:
-              return SigninPage(
+            case AuthPage.signUp:
+              return SignUpPage(
                 isLoading: state.isLoading,
                 onMoveToLogin: () {
                   context.read<AuthBloc>().add(

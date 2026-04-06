@@ -22,9 +22,10 @@ final class SharedPrefsAuthPageMemory implements AuthPageMemory {
         return AuthPage.login;
       case 'verifyEmail':
         return AuthPage.verifyEmail;
-      case 'signIn':
+      case 'signUp':
+      case 'signIn': // legacy key
       default:
-        return AuthPage.signIn;
+        return AuthPage.signUp;
     }
   }
 
@@ -37,8 +38,8 @@ final class SharedPrefsAuthPageMemory implements AuthPageMemory {
     switch (page) {
       case AuthPage.login:
         return 'login';
-      case AuthPage.signIn:
-        return 'signIn';
+      case AuthPage.signUp:
+        return 'signUp';
       case AuthPage.verifyEmail:
         return 'verifyEmail';
     }

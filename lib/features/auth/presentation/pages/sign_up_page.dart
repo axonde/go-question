@@ -8,7 +8,7 @@ import 'package:go_question/features/auth/presentation/widgets/password_field.da
 import 'package:go_question/features/auth/presentation/widgets/submit_button.dart';
 import 'package:go_question/features/auth/presentation/widgets/switch_button.dart';
 
-class SigninPage extends StatelessWidget {
+class SignUpPage extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onMoveToLogin;
   final ValueChanged<String> onNameChanged;
@@ -17,7 +17,7 @@ class SigninPage extends StatelessWidget {
   final VoidCallback onSubmit;
   final VoidCallback onGoogleSignIn;
 
-  const SigninPage({
+  const SignUpPage({
     super.key,
     required this.isLoading,
     required this.onMoveToLogin,
@@ -45,7 +45,7 @@ class SigninPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Header.signin(),
+                  const Header.signUp(),
                   const SizedBox(height: 32),
                   NameField(onChanged: onNameChanged),
                   const SizedBox(height: 16),
@@ -53,7 +53,7 @@ class SigninPage extends StatelessWidget {
                   const SizedBox(height: 16),
                   PasswordField(onChanged: onPasswordChanged),
                   const SizedBox(height: 40),
-                  SubmitButton.signin(
+                  SubmitButton.signUp(
                     isLoading: isLoading,
                     onPressed: onSubmit,
                   ),
@@ -62,7 +62,7 @@ class SigninPage extends StatelessWidget {
                 ],
               ),
             ),
-            SwitchButton.signin(onToggle: onMoveToLogin),
+            SwitchButton.signUp(onToggle: onMoveToLogin),
           ],
         ),
       ),

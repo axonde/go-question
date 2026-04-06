@@ -84,11 +84,13 @@ class AuthRepositoryImpl implements IAuthRepository {
   }
 
   @override
-  Future<Result<Null, AuthFailure>> signOut() {
-    return _guard<Null>(() async {
+  Future<Result<Null, AuthFailure>> signOut() async {
+    try {
       await _remoteDataSource.signOut();
-      return null;
-    });
+      return const Success<Null, AuthFailure>(null);
+    } catch (error) {
+      return Failure<Null, AuthFailure>(_errorMapper.map(error));
+    }
   }
 
   Future<Result<T, AuthFailure>> _guard<T>(Future<T> Function() action) async {

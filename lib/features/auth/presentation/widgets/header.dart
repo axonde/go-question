@@ -4,7 +4,7 @@ class Header extends StatelessWidget {
   final bool isLogin;
 
   const Header.login({super.key}) : isLogin = true;
-  const Header.signin({super.key}) : isLogin = false;
+  const Header.signUp({super.key}) : isLogin = false;
 
   @override
   Widget build(BuildContext context) {

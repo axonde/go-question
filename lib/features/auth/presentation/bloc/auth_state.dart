@@ -1,6 +1,6 @@
 import '../../domain/entities/registration_input_entity.dart';
 
-enum AuthPage { login, signIn, verifyEmail }
+enum AuthPage { login, signUp, verifyEmail }
 
 enum AuthStatus {
   initial,
@@ -42,8 +42,8 @@ class AuthState {
 
   const AuthState.initial()
     : status = AuthStatus.initial,
-      currentPage = AuthPage.signIn,
-      lastPage = AuthPage.signIn,
+      currentPage = AuthPage.signUp,
+      lastPage = AuthPage.signUp,
       loginEmail = '',
       loginPassword = '',
       signUpName = '',
