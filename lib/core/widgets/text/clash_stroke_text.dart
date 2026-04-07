@@ -10,6 +10,7 @@ class ClashStrokeText extends StatelessWidget {
   final TextAlign textAlign;
   final int? maxLines;
   final TextOverflow? overflow;
+  final List<Shadow>? shadows;
 
   const ClashStrokeText(
     this.text, {
@@ -21,6 +22,7 @@ class ClashStrokeText extends StatelessWidget {
     this.textAlign = TextAlign.center,
     this.maxLines,
     this.overflow,
+    this.shadows,
   });
 
   @override
@@ -54,6 +56,7 @@ class ClashStrokeText extends StatelessWidget {
             fontFamilyFallback: const ['Roboto', 'sans-serif'],
             fontSize: fontSize,
             color: textColor,
+            shadows: shadows,
           ),
         ),
       ],

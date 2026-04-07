@@ -1,6 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
+
+/// Данные уведомления для отображения.
+class NotificationData {
+  final String title;
+  final String body;
+  final bool showAccept;
+  final bool showReject;
+
+  const NotificationData({
+    required this.title,
+    required this.body,
+    this.showAccept = false,
+    this.showReject = false,
+  });
+}
+
+/// Временные захардкоженные уведомления.
+/// TODO: заменить на загрузку из репозитория.
+const _kMockNotifications = [
+  NotificationData(
+    title: 'Запрос на участие',
+    body:
+        'Джиган хочет присоединиться к вашему ивенту: "Вечеринка на пляже", который состоится 04.04.2027 в 17:00.',
+    showAccept: true,
+    showReject: true,
+  ),
+  NotificationData(
+    title: 'Событие скоро начнется!',
+    body:
+        'Событие "Вечеринка на пляже", которое состоится 04.04.2027 в 17:00, начнется через 2 часа. Не забудьте подготовиться!',
+    showAccept: false,
+    showReject: false,
+  ),
+];
 
 /// Bottom sheet уведомлений (Clash Style).
 class NotificationsSheet extends StatelessWidget {
@@ -17,25 +52,14 @@ class NotificationsSheet extends StatelessWidget {
             child: Container(
               width: double.infinity,
               color: Colors.white,
-              child: ListView(
-                padding: const EdgeInsets.all(16.0),
-                children: const [
-                  NotificationCard(
-                    title: 'Запрос на участие',
-                    body:
-                        'Джиган хочет присоединиться к вашему ивенту: "Вечеринка на пляже", который состоится 04.04.2027 в 17:00.',
-                    showAccept: true,
-                    showReject: true,
-                  ),
-                  SizedBox(height: 12),
-                  NotificationCard(
-                    title: 'Событие скоро начнется!',
-                    body:
-                        'Событие "Вечеринка на пляже", которое состоится 04.04.2027 в 17:00, начнется через 2 часа. Не забудьте подготовиться!',
-                    showAccept: true,
-                    showReject: true,
-                  ),
-                ],
+              child: ListView.separated(
+                padding: const EdgeInsets.all(UiConstants.horizontalPadding * 2),
+                itemCount: _kMockNotifications.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final data = _kMockNotifications[index];
+                  return NotificationCard(data: data);
+                },
               ),
             ),
           ),
@@ -51,58 +75,54 @@ class NotificationsSheet extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Color(0xFF30D12D), // Зеленый фон заголовка
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
+          topLeft: Radius.circular(UiConstants.borderRadius * 6),
+          topRight: Radius.circular(UiConstants.borderRadius * 6),
         ),
       ),
       child: Stack(
         children: [
-          const Center(child: ClashStrokeText('Уведомления', fontSize: 28)),
+          const Center(
+            child: ClashStrokeText(
+              'Уведомления',
+              fontSize: 28,
+              shadows: [
+                Shadow(
+                  offset: Offset(0, 2),
+                  blurRadius: 0,
+                  color: Colors.black,
+                ),
+              ],
+            ),
+          ),
           Positioned(
             right: 12,
             top: 0,
             bottom: 0,
-            child: Center(child: _buildCloseButton(context)),
+            child: Center(
+              child: SizedBox(
+                width: 36,
+                height: 36,
+                child: GQButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: Icons.close,
+                  baseColor: const Color(0xFFFF4B4B),
+                  iconSizeFactor: 0.6,
+                ),
+              ),
+            ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCloseButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.of(context).pop(),
-      child: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          color: const Color(0xFFFF0000), // Красный крестик
-          border: Border.all(color: Colors.black, width: 2),
-          borderRadius: BorderRadius.circular(6),
-          boxShadow: const [
-            BoxShadow(color: Colors.black45, offset: Offset(0, 3)),
-          ],
-        ),
-        child: const Center(
-          child: Icon(Icons.close, color: Colors.white, size: 22, weight: 800),
-        ),
       ),
     );
   }
 }
 
 class NotificationCard extends StatelessWidget {
-  final String title;
-  final String body;
-  final bool showAccept;
-  final bool showReject;
+  final NotificationData data;
 
   const NotificationCard({
     super.key,
-    required this.title,
-    required this.body,
-    this.showAccept = false,
-    this.showReject = false,
+    required this.data,
   });
 
   @override
@@ -113,18 +133,13 @@ class NotificationCard extends StatelessWidget {
           context: context,
           isScrollControlled: true,
           backgroundColor: Colors.transparent,
-          builder: (_) => NotificationDetailsSheet(
-            title: title,
-            body: body,
-            showAccept: showAccept,
-            showReject: showReject,
-          ),
+          builder: (_) => NotificationDetailsSheet(data: data),
         );
       },
       child: Container(
         decoration: BoxDecoration(
           color: const Color(0xFFDEE7F6),
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(UiConstants.borderRadius * 2.5),
           border: Border.all(color: const Color(0xFF62697B), width: 1),
           boxShadow: const [
             BoxShadow(
@@ -139,7 +154,7 @@ class NotificationCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClashStrokeText(
-              title,
+              data.title,
               fontSize: 20,
               strokeWidth: 2.5,
               textAlign: TextAlign.left,
@@ -148,11 +163,12 @@ class NotificationCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              body,
+              data.body,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                fontFamily: 'Roboto',
+                fontFamily: 'Russo One', // Применяем запрашиваемый шрифт
+                fontFamilyFallback: ['Clash', 'Roboto', 'sans-serif'],
                 color: Color(0xFF62697B),
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
@@ -169,12 +185,12 @@ class NotificationCard extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 12),
-            if (showAccept || showReject)
+            if (data.showAccept || data.showReject) ...[
+              const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (showReject)
+                  if (data.showReject)
                     Transform.translate(
                       offset: const Offset(12, 0),
                       child: SizedBox(
@@ -185,12 +201,10 @@ class NotificationCard extends StatelessWidget {
                           onPressed: () {},
                           text: 'Отклонить',
                           fontSize: 12,
-                          textStrokeColor: Colors.black,
-                          textColor: Colors.white,
                         ),
                       ),
                     ),
-                  if (showAccept)
+                  if (data.showAccept)
                     SizedBox(
                       width: 110,
                       height: 32,
@@ -199,12 +213,11 @@ class NotificationCard extends StatelessWidget {
                         onPressed: () {},
                         text: 'Принять',
                         fontSize: 12,
-                        textStrokeColor: Colors.black,
-                        textColor: Colors.white,
                       ),
                     ),
                 ],
               ),
+            ],
           ],
         ),
       ),
@@ -214,17 +227,11 @@ class NotificationCard extends StatelessWidget {
 
 /// Bottom sheet с подробностями (Clash Style).
 class NotificationDetailsSheet extends StatelessWidget {
-  final String title;
-  final String body;
-  final bool showAccept;
-  final bool showReject;
+  final NotificationData data;
 
   const NotificationDetailsSheet({
     super.key,
-    required this.title,
-    required this.body,
-    this.showAccept = false,
-    this.showReject = false,
+    required this.data,
   });
 
   @override
@@ -250,7 +257,7 @@ class NotificationDetailsSheet extends StatelessWidget {
                         height: 60,
                         decoration: BoxDecoration(
                           color: const Color(0xFF1E528E),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
                           border: Border.all(color: Colors.black, width: 2),
                         ),
                         child: const Icon(
@@ -283,7 +290,7 @@ class NotificationDetailsSheet extends StatelessWidget {
 
                   // Полный текст
                   ClashStrokeText(
-                    title,
+                    data.title,
                     fontSize: 22,
                     strokeWidth: 2.5,
                     textAlign: TextAlign.left,
@@ -294,16 +301,17 @@ class NotificationDetailsSheet extends StatelessWidget {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: const Color(0xFFDEE7F6),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(UiConstants.borderRadius * 2.5),
                       border: Border.all(
                         color: const Color(0xFF62697B),
                         width: 1,
                       ),
                     ),
                     child: Text(
-                      body * 3, // Умножаем для примера длинного текста
+                      data.body,
                       style: const TextStyle(
-                        fontFamily: 'Roboto',
+                        fontFamily: 'Russo One',
+                        fontFamilyFallback: ['Clash', 'Roboto', 'sans-serif'],
                         color: Color(0xFF0E3457),
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
@@ -314,10 +322,10 @@ class NotificationDetailsSheet extends StatelessWidget {
                   const Spacer(),
 
                   // Огромные кнопки снизу
-                  if (showReject || showAccept)
+                  if (data.showReject || data.showAccept)
                     Row(
                       children: [
-                        if (showReject)
+                        if (data.showReject)
                           Expanded(
                             child: SizedBox(
                               height: 50,
@@ -329,8 +337,8 @@ class NotificationDetailsSheet extends StatelessWidget {
                               ),
                             ),
                           ),
-                        if (showAccept && showReject) const SizedBox(width: 16),
-                        if (showAccept)
+                        if (data.showAccept && data.showReject) const SizedBox(width: 16),
+                        if (data.showAccept)
                           Expanded(
                             child: SizedBox(
                               height: 50,
@@ -360,39 +368,38 @@ class NotificationDetailsSheet extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Color(0xFF30D12D), // Зеленый фон
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
+          topLeft: Radius.circular(UiConstants.borderRadius * 6),
+          topRight: Radius.circular(UiConstants.borderRadius * 6),
         ),
       ),
       child: Stack(
         children: [
-          const Center(child: ClashStrokeText('Подробнее', fontSize: 28)),
+          const Center(
+            child: ClashStrokeText(
+              'Подробнее',
+              fontSize: 28,
+              shadows: [
+                Shadow(
+                  offset: Offset(0, 2),
+                  blurRadius: 0,
+                  color: Colors.black,
+                ),
+              ],
+            ),
+          ),
           Positioned(
             right: 12,
             top: 0,
             bottom: 0,
             child: Center(
-              child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFF0000),
-                    border: Border.all(color: Colors.black, width: 2),
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: const [
-                      BoxShadow(color: Colors.black45, offset: Offset(0, 3)),
-                    ],
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 22,
-                      weight: 800,
-                    ),
-                  ),
+              child: SizedBox(
+                width: 36,
+                height: 36,
+                child: GQButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: Icons.close,
+                  baseColor: const Color(0xFFFF4B4B),
+                  iconSizeFactor: 0.6,
                 ),
               ),
             ),
