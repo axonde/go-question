@@ -1,10 +1,10 @@
 part of '../profile_screen.dart';
 
 class _Profile extends StatelessWidget {
-  String name;
-  String nick;
+  final String name;
+  final String nick;
 
-  _Profile({required this.name, required this.nick});
+  const _Profile({required this.name, required this.nick});
 
   @override
   Widget build(BuildContext context) {
