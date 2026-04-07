@@ -1,29 +1,24 @@
 ﻿# Harness Developer Guide (go-question)
 
 This guide explains how the team should use the project harness with any coding model.
-EN is primary. RU notes are added for clarity.
 
-## 1) What This Harness Is
-
-This project uses a thin root policy and detailed runtime rules.
-
-Entry points:
+## 1) Harness Entry Points
 
 - `AGENTS.md` (thin root contract)
-- `.agents/harness/harness_index.md` (canonical load order)
-- `.agents/rules/*` (mandatory project rules)
+- `.agents/harness/harness_index.md` (canonical runtime load order)
+- `.agents/rules/*` (mandatory rules)
 - `.agents/skills/*` (task-scoped playbooks)
 
-Architecture contract:
+Architecture baseline:
 
 - Flutter + Dart
 - BLoC + GetIt + auto_route + Firebase
-- `freezed` for immutable/codegen models and state unions
-- Functional style with custom `Result<TSuccess, TFailure>`
+- `freezed` for immutable/codegen models
+- custom `Result<TSuccess, TFailure>` for functional success/failure flow
 
-## 2) Session Bootstrapping (How To Put Model In Context)
+## 2) Session Bootstrap Prompt (Model Context)
 
-Use this at the start of a fresh model session.
+Use this at the start of a new model session.
 
 ```text
 Read and follow AGENTS.md in this repository.
@@ -41,8 +36,6 @@ Then execute task changes accordingly.
 ```
 
 ## 3) Task Input Template For Team
-
-Use this template when assigning work to a model.
 
 ```text
 Task:
@@ -67,7 +60,39 @@ Output needed:
 - Suggested commit title(s) in Conventional Commits format
 ```
 
-## 4) Standard Workflow (End-to-End)
+## 4) Feature Workflow (Most Important)
+
+For one feature, delivery order is mandatory:
+
+1. Domain layer
+- define/confirm entities, repository interfaces, failure types, and result contracts
+- lock business logic contracts first
+
+2. Data layer
+- implement datasource + repository according to domain contracts
+- add explicit exception-to-failure mapping
+- use `shared_preferences` or `sqflite` when local storage is needed
+
+3. Presentation layer
+- implement BLoC/Cubit over ready domain/data contracts
+- connect bloc to already prepared UI screen
+- if screen is absent, create a minimal page scaffold and wire bloc flow
+
+## 5) Multi-Developer Mode (Same Feature)
+
+If multiple developers work on one feature, split ownership by layers:
+
+- Developer A: domain
+- Developer B: data
+- Developer C: presentation
+
+Rules:
+
+- handoff order is `domain -> data -> presentation`
+- final presentation integration starts only after domain contracts are agreed
+- each layer owner keeps interfaces explicit and stable
+
+## 6) Standard Workflow (End-to-End)
 
 1. Load context from `AGENTS.md` + `.agents/harness/harness_index.md`.
 2. Analyze scope and impacted layers.
@@ -86,7 +111,7 @@ Output needed:
 8. Prepare clean commit set (Conventional Commits, cohesive, rollback-safe).
 9. Open one logical PR from a named branch.
 
-## 5) Git and GitHub Workflow
+## 7) Git and GitHub Workflow
 
 Source of truth: `.agents/rules/git-github.md`
 
@@ -106,13 +131,6 @@ Format:
 
 `<type>(<optional-scope>): <short imperative summary>`
 
-Examples:
-
-- `feat(auth): add email verification resend cooldown`
-- `fix(profile): make profile widget immutable`
-- `refactor(theme): move repeated spacing to ui constants`
-- `test(auth): add regression for sign out state reset`
-
 ### Commit Shape Rules
 
 - One commit = one intent.
@@ -128,18 +146,9 @@ Examples:
 - PR must come from a named branch.
 - Use template: `.github/pull_request_template.md`.
 
-PR must include:
+## 8) Context Control During Long Tasks
 
-- scope and result
-- architectural impact
-- quality gate evidence
-- security notes
-- rollback notes
-- UI evidence if needed
-
-## 6) Context Control During Long Tasks
-
-If model starts drifting:
+If the model starts drifting:
 
 1. Ask it to restate active constraints from `AGENTS.md` and `.agents/harness/harness_index.md`.
 2. Ask it to list touched files and why each file is needed.
@@ -153,7 +162,7 @@ Restate active constraints and quality gate.
 Then continue with minimal, architecture-safe edits only.
 ```
 
-## 7) Definition of Done
+## 9) Definition of Done
 
 A task is done only when all are true:
 
@@ -164,7 +173,7 @@ A task is done only when all are true:
 - commit history is cohesive and rollback-safe
 - PR scope is one logical feature/fix
 
-## 8) Quick Daily Checklist
+## 10) Quick Daily Checklist
 
 - Context loaded?
 - Scope clear?

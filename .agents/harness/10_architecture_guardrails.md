@@ -28,6 +28,17 @@ Do not create reverse dependencies.
 - Bloc/Cubit must not depend directly on other Bloc/Cubit instances for business flows; share repositories/services instead.
 - Do not propagate raw exceptions into UI states; map exceptions to typed failures and return `Result`.
 
+## Multi-Developer Feature Rule
+
+When several developers work on one feature, split by layers with explicit ownership:
+
+- Domain owner defines contracts first (`entities`, repository interfaces, failures, result contracts).
+- Data owner implements contracts second (datasources, repository impl, exception-to-failure mapping).
+- Presentation owner finishes third (bloc/cubit, then screen integration).
+
+The implementation order is mandatory: `domain -> data -> presentation`.
+Parallel work is allowed only after domain contracts are agreed and stable.
+
 ## Error and Failure Contracts
 
 - Exception handling is mandatory at layer boundaries (data/repository/bloc handlers).

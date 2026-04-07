@@ -32,6 +32,16 @@ Do not introduce parallel architecture tracks without explicit approval.
 - UI must dispatch events/intents, not orchestrate repository internals.
 - Repository/domain boundaries should return typed `Result`, not raw thrown errors.
 
+## Delivery Order for One Feature
+
+For implementation workflow (especially when multiple developers share one feature):
+
+1. Start from `domain` layer (contracts and business logic).
+2. Continue in `data` layer (contract implementations and mappings).
+3. Finish in `presentation` layer (BLoC/Cubit and screen wiring).
+
+If final UI is not ready, create a minimal page scaffold and connect bloc flow to it.
+
 ## Exception and Failure Rules
 
 - Handle exceptions explicitly at boundaries.

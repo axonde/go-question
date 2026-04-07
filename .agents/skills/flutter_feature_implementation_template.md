@@ -39,8 +39,18 @@ Use existing local conventions if a feature already has a known structure.
 2. Implement data source + repository implementation.
 3. Wire dependency registration in `lib/injection_container/injection_container.dart`.
 4. Implement BLoC/Cubit events/states/transitions.
-5. Implement UI pages/widgets using state-driven rendering.
+5. Integrate BLoC with ready UI screen; if no screen exists, build a minimal page scaffold.
 6. Add tests for critical behavior (TDD).
+
+### Multi-Developer Layer Split
+
+When a feature is developed by multiple developers:
+
+- Developer A (domain): contracts first.
+- Developer B (data): repository/datasource implementation second.
+- Developer C (presentation): bloc + screen wiring third.
+
+Do not start final presentation integration before domain contracts are agreed.
 
 ## 4) Rules During Implementation
 

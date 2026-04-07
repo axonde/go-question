@@ -19,7 +19,27 @@ Follow this sequence for each task.
 - Use RED -> GREEN -> REFACTOR for critical behavior.
 - Current policy: prioritize tests for critical scenarios (not blanket coverage expansion).
 
-## 4) Implement
+## 4) Layer-First Feature Flow (Mandatory)
+
+For feature work, implement in this order:
+
+1. Domain layer
+- Define/adjust feature entities, repository interfaces, failures, and result contracts.
+- Lock the business contract first.
+
+2. Data layer
+- Implement datasource/repository according to domain contracts.
+- Add explicit exception handling and failure mapping.
+- Use `shared_preferences` or `sqflite` when local persistence is required.
+
+3. Presentation layer
+- Implement bloc/cubit based on ready domain/data contracts.
+- Integrate bloc with an already prepared UI screen.
+- If no ready UI exists, create a minimal page scaffold and connect bloc flow.
+
+When multiple developers share one feature, split work by these layers and hand off in this sequence.
+
+## 5) Implement
 
 - Keep architecture boundaries intact.
 - Apply const-first and constants extraction rules.
@@ -27,13 +47,13 @@ Follow this sequence for each task.
 - Use `freezed` and `Result` patterns consistently with existing code.
 - Add explicit exception-to-failure handling, do not leave unhandled exception paths.
 
-## 5) Review
+## 6) Review
 
 - Mandatory architecture/code review.
 - Mandatory security review.
 - Focus on logic, cohesion, and compatibility with existing project patterns.
 
-## 6) Quality Gate
+## 7) Quality Gate
 
 Run and report:
 
@@ -43,7 +63,7 @@ Run and report:
 
 If a command fails, report the exact failure and stop claiming production-ready status.
 
-## 7) Commit and PR Hygiene
+## 8) Commit and PR Hygiene
 
 - Create cohesive, rollback-safe commits.
 - Use Conventional Commits for non-WIP commits.
