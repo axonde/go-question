@@ -23,7 +23,7 @@ class _CityButton extends StatelessWidget {
       child: Container(
         height: height,
         decoration: _frameDecoration,
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: UiConstants.leftPadding * 1.5,
         ),
         // fitWidth: текст всегда заполняет доступную ширину →

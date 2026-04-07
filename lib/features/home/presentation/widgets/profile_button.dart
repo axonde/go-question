@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/features/score/presentation/cubit/score_cubit.dart';
 
 part 'profile_button/profile_avatar.dart';
-part 'profile_button/profile_user_info.dart';
 part 'profile_button/profile_score_badge.dart';
+part 'profile_button/profile_user_info.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ProfileButton — карточка профиля на главном экране.
@@ -27,7 +27,7 @@ class ProfileButton extends StatelessWidget {
         final vPad = h * 0.12;
 
         return Padding(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: UiConstants.leftPadding * 2,
           ),
           child: Pressable(
@@ -54,37 +54,32 @@ class _ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
-        final name = 'maximka';
+        const name = 'maximka';
 
         return Builder(
           builder: (context) {
             return DecoratedBox(
               decoration: BoxDecoration(
                 color: const Color(0xFF0E3457).withValues(alpha: 0.7),
-                border: Border.all(
-                  color: const Color(0xFF5EA3D3),
-                  width: UiConstants.borderWidth / 2,
-                ),
+                border: Border.all(color: const Color(0xFF5EA3D3)),
                 borderRadius: BorderRadius.circular(
                   UiConstants.borderRadius * 5,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.6),
-                    blurRadius: 0,
-                    spreadRadius: 0,
-                    offset: Offset(0, 2),
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: UiConstants.leftPadding * 1.5,
                 ),
                 child: Row(
                   children: [
                     _ProfileAvatar(size: slotHeight * 0.72),
-                    SizedBox(width: UiConstants.boxUnit),
+                    const SizedBox(width: UiConstants.boxUnit),
                     Expanded(
                       child: _ProfileUserInfo(
                         name: name,
@@ -93,7 +88,7 @@ class _ProfileCard extends StatelessWidget {
                         slotHeight: slotHeight,
                       ),
                     ),
-                    SizedBox(width: UiConstants.boxUnit),
+                    const SizedBox(width: UiConstants.boxUnit),
                     _ProfileScoreBadge(
                       score: 13, // mock
                       slotHeight: slotHeight,

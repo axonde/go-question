@@ -5,15 +5,12 @@ import 'package:go_question/config/theme/app_text_styles.dart';
 
 class AppTheme {
   static ThemeData main() {
-    final colorScheme = const ColorScheme.light(
+    const colorScheme = ColorScheme.light(
       primary: AppColors.primary,
       secondary: AppColors.secondary,
       error: AppColors.error,
       surface: AppColors.surface,
-      onPrimary: Colors.white,
-      onSecondary: Colors.black,
       onSurface: AppColors.textPrimary,
-      onError: Colors.white,
     );
 
     return ThemeData(
@@ -57,9 +54,9 @@ class AppTheme {
       ),
 
       // input
-      inputDecorationTheme: InputDecorationTheme(
-        labelStyle: const TextStyle(color: AppColors.textSecondary),
-        floatingLabelStyle: const TextStyle(color: AppColors.textPrimary),
+      inputDecorationTheme: const InputDecorationTheme(
+        labelStyle: TextStyle(color: AppColors.textSecondary),
+        floatingLabelStyle: TextStyle(color: AppColors.textPrimary),
         filled: true,
         fillColor: AppColors.inputBackground,
         enabledBorder: OutlineInputBorder(
@@ -69,7 +66,7 @@ class AppTheme {
           borderSide: BorderSide(color: AppColors.inputFocused, width: 2.2),
         ),
         errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.error, width: 1.0),
+          borderSide: BorderSide(color: AppColors.error),
         ),
       ),
     );
