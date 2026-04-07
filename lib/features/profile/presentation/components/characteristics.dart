@@ -2,13 +2,11 @@ part of '../profile_screen.dart';
 
 class _Characteristics extends StatelessWidget {
   final String yearsOld;
-  final String city;
-  final String mail;
+  final String visitedEventsCount;
 
   const _Characteristics({
     required this.yearsOld,
-    required this.city,
-    required this.mail,
+    required this.visitedEventsCount,
   });
 
   @override
@@ -22,10 +20,9 @@ class _Characteristics extends StatelessWidget {
           spacing: UiConstants.gap,
           children: [
             Expanded(child: _Field(yearsOld)),
-            Expanded(flex: 2, child: _Field(city)),
+            Expanded(flex: 2, child: _Field(visitedEventsCount)),
           ],
         ),
-        _Field(mail),
       ],
     );
   }

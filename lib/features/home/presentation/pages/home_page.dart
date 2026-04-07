@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:go_question/features/profile/presentation/profile_screen.dart';
 
 import '../widgets/battle_sheet.dart';
 import '../widgets/city_selector_sheet.dart';
@@ -34,6 +37,15 @@ class HomePage extends StatelessWidget {
   void _showModeDialog(BuildContext context) =>
       showDialog(context: context, builder: (_) => const ModeDialog());
 
+  void _showProfile(BuildContext context) {
+    final uid = context.read<AuthBloc>().state.user?.uid;
+    if (uid == null) return;
+    showDialog(
+      context: context,
+      builder: (_) => ProfileScreen(uid: uid),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +61,10 @@ class HomePage extends StatelessWidget {
                 onNotificationsTap: () => _showNotifications(context),
               ),
             ),
-            LayoutId(id: _HomeSlot.profile, child: const ProfileButton()),
+            LayoutId(
+              id: _HomeSlot.profile,
+              child: ProfileButton(onPressed: () => _showProfile(context)),
+            ),
             LayoutId(id: _HomeSlot.placeholder, child: const HomePlaceholder()),
             LayoutId(
               id: _HomeSlot.actions,

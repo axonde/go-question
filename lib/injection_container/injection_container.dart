@@ -10,6 +10,9 @@ import 'package:go_question/features/auth/domain/errors/auth_exception_to_failur
 import 'package:go_question/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:go_question/features/auth/domain/services/auth_page_memory.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:go_question/features/profile/data/repositories/user_repository_impl.dart';
+import 'package:go_question/features/profile/domain/repositories/i_user_repository.dart';
+import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/score/presentation/cubit/score_cubit.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -47,6 +50,11 @@ Future<void> init() async {
   );
 
   sl.registerFactory(() => ScoreCubit());
+
+  //! Features - Profile
+
+  sl.registerLazySingleton<IUserRepository>(() => UserRepositoryImpl(sl()));
+  sl.registerFactory(() => ProfileBloc(sl()));
 
   //! Core
 

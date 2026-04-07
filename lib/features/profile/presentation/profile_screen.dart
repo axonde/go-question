@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/app_text_styles.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/icons/gq_edit_icon.dart';
 import 'package:go_question/core/widgets/pressable.dart';
+import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:go_question/injection_container/injection_container.dart';
 
 part 'components/avatar.dart';
 part 'components/characteristics.dart';
 part 'components/profile.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  final String uid;
+
+  const ProfileScreen({super.key, required this.uid});
 
   @override
   Widget build(BuildContext context) {
-    return const _ProfileContent();
+    return BlocProvider(
+      create: (_) => sl<ProfileBloc>()..add(ProfileLoadRequested(uid)),
+      child: const _ProfileContent(),
+    );
   }
 }
 
@@ -49,35 +57,59 @@ class _ProfileContent extends StatelessWidget {
               bottom: UiConstants.bottomPadding * 2,
               left: UiConstants.leftPadding * 2,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+            child: BlocBuilder<ProfileBloc, ProfileState>(
+              builder: (context, state) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    GqCloseButton(onTap: () => Navigator.of(context).pop()),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GqCloseButton(
+                          onTap: () => Navigator.of(context).pop(),
+                        ),
+                      ],
+                    ),
+
+                    _Avatar(),
+
+                    if (state.isLoading)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24),
+                        child: CircularProgressIndicator(),
+                      )
+                    else if (state.isFailure)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        child: Text(
+                          state.errorMessage ?? 'Ошибка загрузки профиля',
+                          style: AppTextStyles.bodyMedium.merge(
+                            const TextStyle(color: AppColors.error),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    else if (state.isLoaded && state.profile != null) ...[
+                      _Profile(name: state.profile!.name),
+
+                      _Characteristics(
+                        yearsOld: '${state.profile!.age} лет',
+                        visitedEventsCount:
+                            '${state.profile!.visitedEventsCount} событий',
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      Text(
+                        'Для редактирования нажмите на выбранное поле',
+                        style: AppTextStyles.labelMedium.merge(
+                          const TextStyle(color: AppColors.textSecondary),
+                        ),
+                      ),
+                    ],
                   ],
-                ),
-
-                _Avatar(),
-
-                const _Profile(name: 'Maxim Maximka', nick: 'papeiko'),
-
-                const _Characteristics(
-                  yearsOld: '19 лет',
-                  city: 'Санкт-Петербург',
-                  mail: 'danil-kolbasenko@gmail.com',
-                ),
-
-                const SizedBox(height: 24),
-
-                Text(
-                  'Для редактирования нажмите на выбранное поле',
-                  style: AppTextStyles.labelMedium.merge(
-                    const TextStyle(color: AppColors.textSecondary),
-                  ),
-                ),
-              ],
+                );
+              },
             ),
           ),
         ),
