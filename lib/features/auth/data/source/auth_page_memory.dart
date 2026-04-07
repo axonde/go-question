@@ -1,11 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'auth_state.dart';
-
-abstract interface class AuthPageMemory {
-  Future<AuthPage> readLastPage();
-  Future<void> saveLastPage(AuthPage page);
-}
+import '../../domain/entities/auth_page.dart';
+import '../../domain/services/auth_page_memory.dart';
 
 final class SharedPrefsAuthPageMemory implements AuthPageMemory {
   static const _lastAuthPageKey = 'auth.last.page';
@@ -23,7 +19,6 @@ final class SharedPrefsAuthPageMemory implements AuthPageMemory {
       case 'verifyEmail':
         return AuthPage.verifyEmail;
       case 'signUp':
-      case 'signIn': // legacy key
       default:
         return AuthPage.signUp;
     }

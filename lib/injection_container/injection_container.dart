@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_question/config/router/router.dart';
 import 'package:go_question/core/network/network_info.dart';
 import 'package:go_question/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:go_question/features/auth/data/source/auth_page_memory.dart';
 import 'package:go_question/features/auth/data/source/datasource.dart';
 import 'package:go_question/features/auth/domain/errors/auth_exception_to_failure_mapper.dart';
 import 'package:go_question/features/auth/domain/repositories/i_auth_repository.dart';
+import 'package:go_question/features/auth/domain/services/auth_page_memory.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:go_question/features/auth/presentation/bloc/auth_page_memory.dart';
 import 'package:go_question/features/score/presentation/cubit/score_cubit.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -32,6 +34,12 @@ Future<void> init() async {
 
   sl.registerLazySingleton<IAuthRepository>(
     () => AuthRepositoryImpl(sl(), sl(), sl()),
+  );
+
+  sl.registerLazySingleton<AuthGuard>(() => AuthGuard(sl()));
+  sl.registerLazySingleton<GuestGuard>(() => GuestGuard(sl()));
+  sl.registerLazySingleton<AppRouter>(
+    () => AppRouter(authGuard: sl(), guestGuard: sl()),
   );
 
   sl.registerLazySingleton<IAuthRemoteDataSource>(
