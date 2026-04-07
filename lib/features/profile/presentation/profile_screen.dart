@@ -56,7 +56,7 @@ class _ProfileContent extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    GqCloseButton(onTap: () => print('press close button')),
+                    GqCloseButton(onTap: () => Navigator.of(context).pop()),
                   ],
                 ),
 

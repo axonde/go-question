@@ -1,0 +1,3 @@
+﻿WARNING|STATIC_WARNING|UNUSED_IMPORT|C:\\proga\\go-question\\lib\\config\\theme\\app_text_styles.dart|2|8|50|Unused import: 'package:go_question/config/theme/app_colors.dart'.
+WARNING|STATIC_WARNING|MUST_BE_IMMUTABLE|C:\\proga\\go-question\\lib\\features\\profile\\presentation\\components\\profile.dart|3|7|8|This class (or a class that this class inherits from) is marked as '@immutable', but one or more of its instance fields aren't final: _Profile.name, _Profile.nick
+INFO|LINT|AVOID_PRINT|C:\\proga\\go-question\\lib\\features\\profile\\presentation\\profile_screen.dart|59|48|5|Don't invoke 'print' in production code.
