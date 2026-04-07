@@ -23,8 +23,6 @@ class HomePage extends StatelessWidget {
 
   void _showNotifications(BuildContext context) => showModalBottomSheet(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
     builder: (_) => const NotificationsSheet(),
   );
 

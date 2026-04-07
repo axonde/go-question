@@ -1,6 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
-import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
+
+/// Модель данных для уведомления.
+class NotificationData {
+  final String title;
+  final String body;
+  final bool showAccept;
+  final bool showReject;
+
+  const NotificationData({
+    required this.title,
+    required this.body,
+    this.showAccept = false,
+    this.showReject = false,
+  });
+}
+
+/// Список тестовых данных для уведомлений.
+const _kMockNotifications = [
+  NotificationData(
+    title: 'Запрос на участие',
+    body:
+        'Джиган хочет присоединиться к вашему ивенту: "Вечеринка на пляже", который состоится 04.04.2027 в 17:00.',
+    showAccept: true,
+    showReject: true,
+  ),
+  NotificationData(
+    title: 'Событие скоро начнется!',
+    body:
+        'Событие "Вечеринка на пляже", которое состоится 04.04.2027 в 17:00, начнется через 2 часа. Не забудьте подготовиться!',
+    showAccept: true,
+    showReject: true,
+  ),
+];
 
 /// Bottom sheet уведомлений (Clash Style).
 class NotificationsSheet extends StatelessWidget {
@@ -19,23 +51,17 @@ class NotificationsSheet extends StatelessWidget {
               color: Colors.white,
               child: ListView(
                 padding: const EdgeInsets.all(16.0),
-                children: const [
-                  NotificationCard(
-                    title: 'Запрос на участие',
-                    body:
-                        'Джиган хочет присоединиться к вашему ивенту: "Вечеринка на пляже", который состоится 04.04.2027 в 17:00.',
-                    showAccept: true,
-                    showReject: true,
-                  ),
-                  SizedBox(height: 12),
-                  NotificationCard(
-                    title: 'Событие скоро начнется!',
-                    body:
-                        'Событие "Вечеринка на пляже", которое состоится 04.04.2027 в 17:00, начнется через 2 часа. Не забудьте подготовиться!',
-                    showAccept: true,
-                    showReject: true,
-                  ),
-                ],
+                children: _kMockNotifications.map((data) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: NotificationCard(
+                      title: data.title,
+                      body: data.body,
+                      showAccept: data.showAccept,
+                      showReject: data.showReject,
+                    ),
+                  );
+                }).toList(),
               ),
             ),
           ),
@@ -57,7 +83,17 @@ class NotificationsSheet extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          const Center(child: ClashStrokeText('Уведомления', fontSize: 28)),
+          const Center(
+            child: Text(
+              'Уведомления',
+              style: TextStyle(
+                fontFamily: 'Clash',
+                fontSize: 28,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           Positioned(
             right: 12,
             top: 0,
@@ -138,13 +174,16 @@ class NotificationCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClashStrokeText(
+            Text(
               title,
-              fontSize: 20,
-              strokeWidth: 2.5,
-              textAlign: TextAlign.left,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontFamily: 'Clash',
+                fontSize: 20,
+                color: Color(0xFF0E3457),
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
@@ -264,7 +303,15 @@ class NotificationDetailsSheet extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ClashStrokeText('Джиган', fontSize: 24),
+                            Text(
+                              'Джиган',
+                              style: TextStyle(
+                                fontFamily: 'Clash',
+                                fontSize: 24,
+                                color: Color(0xFF0E3457),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             Text(
                               'Рейтинг: 158 🏆',
                               style: TextStyle(
@@ -282,11 +329,14 @@ class NotificationDetailsSheet extends StatelessWidget {
                   const SizedBox(height: 24),
 
                   // Полный текст
-                  ClashStrokeText(
+                  Text(
                     title,
-                    fontSize: 22,
-                    strokeWidth: 2.5,
-                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                      fontFamily: 'Clash',
+                      fontSize: 22,
+                      color: Color(0xFF0E3457),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Container(
@@ -366,7 +416,17 @@ class NotificationDetailsSheet extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          const Center(child: ClashStrokeText('Подробнее', fontSize: 28)),
+          const Center(
+            child: Text(
+              'Подробнее',
+              style: TextStyle(
+                fontFamily: 'Clash',
+                fontSize: 28,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           Positioned(
             right: 12,
             top: 0,
