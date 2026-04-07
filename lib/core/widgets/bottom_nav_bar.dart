@@ -5,9 +5,9 @@ import 'package:go_question/core/widgets/pressable.dart';
 part 'bottom_nav_bar/_nav_background.dart';
 part 'bottom_nav_bar/_nav_item.dart';
 
-const _kFriendsAsset = 'assets/images/icons/friends.png';
-const _kBattleAsset = 'assets/images/icons/battle.png';
-const _kSettingsAsset = 'assets/images/icons/settings.png';
+const _kFriendsAsset = 'assets/icons/png/friends.png';
+const _kBattleAsset = 'assets/icons/png/battle.png';
+const _kSettingsAsset = 'assets/icons/png/settings.png';
 
 const double _kBarHeight = UiConstants.boxUnit * 13;
 const double _kDividerWidth = 3.0;
