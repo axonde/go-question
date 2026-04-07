@@ -1,9 +1,5 @@
 part of '../bottom_nav_bar.dart';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// _NavBackground — фон нижней панели.
-// ─────────────────────────────────────────────────────────────────────────────
-
 class _NavBackground extends StatelessWidget {
   const _NavBackground();
 

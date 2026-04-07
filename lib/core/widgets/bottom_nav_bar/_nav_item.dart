@@ -3,12 +3,6 @@ part of '../bottom_nav_bar.dart';
 const _kAnimDuration = Duration(milliseconds: 200);
 const double _kOverflowY = 10.0;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// _NavItem — кнопка нижней навигации.
-//
-// Иконка и лейбл позиционируются независимо через Stack.
-// ─────────────────────────────────────────────────────────────────────────────
-
 class _NavItem extends StatelessWidget {
   final int index;
   final String label;
@@ -41,10 +35,8 @@ class _NavItem extends StatelessWidget {
           final fullH = constraints.maxHeight;
           final contentH = fullH - bottomPad;
 
-          // Зона лейбла фиксирована снизу
           final labelH = contentH * 0.20;
           final labelFontSize = (contentH * 0.14).clamp(10.0, 16.0);
-          // Зона иконки — всё что выше лейбла
           final iconAreaH = contentH - labelH;
           final iconSize =
               iconAreaH *
@@ -53,7 +45,6 @@ class _NavItem extends StatelessWidget {
           return Stack(
             clipBehavior: Clip.none,
             children: [
-              // ── Подсветка: полная высота, включая safe area ──────────────
               Positioned.fill(
                 child: AnimatedContainer(
                   duration: _kAnimDuration,
@@ -62,8 +53,6 @@ class _NavItem extends StatelessWidget {
                       : Colors.transparent,
                 ),
               ),
-
-              // ── Контент: только в области выше safe area ─────────────────
               Positioned(
                 top: 0,
                 left: 0,
@@ -75,7 +64,6 @@ class _NavItem extends StatelessWidget {
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      // Иконка: центрируется в iconAreaH, сдвигается независимо
                       Positioned(
                         top: 0,
                         left: 0,
@@ -89,29 +77,29 @@ class _NavItem extends StatelessWidget {
                             ),
                             duration: _kAnimDuration,
                             curve: Curves.easeOut,
-                            builder: (_, dy, __) => Transform.translate(
-                              offset: Offset(0, dy),
-                              child: AnimatedContainer(
-                                duration: _kAnimDuration,
-                                curve: Curves.easeOut,
-                                width: iconSize,
-                                height: iconSize,
-                                child: Image.asset(
-                                  assetPath,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (_, __, ___) => Icon(
-                                    fallbackIcon,
-                                    size: iconSize,
-                                    color: Colors.white,
+                            builder: (context, dy, child) =>
+                                Transform.translate(
+                                  offset: Offset(0, dy),
+                                  child: AnimatedContainer(
+                                    duration: _kAnimDuration,
+                                    curve: Curves.easeOut,
+                                    width: iconSize,
+                                    height: iconSize,
+                                    child: Image.asset(
+                                      assetPath,
+                                      fit: BoxFit.contain,
+                                      errorBuilder:
+                                          (context, error, stackTrace) => Icon(
+                                            fallbackIcon,
+                                            size: iconSize,
+                                            color: Colors.white,
+                                          ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
                           ),
                         ),
                       ),
-
-                      // Лейбл: фиксирован снизу, не зависит от иконки
                       Positioned(
                         bottom: 0,
                         left: 0,

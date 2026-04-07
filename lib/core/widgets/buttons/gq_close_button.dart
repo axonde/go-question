@@ -7,12 +7,12 @@ import 'package:go_question/core/widgets/pressable.dart';
 class GqCloseButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  GqCloseButton({super.key, required this.onTap});
+  const GqCloseButton({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final Widget svg = SvgPicture.asset(
-      'assets/icons/close.svg',
+      'assets/icons/svgs/close.svg',
       semanticsLabel: 'Dart Logo',
     );
 
