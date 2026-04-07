@@ -7,18 +7,9 @@ part of '../home_events.dart';
 
 const _cardDecoration = BoxDecoration(
   color: Color(0xFF0E3457),
-  border: Border.fromBorderSide(
-    BorderSide(color: Color(0xFF5EA3D3), width: UiConstants.borderWidth / 2),
-  ),
+  border: Border.fromBorderSide(BorderSide(color: Color(0xFF5EA3D3))),
   borderRadius: BorderRadius.all(Radius.circular(UiConstants.borderRadius * 5)),
-  boxShadow: [
-    BoxShadow(
-      color: Color(0x99000000),
-      blurRadius: 0,
-      spreadRadius: 0,
-      offset: Offset(0, 2),
-    ),
-  ],
+  boxShadow: [BoxShadow(color: Color(0x99000000), offset: Offset(0, 2))],
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -84,7 +75,6 @@ class _EventCard extends StatelessWidget {
                   flex: 2,
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
-                    alignment: Alignment.center,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -135,21 +125,13 @@ class _EmptyCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF0E3457).withValues(alpha: 0.35),
         border: Border.fromBorderSide(
-          BorderSide(
-            color: const Color(0xFF5EA3D3).withValues(alpha: 0.3),
-            width: UiConstants.borderWidth / 2,
-          ),
+          BorderSide(color: const Color(0xFF5EA3D3).withValues(alpha: 0.3)),
         ),
         borderRadius: const BorderRadius.all(
           Radius.circular(UiConstants.borderRadius * 5),
         ),
         boxShadow: const [
-          BoxShadow(
-            color: Color(0x44000000),
-            blurRadius: 0,
-            spreadRadius: 0,
-            offset: Offset(0, 2),
-          ),
+          BoxShadow(color: Color(0x44000000), offset: Offset(0, 2)),
         ],
       ),
     );

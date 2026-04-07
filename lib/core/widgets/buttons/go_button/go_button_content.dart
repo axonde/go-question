@@ -96,7 +96,8 @@ class _ButtonText extends StatelessWidget {
   Widget build(BuildContext context) {
     const family = 'Clash';
     const fallback = ['Roboto', 'sans-serif'];
-    final strokeWidth = fontSize * 2 / 24; // пропорционально дефолту rx(2)/rx(24)
+    final strokeWidth =
+        fontSize * 2 / 24; // пропорционально дефолту rx(2)/rx(24)
 
     return Stack(
       alignment: Alignment.center,
@@ -129,7 +130,6 @@ class _ButtonText extends StatelessWidget {
             shadows: [
               Shadow(
                 offset: Offset(0, shadowOffsetY),
-                blurRadius: 0,
                 color: colors.textShadowColor,
               ),
             ],
@@ -193,7 +193,6 @@ class _ButtonIcon extends StatelessWidget {
           shadows: [
             Shadow(
               offset: Offset(0, shadowOffsetY),
-              blurRadius: 0,
               color: colors.textShadowColor,
             ),
           ],

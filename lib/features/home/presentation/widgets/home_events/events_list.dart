@@ -22,11 +22,11 @@ class _EventsList extends StatelessWidget {
       builder: (_, constraints) {
         final totalW = constraints.maxWidth;
         final totalH = constraints.maxHeight;
-        final hPad = UiConstants.horizontalPadding * 2;
-        final vPad = UiConstants.verticalPadding;
-        final gap = UiConstants.boxUnit;
+        const hPad = UiConstants.horizontalPadding * 2;
+        const vPad = UiConstants.verticalPadding;
+        const gap = UiConstants.boxUnit;
 
-        final bPad = UiConstants.bottomPadding;
+        const bPad = UiConstants.bottomPadding;
         final cardH = totalH - vPad - bPad * 2;
         final cardW =
             (totalW - hPad * 2 - gap * (_visibleCount - 1)) / _visibleCount;
@@ -34,11 +34,11 @@ class _EventsList extends StatelessWidget {
         final scrollable = events.length > _visibleCount;
 
         return Padding(
-          padding: EdgeInsets.only(top: vPad, bottom: bPad * 2),
+          padding: const EdgeInsets.only(top: vPad, bottom: bPad * 2),
           child: scrollable
               ? _scrollableRow(cardW, cardH, gap, hPad)
               : Padding(
-                  padding: EdgeInsets.symmetric(horizontal: hPad),
+                  padding: const EdgeInsets.symmetric(horizontal: hPad),
                   child: _fixedRow(cardW, cardH, gap),
                 ),
         );

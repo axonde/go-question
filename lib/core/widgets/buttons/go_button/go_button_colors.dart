@@ -36,8 +36,6 @@ class GoButtonColors {
       shadowColor: Colors.black,
       borderColor: Colors.black,
       outerGradient: LinearGradient(
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
         colors: [
           _shiftHSL(safeBase, dH: -13, dL: -0.16),
           _shiftHSL(safeBase, dH: -14, dL: -0.13),

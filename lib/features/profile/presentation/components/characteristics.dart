@@ -21,7 +21,7 @@ class _Characteristics extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           spacing: UiConstants.gap,
           children: [
-            Expanded(flex: 1, child: _Field(yearsOld)),
+            Expanded(child: _Field(yearsOld)),
             Expanded(flex: 2, child: _Field(city)),
           ],
         ),
@@ -93,10 +93,10 @@ class _FieldState extends State<_Field> {
           decoration: BoxDecoration(
             color: AppColors.inputBackground,
             border: BoxBorder.all(color: AppColors.inputBorder),
-            borderRadius: BorderRadius.all(Radius.circular(5)),
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
           ),
           child: Padding(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               top: UiConstants.topPadding * 2,
               right: UiConstants.rightPadding * 2,
               bottom: UiConstants.bottomPadding * 2,
