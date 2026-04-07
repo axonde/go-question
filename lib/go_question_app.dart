@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_theme.dart';
+import 'package:go_question/core/widgets/app_background.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_state.dart';
 import 'package:go_question/injection_container/injection_container.dart';
@@ -38,6 +39,9 @@ class GoQuestionApp extends StatelessWidget {
               title: 'Go Question',
               debugShowCheckedModeBanner: false,
               theme: AppTheme.main(),
+              builder: (context, child) {
+                return AppBackground(child: child ?? const SizedBox.shrink());
+              },
               routerConfig: appRouter.config(),
             );
           },

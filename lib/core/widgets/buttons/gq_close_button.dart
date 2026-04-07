@@ -12,7 +12,7 @@ class GqCloseButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Widget svg = SvgPicture.asset(
-      'assets/icons/close.svg',
+      'assets/icons/svgs/close.svg',
       semanticsLabel: 'Dart Logo',
     );
 
