@@ -17,9 +17,13 @@ class UserProfileModel {
     String uid,
     Map<String, dynamic> data,
   ) {
+    final name = data['name'] as String?;
+    if (name == null || name.isEmpty) {
+      throw const FormatException('Missing required field: name');
+    }
     return UserProfileModel(
       uid: uid,
-      name: data['name'] as String? ?? '',
+      name: name,
       age: data['age'] as int? ?? 0,
       visitedEventsCount: data['visitedEventsCount'] as int? ?? 0,
     );

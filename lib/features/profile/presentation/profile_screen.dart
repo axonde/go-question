@@ -82,7 +82,7 @@ class _ProfileContent extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 24),
                         child: Text(
-                          state.errorMessage ?? 'Ошибка загрузки профиля',
+                          state.errorMessage ?? 'Failed to load profile',
                           style: AppTextStyles.bodyMedium.merge(
                             const TextStyle(color: AppColors.error),
                           ),

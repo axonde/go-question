@@ -66,7 +66,7 @@ void main() {
       () async {
         const tFailure = ProfileFailure(
           ProfileFailureType.server,
-          message: 'Ошибка загрузки профиля',
+          message: 'Failed to load profile: FirebaseException',
         );
 
         when(
@@ -86,7 +86,7 @@ void main() {
         expect(states[0].status, equals(ProfileStatus.loading));
 
         expect(states[1].status, equals(ProfileStatus.failure));
-        expect(states[1].errorMessage, equals('Ошибка загрузки профиля'));
+        expect(states[1].errorMessage, equals('Failed to load profile: FirebaseException'));
         expect(states[1].profile, isNull);
       },
     );
@@ -96,7 +96,7 @@ void main() {
       () async {
         const tFailure = ProfileFailure(
           ProfileFailureType.notFound,
-          message: 'Профиль пользователя не найден',
+          message: 'User profile not found',
         );
 
         when(
@@ -107,7 +107,7 @@ void main() {
         final state = await bloc.stream.firstWhere((s) => s.isFailure);
 
         expect(state.status, equals(ProfileStatus.failure));
-        expect(state.errorMessage, equals('Профиль пользователя не найден'));
+        expect(state.errorMessage, equals('User profile not found'));
       },
     );
 

@@ -19,18 +19,18 @@ class UserRepositoryImpl implements IUserRepository {
         return const Failure(
           ProfileFailure(
             ProfileFailureType.notFound,
-            message: 'Профиль пользователя не найден',
+            message: 'User profile not found',
           ),
         );
       }
 
       final model = UserProfileModel.fromFirestore(uid, doc.data()!);
       return Success(model.toEntity());
-    } catch (_) {
-      return const Failure(
+    } catch (e) {
+      return Failure(
         ProfileFailure(
           ProfileFailureType.server,
-          message: 'Ошибка загрузки профиля',
+          message: 'Failed to load profile: ${e.runtimeType}',
         ),
       );
     }
