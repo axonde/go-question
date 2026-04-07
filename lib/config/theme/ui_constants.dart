@@ -14,4 +14,9 @@ class UiConstants {
   static const double textSize = boxUnit * 2.0; // 16px — базовый размер текста
 
   static const double strokeWidth = 1;
+
+  // Тень без blur — смещение только вниз (используется везде в приложении).
+  static const double shadowOffsetY = 4;
+  // Тень под текстом (stroke titles) — меньше чем у блоков.
+  static const double textShadowOffsetY = 2;
 }
