@@ -16,34 +16,52 @@ class HomeActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          GQButton(
-            width: UiConstants.boxUnit * 20,
-            height: UiConstants.boxUnit * 12.5,
-            onPressed: onBattleSheetTap,
-            text: 'Поиск',
-            baseColor: AppColors.secondary,
+    return LayoutBuilder(
+      builder: (_, constraints) {
+        final h = constraints.maxHeight - UiConstants.verticalPadding * 2;
+
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: UiConstants.horizontalPadding * 2,
+            vertical: UiConstants.verticalPadding,
           ),
-          const SizedBox(width: UiConstants.middlePadding * 2),
-          GQButton(
-            width: UiConstants.boxUnit * 20,
-            height: UiConstants.boxUnit * 12.5,
-            onPressed: onModeDialogTap,
-            baseColor: AppColors.primary,
-            mainGradient: const LinearGradient(
-              colors: [Color(0xFF0092F5), Color(0xFF008FF2)],
-            ),
-            outerGradient: const LinearGradient(
-              colors: [Color(0xFF005BC0), Color(0xFF0055B8)],
-            ),
-            text: 'Новое',
+          child: Row(
+            spacing: UiConstants.boxUnit,
+            children: [
+              Flexible(
+                flex: 1,
+                child: LayoutBuilder(
+                  builder: (_, c) => GQButton(
+                    onPressed: onBattleSheetTap,
+                    text: 'Поиск',
+                    baseColor: AppColors.secondary,
+                    width: c.maxWidth,
+                    height: h,
+                  ),
+                ),
+              ),
+              Flexible(
+                flex: 1,
+                child: LayoutBuilder(
+                  builder: (_, c) => GQButton(
+                    onPressed: onModeDialogTap,
+                    text: 'Новое',
+                    baseColor: AppColors.primary,
+                    mainGradient: const LinearGradient(
+                      colors: [Color(0xFF0092F5), Color(0xFF008FF2)],
+                    ),
+                    outerGradient: const LinearGradient(
+                      colors: [Color(0xFF005BC0), Color(0xFF0055B8)],
+                    ),
+                    width: c.maxWidth,
+                    height: h,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

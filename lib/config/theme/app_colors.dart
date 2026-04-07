@@ -19,7 +19,9 @@ class AppColors {
 
   /// Фон экранов с кастомным градиентом/изображением.
   /// Пример: `Scaffold(backgroundColor: AppColors.background)`.
-  static const Color background = Colors.transparent;
+  static const Color popupOutBackground = Color(0x94000000);
+  static const Color scaffoldBackgroundColor = Colors.transparent;
+  static const Color redBackground = Color(0xFFC50006);
 
   /// Базовый цвет поверхностей карточек и панелей.
   /// Пример: `Card(color: AppColors.surface)`.
@@ -44,6 +46,9 @@ class AppColors {
   /// Вторичный цвет текста (плейсхолдеры/лейблы).
   /// Пример: `TextStyle(color: AppColors.textSecondary)`.
   static const Color textSecondary = Color(0xFFABAAAA);
+
+  static const Color stroke = Color(0xFF202020);
+  static const Color lightStroke = Color(0xFF576278);
 
   /// Цвет успешных состояний.
   /// Пример: `SnackBar(backgroundColor: AppColors.success)`.

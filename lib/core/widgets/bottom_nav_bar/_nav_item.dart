@@ -89,7 +89,7 @@ class _NavItem extends StatelessWidget {
                             ),
                             duration: _kAnimDuration,
                             curve: Curves.easeOut,
-                            builder: (_, dy, __) => Transform.translate(
+                            builder: (_, dy, _) => Transform.translate(
                               offset: Offset(0, dy),
                               child: AnimatedContainer(
                                 duration: _kAnimDuration,
@@ -99,7 +99,7 @@ class _NavItem extends StatelessWidget {
                                 child: Image.asset(
                                   assetPath,
                                   fit: BoxFit.contain,
-                                  errorBuilder: (_, __, ___) => Icon(
+                                  errorBuilder: (_, _, _) => Icon(
                                     fallbackIcon,
                                     size: iconSize,
                                     color: Colors.white,

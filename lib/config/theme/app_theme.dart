@@ -21,6 +21,7 @@ class AppTheme {
       colorScheme: colorScheme,
       primaryColor: AppColors.primary,
       fontFamily: 'Clash',
+      scaffoldBackgroundColor: Colors.transparent,
 
       textTheme:
           const TextTheme(

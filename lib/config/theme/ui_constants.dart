@@ -8,6 +8,9 @@ class UiConstants {
   static const double verticalPadding = 8;
 
   static const double borderRadius = 2;
+
+  static const double gap = 6;
+
   static const double borderWidth = 2;
 
   static const double boxUnit = 8;
@@ -19,4 +22,6 @@ class UiConstants {
   static const double shadowOffsetY = 4;
   // Тень под текстом (stroke titles) — меньше чем у блоков.
   static const double textShadowOffsetY = 2;
+
+  static const double minInputHeight = 57;
 }

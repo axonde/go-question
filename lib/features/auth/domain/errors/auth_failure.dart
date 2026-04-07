@@ -17,5 +17,8 @@ final class AuthFailure implements Failure<AuthFailureType> {
   @override
   final AuthFailureType type;
 
-  const AuthFailure(this.type);
+  @override
+  final String message;
+
+  const AuthFailure(this.type, {this.message = ''});
 }

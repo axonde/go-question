@@ -31,15 +31,23 @@ class _GoButtonContent extends StatelessWidget {
         final w = constraints.maxWidth;
         final h = constraints.maxHeight;
 
+        // Отступ совпадает с границами innerPanel из _GoButtonPainter:
+        // горизонталь rx(7) = 7/161*w, вертикаль ry(6) = 6/108*h
+        final hPad = w * 7 / 161;
+        final vPad = h * 6 / 108;
+
         if (text != null) {
-          return Center(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: _ButtonText(
-                text: text!,
-                fontSize: fontSize ?? w * 24 / 161,
-                shadowOffsetY: h * 2 / 108,
-                colors: colors,
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
+            child: Center(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: _ButtonText(
+                  text: text!,
+                  fontSize: fontSize ?? w * 24 / 161,
+                  shadowOffsetY: h * 2 / 108,
+                  colors: colors,
+                ),
               ),
             ),
           );

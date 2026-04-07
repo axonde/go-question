@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_question/features/auth/presentation/validators/auth_field_validators.dart';
 
 class PasswordField extends StatefulWidget {
-  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
 
-  const PasswordField({super.key, required this.controller});
+  const PasswordField({super.key, required this.onChanged});
 
   @override
   State<PasswordField> createState() => PasswordFieldState();
@@ -16,7 +16,7 @@ class PasswordFieldState extends State<PasswordField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: widget.controller,
+      onChanged: widget.onChanged,
       obscureText: isObscure,
       decoration: InputDecoration(
         labelText: 'Пароль',

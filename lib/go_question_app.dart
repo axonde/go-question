@@ -1,30 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:go_question/config/main_scaffold.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_theme.dart';
+import 'package:go_question/core/widgets/app_background.dart';
+import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:go_question/features/auth/presentation/bloc/auth_state.dart';
+import 'package:go_question/injection_container/injection_container.dart';
 
 class GoQuestionApp extends StatelessWidget {
   const GoQuestionApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Go Question',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.main(),
-      home: _AuthGate(),
+    final appRouter = sl<AppRouter>();
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (_) => sl<AuthBloc>()..add(const AuthStarted()),
+        ),
+      ],
+      child: BlocListener<AuthBloc, AuthState>(
+        listenWhen: (previous, current) => previous.status != current.status,
+        listener: (context, state) {
+          if (state.status == AuthStatus.authenticated) {
+            appRouter.replace(const MainRoute());
+            return;
+          }
+
+          if (state.status == AuthStatus.unauthenticated) {
+            appRouter.replace(const AuthFlowRoute());
+          }
+        },
+        child: BlocBuilder<AuthBloc, AuthState>(
+          buildWhen: (previous, current) => previous.status != current.status,
+          builder: (context, state) {
+            return MaterialApp.router(
+              title: 'Go Question',
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.main(),
+              builder: (context, child) {
+                return AppBackground(child: child ?? const SizedBox.shrink());
+              },
+              routerConfig: appRouter.config(),
+            );
+          },
+        ),
+      ),
     );
-  }
-}
-
-class _AuthGate extends StatelessWidget {
-  const _AuthGate();
-
-  @override
-  Widget build(BuildContext context) {
-    // Точки входа в auth-экран временно закомментированы.
-    // Причина: в параллельном PR разрабатывается BLoC-связка для auth flow,
-    // и до её мерджа приложение запускается через MainScaffold.
-    // После интеграции BLoC вернуть entry-point на auth gate.
-    return MainScaffold();
   }
 }

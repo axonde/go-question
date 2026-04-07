@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/config/theme/app_text_styles.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 
 class SubmitButton extends StatelessWidget {
@@ -11,7 +12,7 @@ class SubmitButton extends StatelessWidget {
     required this.isLoading,
     required this.onPressed,
   }) : isLogin = true;
-  const SubmitButton.signin({
+  const SubmitButton.signUp({
     super.key,
     required this.isLoading,
     required this.onPressed,
@@ -19,12 +20,12 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      child: GQButton(
-        onPressed: isLoading ? () {} : onPressed,
-        text: isLogin ? 'Войти' : 'Зарегистрироваться',
-      ),
+    return GQButton(
+      aspectRatio: 110 / 20,
+      fontSize: AppTextStyles.button.fontSize,
+      widthFactor: 1,
+      onPressed: isLoading ? () {} : onPressed,
+      text: isLogin ? 'Войти' : 'Зарегистрироваться',
     );
   }
 }

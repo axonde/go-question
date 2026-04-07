@@ -1,27 +1,29 @@
 class EventEntity {
-  final String id; // id события
-  final String title; // название события
-  final String description; // описание события
-  final String imageUrl; // ссылка на изображение события
-  final DateTime date; // дата события
-  final String location; // место проведения события
-  final String category; // категория события
-  final double price; // цена билета
-  final int participants; // количество участников
-  final String organizer; // организатор события
-  final String status; // статус события
-  final DateTime createdAt; // дата создания события
-  final DateTime updatedAt; // дата обновления события
+  final String id;
+  final String title;
+  final String description;
+  final String imageUrl;
+  final DateTime startTime; // время начала
+  final String location;
+  final String category;
+  final double price; // средний чек / цена входа
+  final int maxUsers; // максимальное кол-во участников
+  final int participants; // текущее кол-во участников
+  final String organizer;
+  final String status;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   EventEntity({
     required this.id,
     required this.title,
     required this.description,
     required this.imageUrl,
-    required this.date,
+    required this.startTime,
     required this.location,
     required this.category,
     required this.price,
+    required this.maxUsers,
     required this.participants,
     required this.organizer,
     required this.status,
