@@ -105,7 +105,6 @@ void main() {
         name: 'Alice',
         email: 'alice@example.com',
       ),
-      isEmailVerified: true,
     );
     final pageMemory = InMemoryAuthPageMemory();
     final bloc = AuthBloc(repo, pageMemory);

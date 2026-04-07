@@ -12,16 +12,8 @@ class _NavBackground extends StatelessWidget {
           end: Alignment.bottomCenter,
           stops: [0.0, 0.07],
           colors: [Color(0xFF8492AA), Color(0xFF3C4758)],
-          tileMode: TileMode.clamp,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0xCC000000),
-            blurRadius: 0,
-            spreadRadius: 0,
-            offset: Offset(0, -2),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Color(0xCC000000), offset: Offset(0, -2))],
       ),
       child: SizedBox.expand(),
     );

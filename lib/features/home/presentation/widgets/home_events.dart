@@ -48,6 +48,6 @@ class HomeEvents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _EventsList(events: _kMockEvents);
+    return const _EventsList(events: _kMockEvents);
   }
 }

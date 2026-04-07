@@ -1,0 +1,59 @@
+﻿{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "description": "Live framework/library documentation lookup"
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_PAT_HERE"
+      },
+      "description": "GitHub repositories, PRs, and issues"
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "description": "Persistent memory across sessions"
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "description": "Structured multi-step reasoning"
+    },
+    "exa-web-search": {
+      "command": "npx",
+      "args": ["-y", "exa-mcp-server"],
+      "env": {
+        "EXA_API_KEY": "YOUR_EXA_API_KEY_HERE"
+      },
+      "description": "Neural web search and research"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp", "--browser", "chrome"],
+      "description": "Browser automation and UI validation"
+    },
+    "firebase": {
+      "command": "npx",
+      "args": ["-y", "@gannonh/firebase-mcp"],
+      "env": {
+        "SERVICE_ACCOUNT_KEY_PATH": "ABSOLUTE_PATH_TO_serviceAccountKey.json",
+        "FIREBASE_STORAGE_BUCKET": "YOUR_PROJECT_ID.firebasestorage.app"
+      },
+      "description": "Firebase MCP (Firestore, Auth, Storage)"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."],
+      "description": "Filesystem operations scoped to this project"
+    }
+  },
+  "_comments": {
+    "setup": "Replace all YOUR_* placeholders before use",
+    "security": "Never commit real tokens, service-account files, or secrets",
+    "profile": "Enable only the MCPs you need for current task to save context window"
+  }
+}

@@ -32,7 +32,7 @@ class SignUpPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        minimum: EdgeInsets.only(
+        minimum: const EdgeInsets.only(
           left: UiConstants.leftPadding,
           right: UiConstants.rightPadding,
           top: UiConstants.topPadding,
