@@ -7,7 +7,7 @@ import 'package:go_question/core/widgets/pressable.dart';
 class GqCloseButton extends StatelessWidget {
   final VoidCallback onTap;
 
-  GqCloseButton({super.key, required this.onTap});
+  const GqCloseButton({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
