@@ -9,7 +9,7 @@ class _Avatar extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Image.asset(picturePath),
-        Positioned.fill(
+        const Positioned.fill(
           right: -15,
           child: Align(alignment: Alignment.centerRight, child: GqEditIcon()),
         ),

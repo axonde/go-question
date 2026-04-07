@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_question/features/events/domain/event_entity.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/event_model.dart';
 

@@ -7,15 +7,15 @@ import 'package:go_question/core/widgets/icons/gq_edit_icon.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 
 part 'components/avatar.dart';
-part 'components/profile.dart';
 part 'components/characteristics.dart';
+part 'components/profile.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return _ProfileContent();
+    return const _ProfileContent();
   }
 }
 
@@ -25,7 +25,7 @@ class _ProfileContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: BoxDecoration(color: AppColors.popupOutBackground),
+      decoration: const BoxDecoration(color: AppColors.popupOutBackground),
       child: Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
@@ -37,7 +37,7 @@ class _ProfileContent extends StatelessWidget {
               width: UiConstants.strokeWidth * 2,
             ),
             borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
-            image: DecorationImage(
+            image: const DecorationImage(
               image: AssetImage('assets/images/background/background.webp'),
               fit: BoxFit.cover,
             ),
@@ -54,15 +54,14 @@ class _ProfileContent extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    GqCloseButton(onTap: () => print('press close button')),
+                    GqCloseButton(onTap: () => Navigator.of(context).pop()),
                   ],
                 ),
 
                 _Avatar(),
 
-                _Profile(name: 'Maxim Maximka', nick: 'papeiko'),
+                const _Profile(name: 'Maxim Maximka', nick: 'papeiko'),
 
                 const _Characteristics(
                   yearsOld: '19 лет',
@@ -75,7 +74,7 @@ class _ProfileContent extends StatelessWidget {
                 Text(
                   'Для редактирования нажмите на выбранное поле',
                   style: AppTextStyles.labelMedium.merge(
-                    TextStyle(color: AppColors.textSecondary),
+                    const TextStyle(color: AppColors.textSecondary),
                   ),
                 ),
               ],

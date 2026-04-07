@@ -8,18 +8,9 @@ part of '../home_top_bar.dart';
 
 const _achievementDecoration = BoxDecoration(
   color: Color(0xFF257FB4),
-  border: Border.fromBorderSide(
-    BorderSide(color: Colors.black, width: UiConstants.borderWidth / 2),
-  ),
+  border: Border.fromBorderSide(BorderSide()),
   borderRadius: BorderRadius.all(Radius.circular(UiConstants.borderRadius * 5)),
-  boxShadow: [
-    BoxShadow(
-      color: Color(0x99000000),
-      blurRadius: 0,
-      spreadRadius: 0,
-      offset: Offset(0, 2),
-    ),
-  ],
+  boxShadow: [BoxShadow(color: Color(0x99000000), offset: Offset(0, 2))],
 );
 
 class _AchievementButton extends StatelessWidget {
@@ -27,7 +18,11 @@ class _AchievementButton extends StatelessWidget {
   final bool visible;
   final double height;
 
-  const _AchievementButton({required this.onTap, required this.height, this.visible = true});
+  const _AchievementButton({
+    required this.onTap,
+    required this.height,
+    this.visible = true,
+  });
 
   @override
   Widget build(BuildContext context) {

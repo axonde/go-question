@@ -17,7 +17,7 @@ class AuthGuard extends AutoRouteGuard {
         _authRepository.isCurrentUserEmailVerified();
 
     if (canAccessMain) {
-      resolver.next(true);
+      resolver.next();
       return;
     }
 
@@ -37,7 +37,7 @@ class GuestGuard extends AutoRouteGuard {
         !_authRepository.isCurrentUserEmailVerified();
 
     if (canAccessGuestOnlyPages) {
-      resolver.next(true);
+      resolver.next();
       return;
     }
 
