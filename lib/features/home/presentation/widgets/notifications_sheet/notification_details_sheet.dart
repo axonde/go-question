@@ -30,9 +30,9 @@ class NotificationDetailsSheet extends StatelessWidget {
                         width: 60,
                         height: 60,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E528E),
+                          color: AppColors.primaryVariant,
                           borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
-                          border: Border.all(color: Colors.black, width: 2),
+                          border: Border.all(color: AppColors.stroke, width: UiConstants.strokeWidth),
                         ),
                         child: const Icon(
                           Icons.person,
@@ -45,13 +45,13 @@ class NotificationDetailsSheet extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ClashStrokeText('Джиган', fontSize: 24),
+                            ClashStrokeText(data.userName ?? 'User', fontSize: 24),
                             Text(
-                              'Рейтинг: 158 🏆',
-                              style: TextStyle(
+                              'Рейтинг: ${data.userRating ?? '0 🏆'}',
+                              style: const TextStyle(
                                 fontFamily: 'Clash',
                                 fontSize: 16,
-                                color: Color(0xFF0E3457),
+                                color: AppColors.primaryVariant,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -77,7 +77,7 @@ class NotificationDetailsSheet extends StatelessWidget {
                       color: const Color(0xFFDEE7F6),
                       borderRadius: BorderRadius.circular(UiConstants.borderRadius * 2.5),
                       border: Border.all(
-                        color: const Color(0xFF62697B),
+                        color: AppColors.lightStroke,
                         width: 1,
                       ),
                     ),
@@ -86,7 +86,7 @@ class NotificationDetailsSheet extends StatelessWidget {
                       style: const TextStyle(
                         fontFamily: 'Russo One',
                         fontFamilyFallback: ['Clash', 'Roboto', 'sans-serif'],
-                        color: Color(0xFF0E3457),
+                        color: AppColors.primaryVariant,
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                         height: 1.4,
@@ -104,7 +104,7 @@ class NotificationDetailsSheet extends StatelessWidget {
                             child: SizedBox(
                               height: 50,
                               child: GQButton(
-                                baseColor: const Color(0xFFFF7175),
+                                baseColor: AppColors.error,
                                 onPressed: () {},
                                 text: 'Отклонить',
                                 fontSize: 16,
@@ -117,7 +117,7 @@ class NotificationDetailsSheet extends StatelessWidget {
                             child: SizedBox(
                               height: 50,
                               child: GQButton(
-                                baseColor: const Color(0xFF76C274),
+                                baseColor: AppColors.success,
                                 onPressed: () {},
                                 text: 'Принять',
                                 fontSize: 16,
@@ -140,7 +140,7 @@ class NotificationDetailsSheet extends StatelessWidget {
       width: double.infinity,
       height: 60,
       decoration: const BoxDecoration(
-        color: Color(0xFF30D12D), // Зеленый фон
+        color: AppColors.notificationHeader,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(UiConstants.borderRadius * 6),
           topRight: Radius.circular(UiConstants.borderRadius * 6),
@@ -154,7 +154,7 @@ class NotificationDetailsSheet extends StatelessWidget {
               fontSize: 28,
               shadows: [
                 Shadow(
-                  offset: Offset(0, 2),
+                  offset: Offset(0, UiConstants.shadowOffsetY),
                   blurRadius: 0,
                   color: Colors.black,
                 ),
@@ -162,17 +162,17 @@ class NotificationDetailsSheet extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 12,
+            right: UiConstants.horizontalPadding * 1.5,
             top: 0,
             bottom: 0,
             child: Center(
               child: SizedBox(
-                width: 36,
-                height: 36,
+                width: UiConstants.boxUnit * 4.5,
+                height: UiConstants.boxUnit * 4.5,
                 child: GQButton(
                   onPressed: () => Navigator.of(context).pop(),
                   icon: Icons.close,
-                  baseColor: const Color(0xFFFF4B4B),
+                  baseColor: AppColors.error,
                   iconSizeFactor: 0.6,
                 ),
               ),

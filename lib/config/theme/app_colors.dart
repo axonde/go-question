@@ -54,6 +54,9 @@ class AppColors {
   /// Пример: `SnackBar(backgroundColor: AppColors.success)`.
   static const Color success = Color(0xFF09B103);
 
+  /// Цвет заголовка уведомлений.
+  static const Color notificationHeader = Color(0xFF30D12D);
+
   /// Цвет ошибок и невалидных состояний.
   /// Пример: `ThemeData(colorScheme: ... copyWith(error: AppColors.error))`.
   static const Color error = Color(0xFFFE4450);

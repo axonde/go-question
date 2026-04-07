@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
@@ -16,12 +17,16 @@ class NotificationData {
   final String body;
   final bool showAccept;
   final bool showReject;
+  final String? userName;
+  final String? userRating;
 
   const NotificationData({
     required this.title,
     required this.body,
     this.showAccept = false,
     this.showReject = false,
+    this.userName,
+    this.userRating,
   });
 }
 
@@ -37,6 +42,8 @@ const _kMockNotifications = [
         'Джиган хочет присоединиться к вашему ивенту: "Вечеринка на пляже", который состоится 04.04.2027 в 17:00.',
     showAccept: true,
     showReject: true,
+    userName: 'Джиган',
+    userRating: '158 🏆',
   ),
   NotificationData(
     title: 'Событие скоро начнется!',
@@ -80,7 +87,7 @@ class NotificationsSheet extends StatelessWidget {
       width: double.infinity,
       height: 60,
       decoration: const BoxDecoration(
-        color: Color(0xFF30D12D), // Зеленый фон заголовка
+        color: AppColors.notificationHeader, // Из AppColors
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(UiConstants.borderRadius * 6),
           topRight: Radius.circular(UiConstants.borderRadius * 6),
@@ -94,7 +101,7 @@ class NotificationsSheet extends StatelessWidget {
               fontSize: 28,
               shadows: [
                 Shadow(
-                  offset: Offset(0, 2),
+                  offset: Offset(0, UiConstants.shadowOffsetY),
                   blurRadius: 0,
                   color: Colors.black,
                 ),
@@ -102,17 +109,17 @@ class NotificationsSheet extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 12,
+            right: UiConstants.horizontalPadding * 1.5,
             top: 0,
             bottom: 0,
             child: Center(
               child: SizedBox(
-                width: 36,
-                height: 36,
+                width: UiConstants.boxUnit * 4.5,
+                height: UiConstants.boxUnit * 4.5,
                 child: GQButton(
                   onPressed: () => Navigator.of(context).pop(),
                   icon: Icons.close,
-                  baseColor: const Color(0xFFFF4B4B),
+                  baseColor: AppColors.error,
                   iconSizeFactor: 0.6,
                 ),
               ),

@@ -21,9 +21,9 @@ class NotificationCard extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFFDEE7F6),
+          color: const Color(0xFFDEE7F6), // Можно оставить как специфичный фон карточки уведомления, или добавить в AppColors
           borderRadius: BorderRadius.circular(UiConstants.borderRadius * 2.5),
-          border: Border.all(color: const Color(0xFF62697B), width: 1),
+          border: Border.all(color: AppColors.lightStroke, width: 1),
           boxShadow: const [
             BoxShadow(
               color: Color(0x33000000),
@@ -32,7 +32,12 @@ class NotificationCard extends StatelessWidget {
             ),
           ],
         ),
-        padding: const EdgeInsets.only(left: 12, top: 12, bottom: 12, right: 4),
+        padding: const EdgeInsets.only(
+          left: UiConstants.horizontalPadding * 1.5,
+          top: UiConstants.verticalPadding * 1.5,
+          bottom: UiConstants.verticalPadding * 1.5,
+          right: UiConstants.horizontalPadding * 0.5,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -80,10 +85,10 @@ class NotificationCard extends StatelessWidget {
                         width: 110,
                         height: 32,
                         child: GQButton(
-                          baseColor: const Color(0xFFFF7175),
+                          baseColor: AppColors.error,
                           onPressed: () {},
                           text: 'Отклонить',
-                          fontSize: 12,
+                          fontSize: UiConstants.textSize * 0.75,
                         ),
                       ),
                     ),
@@ -92,10 +97,10 @@ class NotificationCard extends StatelessWidget {
                       width: 110,
                       height: 32,
                       child: GQButton(
-                        baseColor: const Color(0xFF76C274),
+                        baseColor: AppColors.success,
                         onPressed: () {},
                         text: 'Принять',
-                        fontSize: 12,
+                        fontSize: UiConstants.textSize * 0.75,
                       ),
                     ),
                 ],

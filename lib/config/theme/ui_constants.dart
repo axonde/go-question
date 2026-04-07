@@ -17,4 +17,7 @@ class UiConstants {
   static const double textSize = boxUnit * 2.0; // 16px — базовый размер текста
 
   static const double minInputHeight = 57;
+
+  /// Офсет тени в заголовках.
+  static const double shadowOffsetY = 2;
 }
