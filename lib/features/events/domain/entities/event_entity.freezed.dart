@@ -24,7 +24,6 @@ mixin _$EventEntity {
   String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
-  String get imageUrl => throw _privateConstructorUsedError;
   @TimestampConverter()
   DateTime get startTime => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
@@ -60,7 +59,6 @@ abstract class $EventEntityCopyWith<$Res> {
     String id,
     String title,
     String description,
-    String imageUrl,
     @TimestampConverter() DateTime startTime,
     String location,
     String category,
@@ -92,7 +90,6 @@ class _$EventEntityCopyWithImpl<$Res, $Val extends EventEntity>
     Object? id = null,
     Object? title = null,
     Object? description = null,
-    Object? imageUrl = null,
     Object? startTime = null,
     Object? location = null,
     Object? category = null,
@@ -117,10 +114,6 @@ class _$EventEntityCopyWithImpl<$Res, $Val extends EventEntity>
             description: null == description
                 ? _value.description
                 : description // ignore: cast_nullable_to_non_nullable
-                      as String,
-            imageUrl: null == imageUrl
-                ? _value.imageUrl
-                : imageUrl // ignore: cast_nullable_to_non_nullable
                       as String,
             startTime: null == startTime
                 ? _value.startTime
@@ -181,7 +174,6 @@ abstract class _$$EventEntityImplCopyWith<$Res>
     String id,
     String title,
     String description,
-    String imageUrl,
     @TimestampConverter() DateTime startTime,
     String location,
     String category,
@@ -212,7 +204,6 @@ class __$$EventEntityImplCopyWithImpl<$Res>
     Object? id = null,
     Object? title = null,
     Object? description = null,
-    Object? imageUrl = null,
     Object? startTime = null,
     Object? location = null,
     Object? category = null,
@@ -237,10 +228,6 @@ class __$$EventEntityImplCopyWithImpl<$Res>
         description: null == description
             ? _value.description
             : description // ignore: cast_nullable_to_non_nullable
-                  as String,
-        imageUrl: null == imageUrl
-            ? _value.imageUrl
-            : imageUrl // ignore: cast_nullable_to_non_nullable
                   as String,
         startTime: null == startTime
             ? _value.startTime
@@ -294,7 +281,6 @@ class _$EventEntityImpl implements _EventEntity {
     required this.id,
     required this.title,
     required this.description,
-    required this.imageUrl,
     @TimestampConverter() required this.startTime,
     required this.location,
     required this.category,
@@ -316,8 +302,6 @@ class _$EventEntityImpl implements _EventEntity {
   final String title;
   @override
   final String description;
-  @override
-  final String imageUrl;
   @override
   @TimestampConverter()
   final DateTime startTime;
@@ -344,7 +328,7 @@ class _$EventEntityImpl implements _EventEntity {
 
   @override
   String toString() {
-    return 'EventEntity(id: $id, title: $title, description: $description, imageUrl: $imageUrl, startTime: $startTime, location: $location, category: $category, price: $price, maxUsers: $maxUsers, participants: $participants, organizer: $organizer, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'EventEntity(id: $id, title: $title, description: $description, startTime: $startTime, location: $location, category: $category, price: $price, maxUsers: $maxUsers, participants: $participants, organizer: $organizer, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -356,8 +340,6 @@ class _$EventEntityImpl implements _EventEntity {
             (identical(other.title, title) || other.title == title) &&
             (identical(other.description, description) ||
                 other.description == description) &&
-            (identical(other.imageUrl, imageUrl) ||
-                other.imageUrl == imageUrl) &&
             (identical(other.startTime, startTime) ||
                 other.startTime == startTime) &&
             (identical(other.location, location) ||
@@ -385,7 +367,6 @@ class _$EventEntityImpl implements _EventEntity {
     id,
     title,
     description,
-    imageUrl,
     startTime,
     location,
     category,
@@ -417,7 +398,6 @@ abstract class _EventEntity implements EventEntity {
     required final String id,
     required final String title,
     required final String description,
-    required final String imageUrl,
     @TimestampConverter() required final DateTime startTime,
     required final String location,
     required final String category,
@@ -439,8 +419,6 @@ abstract class _EventEntity implements EventEntity {
   String get title;
   @override
   String get description;
-  @override
-  String get imageUrl;
   @override
   @TimestampConverter()
   DateTime get startTime;
