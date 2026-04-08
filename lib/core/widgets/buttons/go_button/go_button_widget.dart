@@ -90,10 +90,16 @@ class GQButton extends StatelessWidget {
   );
 
   Widget _sized(GoButtonColors colors) {
+    // Painter рисует тень ниже bounds на ry(4) px.
+    // Добавляем padding снизу, чтобы родитель не обрезал тень.
+    const shadowPad = EdgeInsets.only(bottom: UiConstants.shadowOffsetY);
     final content = _content(colors);
 
     if (width != null && height != null) {
-      return SizedBox(width: width, height: height, child: content);
+      return Padding(
+        padding: shadowPad,
+        child: SizedBox(width: width, height: height, child: content),
+      );
     }
     if (width != null) {
       return SizedBox(
@@ -102,9 +108,12 @@ class GQButton extends StatelessWidget {
       );
     }
     if (height != null) {
-      return SizedBox(
-        height: height,
-        child: AspectRatio(aspectRatio: aspectRatio, child: content),
+      return Padding(
+        padding: shadowPad,
+        child: SizedBox(
+          height: height,
+          child: AspectRatio(aspectRatio: aspectRatio, child: content),
+        ),
       );
     }
     if (widthFactor != null) {

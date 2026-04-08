@@ -92,6 +92,10 @@ flutter:
           weight: 400
         - asset: assets/fonts/Clash-Bold.otf
           weight: 800
+    - family: RussoOne
+      fonts:
+        - asset: assets/fonts/RussoOne-Regular.ttf
+          weight: 400
 
 flutter_native_splash:
   color: "#FFFFFF" # фоновый цвет
