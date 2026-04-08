@@ -4,6 +4,7 @@ class EventConstants {
   static const statusOpen = 'open';
   static const statusUpcoming = 'upcoming';
   static const statusClosed = 'closed';
+  static const statuses = [statusOpen, statusUpcoming, statusClosed];
 
   static const monthsLong = [
     '',
