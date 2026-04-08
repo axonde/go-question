@@ -1,5 +1,6 @@
 class AuthFieldValidators {
   static final RegExp _emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  static final RegExp _nicknameRegex = RegExp(r'^[a-zA-Z0-9_]{3,20}$');
 
   static String? email(String? value) {
     if (value == null || value.trim().isEmpty) {
@@ -11,9 +12,13 @@ class AuthFieldValidators {
     return null;
   }
 
-  static String? name(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Введите имя';
+  static String? nickname(String? value) {
+    final nickname = value?.trim() ?? '';
+    if (nickname.isEmpty) {
+      return 'Введите никнейм';
+    }
+    if (!_nicknameRegex.hasMatch(nickname)) {
+      return 'Никнейм: 3-20 символов, латиница/цифры/подчеркивание';
     }
     return null;
   }

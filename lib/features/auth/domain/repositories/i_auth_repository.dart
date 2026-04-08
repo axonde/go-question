@@ -16,7 +16,7 @@ abstract class IAuthRepository {
   Future<Result<String, AuthFailure>> signUpWithEmailAndPassword({
     required String email,
     required String password,
-    required String name,
+    required String nickname,
   });
 
   Future<Result<RegistrationInput?, AuthFailure>> signInWithGoogle();

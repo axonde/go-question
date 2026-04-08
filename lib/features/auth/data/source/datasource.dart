@@ -19,7 +19,7 @@ abstract class IAuthRemoteDataSource {
   Future<String> signUpWithEmailAndPassword({
     required String email,
     required String password,
-    required String name,
+    required String nickname,
   });
 
   Future<RegistrationInput?> signInWithGoogle();
@@ -74,7 +74,7 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
   Future<String> signUpWithEmailAndPassword({
     required String email,
     required String password,
-    required String name,
+    required String nickname,
   }) async {
     try {
       final result = await _firebaseAuth.createUserWithEmailAndPassword(
@@ -82,7 +82,7 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
         password: password,
       );
       if (result.user != null) {
-        await result.user!.updateDisplayName(name);
+        await result.user!.updateDisplayName(nickname);
         await result.user!.sendEmailVerification();
       }
       return email;
@@ -132,10 +132,36 @@ class AuthRemoteDataSourceImpl implements IAuthRemoteDataSource {
 
     try {
       await user.reload();
-      return user.emailVerified;
+    } on firebase.FirebaseAuthException catch (error) {
+      // In some sessions Firebase can return transient 403/auth errors on reload.
+      // Force token refresh and retry once before failing.
+      if (_shouldRetryReloadAfterTokenRefresh(error)) {
+        final refreshedUser = _firebaseAuth.currentUser;
+        if (refreshedUser == null) {
+          throw const AuthException();
+        }
+        await refreshedUser.getIdToken(true);
+        await refreshedUser.reload();
+      } else {
+        throw mapAuthRemoteException(error);
+      }
     } catch (error) {
       throw mapAuthRemoteException(error);
     }
+
+    // Read the actual current user after reload, not the stale local reference.
+    return _firebaseAuth.currentUser?.emailVerified ?? false;
+  }
+
+  bool _shouldRetryReloadAfterTokenRefresh(
+    firebase.FirebaseAuthException error,
+  ) {
+    final code = error.code;
+    final lowerMessage = (error.message ?? '').toLowerCase();
+
+    return code == 'user-token-expired' ||
+        code == 'invalid-user-token' ||
+        (code == 'internal-error' && lowerMessage.contains('403'));
   }
 
   @override

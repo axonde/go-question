@@ -46,13 +46,13 @@ class AuthRepositoryImpl implements IAuthRepository {
   Future<Result<String, AuthFailure>> signUpWithEmailAndPassword({
     required String email,
     required String password,
-    required String name,
+    required String nickname,
   }) {
     return _guard<String>(
       () => _remoteDataSource.signUpWithEmailAndPassword(
         email: email,
         password: password,
-        name: name,
+        nickname: nickname,
       ),
     );
   }

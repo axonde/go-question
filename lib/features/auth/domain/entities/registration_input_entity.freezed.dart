@@ -18,7 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$RegistrationInput {
   String get uid => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
+  String get nickname => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String? get password => throw _privateConstructorUsedError;
 
@@ -36,7 +36,7 @@ abstract class $RegistrationInputCopyWith<$Res> {
     $Res Function(RegistrationInput) then,
   ) = _$RegistrationInputCopyWithImpl<$Res, RegistrationInput>;
   @useResult
-  $Res call({String uid, String name, String email, String? password});
+  $Res call({String uid, String nickname, String email, String? password});
 }
 
 /// @nodoc
@@ -55,7 +55,7 @@ class _$RegistrationInputCopyWithImpl<$Res, $Val extends RegistrationInput>
   @override
   $Res call({
     Object? uid = null,
-    Object? name = null,
+    Object? nickname = null,
     Object? email = null,
     Object? password = freezed,
   }) {
@@ -65,9 +65,9 @@ class _$RegistrationInputCopyWithImpl<$Res, $Val extends RegistrationInput>
                 ? _value.uid
                 : uid // ignore: cast_nullable_to_non_nullable
                       as String,
-            name: null == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
+            nickname: null == nickname
+                ? _value.nickname
+                : nickname // ignore: cast_nullable_to_non_nullable
                       as String,
             email: null == email
                 ? _value.email
@@ -92,7 +92,7 @@ abstract class _$$UserEntityImplCopyWith<$Res>
   ) = __$$UserEntityImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String uid, String name, String email, String? password});
+  $Res call({String uid, String nickname, String email, String? password});
 }
 
 /// @nodoc
@@ -110,7 +110,7 @@ class __$$UserEntityImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? uid = null,
-    Object? name = null,
+    Object? nickname = null,
     Object? email = null,
     Object? password = freezed,
   }) {
@@ -120,9 +120,9 @@ class __$$UserEntityImplCopyWithImpl<$Res>
             ? _value.uid
             : uid // ignore: cast_nullable_to_non_nullable
                   as String,
-        name: null == name
-            ? _value.name
-            : name // ignore: cast_nullable_to_non_nullable
+        nickname: null == nickname
+            ? _value.nickname
+            : nickname // ignore: cast_nullable_to_non_nullable
                   as String,
         email: null == email
             ? _value.email
@@ -142,7 +142,7 @@ class __$$UserEntityImplCopyWithImpl<$Res>
 class _$UserEntityImpl implements _UserEntity {
   const _$UserEntityImpl({
     required this.uid,
-    required this.name,
+    required this.nickname,
     required this.email,
     this.password,
   });
@@ -150,7 +150,7 @@ class _$UserEntityImpl implements _UserEntity {
   @override
   final String uid;
   @override
-  final String name;
+  final String nickname;
   @override
   final String email;
   @override
@@ -158,7 +158,7 @@ class _$UserEntityImpl implements _UserEntity {
 
   @override
   String toString() {
-    return 'RegistrationInput(uid: $uid, name: $name, email: $email, password: $password)';
+    return 'RegistrationInput(uid: $uid, nickname: $nickname, email: $email, password: $password)';
   }
 
   @override
@@ -167,14 +167,15 @@ class _$UserEntityImpl implements _UserEntity {
         (other.runtimeType == runtimeType &&
             other is _$UserEntityImpl &&
             (identical(other.uid, uid) || other.uid == uid) &&
-            (identical(other.name, name) || other.name == name) &&
+            (identical(other.nickname, nickname) ||
+                other.nickname == nickname) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.password, password) ||
                 other.password == password));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, uid, name, email, password);
+  int get hashCode => Object.hash(runtimeType, uid, nickname, email, password);
 
   /// Create a copy of RegistrationInput
   /// with the given fields replaced by the non-null parameter values.
@@ -188,7 +189,7 @@ class _$UserEntityImpl implements _UserEntity {
 abstract class _UserEntity implements RegistrationInput {
   const factory _UserEntity({
     required final String uid,
-    required final String name,
+    required final String nickname,
     required final String email,
     final String? password,
   }) = _$UserEntityImpl;
@@ -196,7 +197,7 @@ abstract class _UserEntity implements RegistrationInput {
   @override
   String get uid;
   @override
-  String get name;
+  String get nickname;
   @override
   String get email;
   @override

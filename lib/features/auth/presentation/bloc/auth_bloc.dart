@@ -20,7 +20,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthPageChanged>(_onPageChanged);
     on<AuthLoginEmailChanged>(_onLoginEmailChanged);
     on<AuthLoginPasswordChanged>(_onLoginPasswordChanged);
-    on<AuthSignUpNameChanged>(_onSignUpNameChanged);
+    on<AuthSignUpNicknameChanged>(_onSignUpNicknameChanged);
     on<AuthSignUpEmailChanged>(_onSignUpEmailChanged);
     on<AuthSignUpPasswordChanged>(_onSignUpPasswordChanged);
     on<AuthSignInRequested>(_onSignInRequested);
@@ -52,7 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (_repo.isCurrentUserEmailVerified()) {
       emit(
         state.copyWith(
-          status: AuthStatus.authenticated,
+          status: AuthStatus.awaitingProfile,
           user: user,
           clearHint: true,
           clearError: true,
@@ -107,11 +107,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(loginPassword: event.value, clearError: true));
   }
 
-  void _onSignUpNameChanged(
-    AuthSignUpNameChanged event,
+  void _onSignUpNicknameChanged(
+    AuthSignUpNicknameChanged event,
     Emitter<AuthState> emit,
   ) {
-    emit(state.copyWith(signUpName: event.value, clearError: true));
+    emit(state.copyWith(signUpNickname: event.value, clearError: true));
   }
 
   void _onSignUpEmailChanged(
@@ -191,7 +191,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         emit(
           state.copyWith(
-            status: AuthStatus.authenticated,
+            status: AuthStatus.awaitingProfile,
             user: user,
             clearError: true,
             clearHint: true,
@@ -215,12 +215,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSignUpRequested event,
     Emitter<AuthState> emit,
   ) async {
-    final nameError = AuthFieldValidators.name(state.signUpName);
-    if (nameError != null) {
+    final nicknameError = AuthFieldValidators.nickname(state.signUpNickname);
+    if (nicknameError != null) {
       emit(
         state.copyWith(
           status: AuthStatus.failure,
-          error: nameError,
+          error: nicknameError,
           clearHint: true,
         ),
       );
@@ -256,7 +256,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await _repo.signUpWithEmailAndPassword(
       email: state.signUpEmail.trim(),
       password: state.signUpPassword,
-      name: state.signUpName.trim(),
+      nickname: state.signUpNickname.trim(),
     );
 
     await result.foldAsync(
@@ -305,7 +305,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         emit(
           state.copyWith(
-            status: AuthStatus.authenticated,
+            status: AuthStatus.awaitingProfile,
             user: user,
             clearError: true,
             clearHint: true,
@@ -350,7 +350,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
           emit(
             state.copyWith(
-              status: AuthStatus.authenticated,
+              status: AuthStatus.awaitingProfile,
               user: user,
               clearError: true,
               clearHint: true,
@@ -487,7 +487,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       lastPage: page,
       loginEmail: '',
       loginPassword: '',
-      signUpName: '',
+      signUpNickname: '',
       signUpEmail: '',
       signUpPassword: '',
       clearUser: true,

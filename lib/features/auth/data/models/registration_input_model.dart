@@ -6,7 +6,7 @@ extension RegistrationInputFirebaseMapper on firebase.User {
   RegistrationInput toRegistrationInput() {
     return RegistrationInput(
       uid: uid,
-      name: displayName ?? '',
+      nickname: displayName ?? '',
       email: email ?? '',
     );
   }

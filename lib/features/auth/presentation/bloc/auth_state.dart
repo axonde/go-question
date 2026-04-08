@@ -5,6 +5,7 @@ enum AuthStatus {
   loading,
   unauthenticated,
   awaitingVerification,
+  awaitingProfile,
   authenticated,
   failure,
 }
@@ -15,7 +16,7 @@ class AuthState {
   final AuthPage lastPage;
   final String loginEmail;
   final String loginPassword;
-  final String signUpName;
+  final String signUpNickname;
   final String signUpEmail;
   final String signUpPassword;
   final RegistrationInput? user;
@@ -29,7 +30,7 @@ class AuthState {
     required this.lastPage,
     required this.loginEmail,
     required this.loginPassword,
-    required this.signUpName,
+    required this.signUpNickname,
     required this.signUpEmail,
     required this.signUpPassword,
     this.user,
@@ -44,7 +45,7 @@ class AuthState {
       lastPage = AuthPage.signUp,
       loginEmail = '',
       loginPassword = '',
-      signUpName = '',
+      signUpNickname = '',
       signUpEmail = '',
       signUpPassword = '',
       user = null,
@@ -60,7 +61,7 @@ class AuthState {
     AuthPage? lastPage,
     String? loginEmail,
     String? loginPassword,
-    String? signUpName,
+    String? signUpNickname,
     String? signUpEmail,
     String? signUpPassword,
     RegistrationInput? user,
@@ -78,7 +79,7 @@ class AuthState {
       lastPage: lastPage ?? this.lastPage,
       loginEmail: loginEmail ?? this.loginEmail,
       loginPassword: loginPassword ?? this.loginPassword,
-      signUpName: signUpName ?? this.signUpName,
+      signUpNickname: signUpNickname ?? this.signUpNickname,
       signUpEmail: signUpEmail ?? this.signUpEmail,
       signUpPassword: signUpPassword ?? this.signUpPassword,
       user: clearUser ? null : (user ?? this.user),

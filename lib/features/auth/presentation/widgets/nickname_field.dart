@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/features/auth/presentation/validators/auth_field_validators.dart';
 
-class NameField extends StatelessWidget {
+class NicknameField extends StatelessWidget {
   final ValueChanged<String> onChanged;
 
-  const NameField({super.key, required this.onChanged});
+  const NicknameField({super.key, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
