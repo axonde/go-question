@@ -7,7 +7,6 @@ import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
 
 part 'notifications_sheet/notification_card.dart';
 part 'notifications_sheet/notifications_list.dart';
-part 'notifications_sheet/notification_details_sheet.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // NotificationData — модель данных уведомления.
@@ -61,8 +60,15 @@ const _kMockNotifications = [
 // NotificationsSheet — основная панель уведомлений.
 // ─────────────────────────────────────────────────────────────────────────────
 
-class NotificationsSheet extends StatelessWidget {
+class NotificationsSheet extends StatefulWidget {
   const NotificationsSheet({super.key});
+
+  @override
+  State<NotificationsSheet> createState() => _NotificationsSheetState();
+}
+
+class _NotificationsSheetState extends State<NotificationsSheet> {
+  int? _expandedIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +93,14 @@ class NotificationsSheet extends StatelessWidget {
       child: Column(
         children: [
           _buildHeader(context),
-          const Expanded(
-            child: _NotificationsList(notifications: _kMockNotifications),
+          Expanded(
+            child: _NotificationsList(
+              notifications: _kMockNotifications,
+              expandedIndex: _expandedIndex,
+              onToggle: (index) => setState(() {
+                _expandedIndex = _expandedIndex == index ? null : index;
+              }),
+            ),
           ),
         ],
       ),
@@ -113,29 +125,22 @@ class NotificationsSheet extends StatelessWidget {
           horizontal: UiConstants.horizontalPadding * 2,
           vertical: UiConstants.verticalPadding * 1.5,
         ),
-        child: Row(
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            const Spacer(),
-            const Expanded(
-              flex: 3,
-              child: Center(
-                child: ClashStrokeText(
-                  'Уведомления',
-                  fontSize: UiConstants.textSize * 1.5,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  shadows: [
-                    Shadow(offset: Offset(0, UiConstants.textShadowOffsetY)),
-                  ],
-                ),
+            const Center(
+              child: ClashStrokeText(
+                'Уведомления',
+                fontSize: UiConstants.textSize * 1.5,
+                shadows: [
+                  Shadow(offset: Offset(0, UiConstants.textShadowOffsetY)),
+                ],
               ),
             ),
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: GqCloseButton(
-                  onTap: () => Navigator.of(context).pop(),
-                ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: GqCloseButton(
+                onTap: () => Navigator.of(context).pop(),
               ),
             ),
           ],
