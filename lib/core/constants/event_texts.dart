@@ -15,6 +15,9 @@ class EventTexts {
   static const buttonParticipants = 'Участники';
   static const buttonApply = 'Применить';
   static const buttonReset = 'Сбросить';
+  static const buttonSearch = 'Поиск';
+  static const buttonNew = 'Новое';
+  static const buttonAdd = 'Добавить';
 
   static const sectionDescription = 'Описание';
   static const sectionDetails = 'Детали';
@@ -22,6 +25,7 @@ class EventTexts {
   static const sectionCategory = 'Категория';
   static const sectionCity = 'Город';
   static const searchHeaderTitle = 'Поиск ивента';
+  static const createHeaderTitle = 'Создание ивента';
 
   static const organizerLabel = 'Организатор';
 
@@ -30,6 +34,31 @@ class EventTexts {
   static const snackBarParticipantsList = 'Список участников';
 
   static const emptyEventsByFilters = 'Нет ивентов по выбранным фильтрам';
+  static const createImagePlaceholder = 'Добавить фото';
+  static const createValidationTitle = 'Введите название ивента';
+  static const createFieldId = 'ID';
+  static const createFieldTitle = 'Название ивента';
+  static const createFieldStart = 'Начало';
+  static const createFieldLocation = 'Место';
+  static const createFieldCategory = 'Категория';
+  static const createFieldPrice = 'Стоимость';
+  static const createFieldMaxUsers = 'Лимит участников';
+  static const createFieldParticipants = 'Текущее число участников';
+  static const createFieldOrganizer = 'Организатор';
+  static const createFieldStatus = 'Статус';
+  static const createFieldImageUrl = 'Ссылка на изображение';
+  static const createFieldDescription = 'Описание';
+  static const createHintId = 'auto-generated';
+  static const createHintTitle = 'Введите название';
+  static const createHintLocation = 'Введите локацию';
+  static const createHintCategory = 'Например, Турнир';
+  static const createHintPrice = '0';
+  static const createHintMaxUsers = '16';
+  static const createHintParticipants = '0';
+  static const createHintOrganizer = 'Ваш клуб';
+  static const createHintImageUrl = 'https://...';
+  static const createHintDescription = 'Описание события';
+  static const createSnackCreated = 'Ивент создан';
 
   static const filterFree = 'Бесплатно';
   static const filterPaid = 'Платно';
