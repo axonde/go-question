@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
+import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
 
 part 'notifications_sheet/notification_card.dart';
@@ -65,8 +66,24 @@ class NotificationsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      heightFactor: 0.85,
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(UiConstants.borderRadius * 8),
+        ),
+        border: Border(
+          top: BorderSide(color: Color(0xFF62697B)),
+          left: BorderSide(color: Color(0xFF62697B)),
+          right: BorderSide(color: Color(0xFF62697B)),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xCC000000),
+            offset: Offset(0, -UiConstants.shadowOffsetY),
+          ),
+        ],
+      ),
       child: Column(
         children: [
           _buildHeader(context),
@@ -79,47 +96,48 @@ class NotificationsSheet extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 60,
+    return DecoratedBox(
       decoration: const BoxDecoration(
-        color: AppColors.notificationHeader,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(UiConstants.borderRadius * 6),
-          topRight: Radius.circular(UiConstants.borderRadius * 6),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF1565C0), Color(0xFF0D47A1)],
         ),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(UiConstants.borderRadius * 8),
+        ),
+        boxShadow: [BoxShadow(color: Color(0xCC000000), offset: Offset(0, 2))],
       ),
-      child: Stack(
-        children: [
-          const Center(
-            child: ClashStrokeText(
-              'Уведомления',
-              fontSize: 28,
-              shadows: [
-                Shadow(
-                  offset: Offset(0, UiConstants.shadowOffsetY),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            right: UiConstants.horizontalPadding * 1.5,
-            top: 0,
-            bottom: 0,
-            child: Center(
-              child: SizedBox(
-                width: UiConstants.boxUnit * 4.5,
-                height: UiConstants.boxUnit * 4.5,
-                child: GQButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: Icons.close,
-                  baseColor: AppColors.error,
-                  iconSizeFactor: 0.6,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: UiConstants.horizontalPadding * 2,
+          vertical: UiConstants.verticalPadding * 1.5,
+        ),
+        child: Row(
+          children: [
+            const Spacer(),
+            const Expanded(
+              flex: 3,
+              child: Center(
+                child: ClashStrokeText(
+                  'Уведомления',
+                  fontSize: UiConstants.textSize * 1.5,
+                  shadows: [
+                    Shadow(offset: Offset(0, UiConstants.textShadowOffsetY)),
+                  ],
                 ),
               ),
             ),
-          ),
-        ],
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: GqCloseButton(
+                  onTap: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

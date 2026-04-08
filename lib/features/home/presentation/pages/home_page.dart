@@ -25,7 +25,15 @@ class HomePage extends StatelessWidget {
 
   void _showNotifications(BuildContext context) => showModalBottomSheet(
     context: context,
-    builder: (_) => const NotificationsSheet(),
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => DraggableScrollableSheet(
+      initialChildSize: 0.88,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (_, controller) => const NotificationsSheet(),
+    ),
   );
 
   void _showSearchEvents(BuildContext context) => showModalBottomSheet(
