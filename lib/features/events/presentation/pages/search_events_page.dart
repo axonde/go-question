@@ -507,7 +507,7 @@ class _SearchEventsSheetState extends State<SearchEventsSheet> {
                 : ListView.separated(
                     padding: const EdgeInsets.all(UiConstants.boxUnit * 2),
                     itemCount: filtered.length,
-                    separatorBuilder: (_, __) =>
+                    separatorBuilder: (context, index) =>
                         const SizedBox(height: UiConstants.boxUnit * 1.5),
                     itemBuilder: (_, i) {
                       final event = filtered[i];

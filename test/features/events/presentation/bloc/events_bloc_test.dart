@@ -3,9 +3,7 @@ import 'package:go_question/core/types/result.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
 import 'package:go_question/features/events/domain/errors/event_failures.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
-import 'package:go_question/features/events/presentation/bloc/events_search/events_search_bloc.dart';
-import 'package:go_question/features/events/presentation/bloc/events_search/events_search_event.dart';
-import 'package:go_question/features/events/presentation/bloc/events_search/events_search_state.dart';
+import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 
 class FakeEventsRepository implements IEventsRepository {
   Result<List<EventEntity>, EventFailure>? getEventsResult;
@@ -28,11 +26,11 @@ class FakeEventsRepository implements IEventsRepository {
 
 void main() {
   late FakeEventsRepository repository;
-  late EventsSearchBloc bloc;
+  late EventsBloc bloc;
 
   setUp(() {
     repository = FakeEventsRepository();
-    bloc = EventsSearchBloc(repository);
+    bloc = EventsBloc(repository);
   });
 
   tearDown(() {
@@ -43,7 +41,7 @@ void main() {
     id: '1',
     title: 'Test Event',
     description: 'Test Description',
-    startTime: DateTime(2023, 1, 1),
+    startTime: DateTime.utc(2023),
     location: 'Location',
     category: 'Category',
     price: 0.0,
@@ -51,42 +49,43 @@ void main() {
     participants: 0,
     organizer: 'Organizer',
     status: 'active',
-    createdAt: DateTime(2023, 1, 1),
-    updatedAt: DateTime(2023, 1, 1),
+    createdAt: DateTime.utc(2023),
+    updatedAt: DateTime.utc(2023),
   );
 
-  test('emits [Loading, Success] when getEvents succeeds', () async {
+  test('emits [Loading, Success] when search starts and succeeds', () async {
     repository.getEventsResult = Success([tEvent]);
 
-    final states = <EventsSearchState>[];
+    final states = <EventsState>[];
     final subscription = bloc.stream.listen(states.add);
 
-    bloc.add(const EventsSearchEvent.started());
+    bloc.add(const EventsSearchStarted());
     await Future.delayed(Duration.zero);
 
     expect(states, [
-      const EventsSearchState.loading(),
-      EventsSearchState.success([tEvent]),
+      const EventsState(status: EventsStatus.loading),
+      EventsState(status: EventsStatus.success, events: [tEvent]),
     ]);
 
     await subscription.cancel();
   });
 
-  test('emits [Loading, Failure] when getEvents fails', () async {
+  test('emits [Loading, Failure] when search starts and fails', () async {
     repository.getEventsResult = const Failure(
-      EventFailure(EventFailureType.fetchFailed),
+      EventFailure(EventFailureType.fetchFailed, message: 'Network error'),
     );
 
-    final states = <EventsSearchState>[];
+    final states = <EventsState>[];
     final subscription = bloc.stream.listen(states.add);
 
-    bloc.add(const EventsSearchEvent.started());
+    bloc.add(const EventsSearchStarted());
     await Future.delayed(Duration.zero);
 
     expect(states, [
-      const EventsSearchState.loading(),
-      const EventsSearchState.failure(
-        EventFailure(EventFailureType.fetchFailed),
+      const EventsState(status: EventsStatus.loading),
+      const EventsState(
+        status: EventsStatus.failure,
+        errorMessage: 'Network error',
       ),
     ]);
 
