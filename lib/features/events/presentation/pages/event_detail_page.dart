@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
-import 'package:go_question/features/events/domain/event_entity.dart';
+import 'package:go_question/features/events/domain/entities/event_entity.dart';
 import 'package:go_question/features/events/presentation/utils/event_presentation_utils.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────

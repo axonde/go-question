@@ -4,7 +4,7 @@ import 'package:go_question/core/constants/event_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
-import 'package:go_question/features/events/domain/event_entity.dart';
+import 'package:go_question/features/events/domain/entities/event_entity.dart';
 import 'package:go_question/features/events/presentation/utils/event_presentation_utils.dart';
 
 part 'search_events_page/event_search_card.dart';
