@@ -20,17 +20,13 @@ class EventSearchCard extends StatelessWidget {
 
   static const _cardDecoration = BoxDecoration(
     color: Color(0xFFDEE7F6),
-    border: Border.fromBorderSide(
-      BorderSide(color: Color(0xFF62697B), width: UiConstants.borderWidth / 2),
-    ),
+    border: Border.fromBorderSide(BorderSide(color: Color(0xFF62697B))),
     borderRadius: BorderRadius.all(
       Radius.circular(UiConstants.borderRadius * 5),
     ),
     boxShadow: [
       BoxShadow(
         color: Color(0x55000000),
-        blurRadius: 0,
-        spreadRadius: 0,
         offset: Offset(0, UiConstants.shadowOffsetY),
       ),
     ],
@@ -234,7 +230,6 @@ class _OrganizerRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
           width: UiConstants.boxUnit * 5,
@@ -242,14 +237,10 @@ class _OrganizerRow extends StatelessWidget {
           decoration: BoxDecoration(
             color: const Color(0xFFA5AEBB),
             shape: BoxShape.circle,
-            border: Border.all(
-              color: Colors.black,
-              width: UiConstants.borderWidth / 2,
-            ),
+            border: Border.all(),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x44000000),
-                blurRadius: 0,
                 offset: Offset(0, UiConstants.shadowOffsetY),
               ),
             ],

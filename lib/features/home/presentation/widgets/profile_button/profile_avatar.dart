@@ -20,11 +20,7 @@ class _ProfileAvatar extends StatelessWidget {
         borderRadius: BorderRadius.circular(size * 0.2),
       ),
       clipBehavior: Clip.antiAlias,
-      child: Icon(
-        Icons.person,
-        size: size * 0.65,
-        color: Colors.grey.shade600,
-      ),
+      child: Icon(Icons.person, size: size * 0.65, color: Colors.grey.shade600),
     );
   }
 }

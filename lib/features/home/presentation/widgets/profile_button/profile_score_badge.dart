@@ -8,10 +8,7 @@ class _ProfileScoreBadge extends StatelessWidget {
   final int score;
   final double slotHeight;
 
-  const _ProfileScoreBadge({
-    required this.score,
-    required this.slotHeight,
-  });
+  const _ProfileScoreBadge({required this.score, required this.slotHeight});
 
   @override
   Widget build(BuildContext context) {

@@ -28,8 +28,13 @@ class _GoButtonPainter extends CustomPainter {
     _drawHighlight(canvas, rx, ry);
   }
 
-  void _drawShadow(Canvas canvas, double w, double h,
-      double Function(double) rx, double Function(double) ry) {
+  void _drawShadow(
+    Canvas canvas,
+    double w,
+    double h,
+    double Function(double) rx,
+    double Function(double) ry,
+  ) {
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(0, ry(4), w, h),
@@ -39,8 +44,13 @@ class _GoButtonPainter extends CustomPainter {
     );
   }
 
-  void _drawOuterGradient(Canvas canvas, double w, double h,
-      double Function(double) rx, double Function(double) ry) {
+  void _drawOuterGradient(
+    Canvas canvas,
+    double w,
+    double h,
+    double Function(double) rx,
+    double Function(double) ry,
+  ) {
     final rect = Rect.fromLTWH(rx(1), ry(1), w - rx(1.5), h - ry(1.5));
     canvas.drawRRect(
       RRect.fromRectAndRadius(rect, Radius.circular(rx(10))),
@@ -48,8 +58,13 @@ class _GoButtonPainter extends CustomPainter {
     );
   }
 
-  void _drawBorder(Canvas canvas, double w, double h,
-      double Function(double) rx, double Function(double) ry) {
+  void _drawBorder(
+    Canvas canvas,
+    double w,
+    double h,
+    double Function(double) rx,
+    double Function(double) ry,
+  ) {
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(0, 0, w, h),
@@ -62,8 +77,13 @@ class _GoButtonPainter extends CustomPainter {
     );
   }
 
-  void _drawMainGradient(Canvas canvas, double w, double h,
-      double Function(double) rx, double Function(double) ry) {
+  void _drawMainGradient(
+    Canvas canvas,
+    double w,
+    double h,
+    double Function(double) rx,
+    double Function(double) ry,
+  ) {
     final rect = Rect.fromLTWH(rx(1), ry(1), w - rx(2), ry(100));
     canvas.drawRRect(
       RRect.fromRectAndRadius(rect, Radius.circular(rx(9))),
@@ -71,8 +91,11 @@ class _GoButtonPainter extends CustomPainter {
     );
   }
 
-  void _drawInnerPanel(Canvas canvas, double Function(double) rx,
-      double Function(double) ry) {
+  void _drawInnerPanel(
+    Canvas canvas,
+    double Function(double) rx,
+    double Function(double) ry,
+  ) {
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(rx(7), ry(6), rx(147), ry(88)),
@@ -82,8 +105,11 @@ class _GoButtonPainter extends CustomPainter {
     );
   }
 
-  void _drawInnerPanelTop(Canvas canvas, double Function(double) rx,
-      double Function(double) ry) {
+  void _drawInnerPanelTop(
+    Canvas canvas,
+    double Function(double) rx,
+    double Function(double) ry,
+  ) {
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(rx(7), ry(6), rx(147), ry(43)),
@@ -93,8 +119,11 @@ class _GoButtonPainter extends CustomPainter {
     );
   }
 
-  void _drawHighlight(Canvas canvas, double Function(double) rx,
-      double Function(double) ry) {
+  void _drawHighlight(
+    Canvas canvas,
+    double Function(double) rx,
+    double Function(double) ry,
+  ) {
     canvas.save();
     canvas.translate(rx(146), ry(14));
     canvas.rotate(-45.87 * 3.14159 / 180);

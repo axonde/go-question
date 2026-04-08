@@ -1,7 +1,4 @@
-import '../../domain/entities/auth_page.dart';
-import '../../domain/entities/registration_input_entity.dart';
-
-export '../../domain/entities/auth_page.dart';
+part of 'auth_bloc.dart';
 
 enum AuthStatus {
   initial,
