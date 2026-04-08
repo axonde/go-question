@@ -19,6 +19,10 @@ class NotificationData {
   final bool showReject;
   final String? userName;
   final String? userRating;
+  final String? eventTitle;
+  final String? eventDate;
+  final String? eventLocation;
+  final String? eventCategory;
 
   const NotificationData({
     required this.title,
@@ -27,6 +31,10 @@ class NotificationData {
     this.showReject = false,
     this.userName,
     this.userRating,
+    this.eventTitle,
+    this.eventDate,
+    this.eventLocation,
+    this.eventCategory,
   });
 }
 
@@ -44,15 +52,29 @@ const _kMockNotifications = [
     showReject: true,
     userName: 'Джиган',
     userRating: '158 🏆',
+    eventTitle: 'Вечеринка на пляже',
+    eventDate: '04.04.2027 в 17:00',
+    eventLocation: 'Пляж "Ласковый берег", Санкт-Петербург',
+    eventCategory: 'Отдых и развлечения',
   ),
   NotificationData(
     title: 'Событие скоро начнется!',
     body:
         'Событие "Вечеринка на пляже", которое состоится 04.04.2027 в 17:00, начнется через 2 часа. Не забудьте подготовиться!',
+    eventTitle: 'Вечеринка на пляже',
+    eventDate: '04.04.2027 в 17:00',
+    eventLocation: 'Пляж "Ласковый берег", Санкт-Петербург',
+    eventCategory: 'Отдых и развлечения',
   ),
   NotificationData(
     title: 'Новое сообщение',
     body: 'У вас новое сообщение от организатора турнира.',
+    userName: 'Организатор Иван',
+    userRating: '245 🏆',
+    eventTitle: 'Турнир по настольному теннису',
+    eventDate: '15.04.2027 в 10:00',
+    eventLocation: 'Спортивный комплекс "Олимп"',
+    eventCategory: 'Спорт',
   ),
 ];
 

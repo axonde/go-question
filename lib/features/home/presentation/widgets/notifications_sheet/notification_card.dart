@@ -124,7 +124,7 @@ class NotificationCard extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _ExpandedContent — дополнительная информация о пользователе.
+// _ExpandedContent — дополнительная информация о пользователе и событии.
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _ExpandedContent extends StatelessWidget {
@@ -133,8 +133,6 @@ class _ExpandedContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (data.userName == null) return const SizedBox.shrink();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -142,49 +140,152 @@ class _ExpandedContent extends StatelessWidget {
         const SizedBox(height: UiConstants.boxUnit * 1.5),
         const Divider(height: 1, thickness: 0.5, color: Color(0xFF62697B)),
         const SizedBox(height: UiConstants.boxUnit * 1.25),
-        Row(
-          children: [
-            Container(
-              width: UiConstants.boxUnit * 5,
-              height: UiConstants.boxUnit * 5,
-              decoration: BoxDecoration(
-                color: AppColors.primaryVariant,
-                borderRadius:
-                    BorderRadius.circular(UiConstants.borderRadius * 4),
-                border: Border.all(
-                  color: AppColors.stroke,
+        // Информация о пользователе (если есть)
+        if (data.userName != null) ...[
+          _UserInfo(data: data),
+          const SizedBox(height: UiConstants.boxUnit * 1.25),
+          const Divider(height: 1, thickness: 0.5, color: Color(0xFF62697B)),
+          const SizedBox(height: UiConstants.boxUnit * 1.25),
+        ],
+        // Детали события (если есть)
+        if (data.eventTitle != null) _EventDetails(data: data),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _UserInfo — информация о пользователе.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _UserInfo extends StatelessWidget {
+  final NotificationData data;
+  const _UserInfo({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: UiConstants.boxUnit * 5,
+          height: UiConstants.boxUnit * 5,
+          decoration: BoxDecoration(
+            color: AppColors.primaryVariant,
+            borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
+            border: Border.all(
+              color: AppColors.stroke,
+            ),
+          ),
+          child: const Icon(
+            Icons.person,
+            color: Colors.white,
+            size: UiConstants.boxUnit * 3,
+          ),
+        ),
+        const SizedBox(width: UiConstants.boxUnit),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClashStrokeText(
+                data.userName ?? 'User',
+                fontSize: 18,
+                strokeWidth: 2,
+              ),
+              Text(
+                'Рейтинг: ${data.userRating ?? '0 🏆'}',
+                style: const TextStyle(
+                  fontFamily: 'Clash',
+                  fontSize: 14,
+                  color: AppColors.primaryVariant,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              child: const Icon(
-                Icons.person,
-                color: Colors.white,
-                size: UiConstants.boxUnit * 3,
-              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _EventDetails — детальная информация о событии.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _EventDetails extends StatelessWidget {
+  final NotificationData data;
+  const _EventDetails({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (data.eventTitle != null)
+          _DetailRow(
+            icon: Icons.event,
+            label: data.eventTitle!,
+          ),
+        if (data.eventDate != null) ...[
+          const SizedBox(height: UiConstants.boxUnit * 0.75),
+          _DetailRow(
+            icon: Icons.access_time_outlined,
+            label: data.eventDate!,
+          ),
+        ],
+        if (data.eventLocation != null) ...[
+          const SizedBox(height: UiConstants.boxUnit * 0.75),
+          _DetailRow(
+            icon: Icons.location_on_outlined,
+            label: data.eventLocation!,
+          ),
+        ],
+        if (data.eventCategory != null) ...[
+          const SizedBox(height: UiConstants.boxUnit * 0.75),
+          _DetailRow(
+            icon: Icons.category_outlined,
+            label: data.eventCategory!,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _DetailRow — строка с иконкой и текстом.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _DetailRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _DetailRow({
+    required this.icon,
+    required this.label,
+    this.color = const Color(0xFF3A4560),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: UiConstants.textSize, color: color),
+        const SizedBox(width: UiConstants.boxUnit),
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontFamily: 'Clash',
+              fontFamilyFallback: const ['Roboto', 'sans-serif'],
+              fontSize: UiConstants.textSize * 0.8,
+              color: color,
             ),
-            const SizedBox(width: UiConstants.boxUnit),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ClashStrokeText(
-                    data.userName ?? 'User',
-                    fontSize: 18,
-                    strokeWidth: 2,
-                  ),
-                  Text(
-                    'Рейтинг: ${data.userRating ?? '0 🏆'}',
-                    style: const TextStyle(
-                      fontFamily: 'Clash',
-                      fontSize: 14,
-                      color: AppColors.primaryVariant,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );
