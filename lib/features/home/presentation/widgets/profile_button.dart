@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/constants/home_ui_constants.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/features/score/presentation/bloc/score_bloc.dart';
 
@@ -60,15 +62,15 @@ class _ProfileCard extends StatelessWidget {
           builder: (context) {
             return DecoratedBox(
               decoration: BoxDecoration(
-                color: const Color(0xFF0E3457).withValues(alpha: 0.7),
-                border: Border.all(color: const Color(0xFF5EA3D3)),
+                color: HomeUiConstants.panelBackground.withValues(alpha: 0.7),
+                border: Border.all(color: HomeUiConstants.participantAccent),
                 borderRadius: BorderRadius.circular(
                   UiConstants.borderRadius * 5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.6),
-                    offset: const Offset(0, 2),
+                    color: HomeUiConstants.panelShadow.withValues(alpha: 0.6),
+                    offset: const Offset(0, HomeUiConstants.cardShadowOffset),
                   ),
                 ],
               ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/constants/home_ui_constants.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 
@@ -13,10 +15,15 @@ part 'home_top_bar/notifications_button.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 
 const _frameDecoration = BoxDecoration(
-  color: Color(0xFF0E3457),
-  border: Border.fromBorderSide(BorderSide(color: Color(0xFF5EA3D3))),
+  color: HomeUiConstants.panelBackground,
+  border: Border.fromBorderSide(BorderSide(color: AppColors.inputBorder)),
   borderRadius: BorderRadius.all(Radius.circular(UiConstants.borderRadius * 5)),
-  boxShadow: [BoxShadow(color: Color(0x99000000), offset: Offset(0, 2))],
+  boxShadow: [
+    BoxShadow(
+      color: HomeUiConstants.panelShadow,
+      offset: Offset(0, HomeUiConstants.cardShadowOffset),
+    ),
+  ],
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -54,16 +61,17 @@ class HomeTopBar extends StatelessWidget {
             vertical: UiConstants.verticalPadding,
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: UiConstants.boxUnit,
             children: [
-              Flexible(
+              Expanded(
                 child: _AchievementButton(
                   onTap: onAchievementsTap,
                   visible: showAchievements,
                   height: buttonH,
                 ),
               ),
-              Flexible(
+              Expanded(
                 flex: 5,
                 child: _CityButton(
                   city: city,
@@ -71,7 +79,7 @@ class HomeTopBar extends StatelessWidget {
                   height: buttonH,
                 ),
               ),
-              Flexible(
+              Expanded(
                 flex: 5,
                 child: _NotificationsButton(
                   onTap: onNotificationsTap,

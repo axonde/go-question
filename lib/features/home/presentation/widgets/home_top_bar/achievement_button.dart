@@ -7,10 +7,15 @@ part of '../home_top_bar.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 
 const _achievementDecoration = BoxDecoration(
-  color: Color(0xFF257FB4),
+  color: HomeUiConstants.achievementBackground,
   border: Border.fromBorderSide(BorderSide()),
   borderRadius: BorderRadius.all(Radius.circular(UiConstants.borderRadius * 5)),
-  boxShadow: [BoxShadow(color: Color(0x99000000), offset: Offset(0, 2))],
+  boxShadow: [
+    BoxShadow(
+      color: HomeUiConstants.panelShadow,
+      offset: Offset(0, HomeUiConstants.cardShadowOffset),
+    ),
+  ],
 );
 
 class _AchievementButton extends StatelessWidget {
@@ -36,7 +41,7 @@ class _AchievementButton extends StatelessWidget {
         decoration: _achievementDecoration,
         child: Icon(
           Icons.military_tech,
-          color: const Color(0xFFFFD700),
+          color: HomeUiConstants.achievementIcon,
           size: height * 0.6,
         ),
       ),

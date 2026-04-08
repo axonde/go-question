@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
+import 'package:go_question/core/constants/home_ui_constants.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 
 /// Две кнопки действия в нижней части главного экрана.
@@ -29,31 +30,49 @@ class HomeActionButtons extends StatelessWidget {
           child: Row(
             spacing: UiConstants.boxUnit,
             children: [
-              Flexible(
-                child: LayoutBuilder(
-                  builder: (_, c) => GQButton(
-                    onPressed: onBattleSheetTap,
-                    text: EventTexts.buttonSearch,
-                    baseColor: AppColors.secondary,
-                    width: c.maxWidth,
-                    height: h,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: UiConstants.leftPadding * 2,
+                    right: UiConstants.rightPadding / 2,
+                  ),
+                  child: LayoutBuilder(
+                    builder: (_, c) => GQButton(
+                      onPressed: onBattleSheetTap,
+                      text: EventTexts.buttonSearch,
+                      baseColor: AppColors.secondary,
+                      width: c.maxWidth,
+                      height: h,
+                    ),
                   ),
                 ),
               ),
-              Flexible(
-                child: LayoutBuilder(
-                  builder: (_, c) => GQButton(
-                    onPressed: onCreateEventTap,
-                    text: EventTexts.buttonNew,
-                    baseColor: AppColors.primary,
-                    mainGradient: const LinearGradient(
-                      colors: [Color(0xFF0092F5), Color(0xFF008FF2)],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: UiConstants.leftPadding / 2,
+                    right: UiConstants.rightPadding * 2,
+                  ),
+                  child: LayoutBuilder(
+                    builder: (_, c) => GQButton(
+                      onPressed: onCreateEventTap,
+                      text: EventTexts.buttonNew,
+                      baseColor: AppColors.primary,
+                      mainGradient: const LinearGradient(
+                        colors: [
+                          HomeUiConstants.createButtonMainStart,
+                          HomeUiConstants.createButtonMainEnd,
+                        ],
+                      ),
+                      outerGradient: const LinearGradient(
+                        colors: [
+                          HomeUiConstants.createButtonOuterStart,
+                          HomeUiConstants.createButtonOuterEnd,
+                        ],
+                      ),
+                      width: c.maxWidth,
+                      height: h,
                     ),
-                    outerGradient: const LinearGradient(
-                      colors: [Color(0xFF005BC0), Color(0xFF0055B8)],
-                    ),
-                    width: c.maxWidth,
-                    height: h,
                   ),
                 ),
               ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_question/core/types/result.dart';
+import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/features/auth/domain/entities/auth_page.dart';
 import 'package:go_question/features/auth/domain/entities/registration_input_entity.dart';
 import 'package:go_question/features/auth/domain/errors/auth_failure.dart';
@@ -123,7 +124,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('Выйти из аккаунта'));
+    await tester.tap(find.byType(GQButton));
     await tester.pump();
     await tester.pump();
 

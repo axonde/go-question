@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/constants/navigation_constants.dart';
+import 'package:go_question/core/constants/navigation_texts.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 
 part 'bottom_nav_bar/_nav_background.dart';
@@ -10,8 +12,6 @@ const _kBattleAsset = 'assets/icons/png/battle.png';
 const _kSettingsAsset = 'assets/icons/png/settings.png';
 
 const double _kBarHeight = UiConstants.boxUnit * 13;
-const double _kDividerWidth = 3.0;
-const Color _kDividerColor = Color(0xFF7C9DA4);
 
 class ClashNavBar extends StatelessWidget {
   final int currentIndex;
@@ -39,7 +39,7 @@ class ClashNavBar extends StatelessWidget {
               Expanded(
                 child: _NavItem(
                   index: 0,
-                  label: 'Друзья',
+                  label: NavigationTexts.friends,
                   assetPath: _kFriendsAsset,
                   fallbackIcon: Icons.people_outline,
                   currentIndex: currentIndex,
@@ -51,7 +51,7 @@ class ClashNavBar extends StatelessWidget {
               Expanded(
                 child: _NavItem(
                   index: 1,
-                  label: 'Го',
+                  label: NavigationTexts.home,
                   assetPath: _kBattleAsset,
                   fallbackIcon: Icons.sports_martial_arts,
                   currentIndex: currentIndex,
@@ -64,7 +64,7 @@ class ClashNavBar extends StatelessWidget {
               Expanded(
                 child: _NavItem(
                   index: 2,
-                  label: 'Настройки',
+                  label: NavigationTexts.settings,
                   assetPath: _kSettingsAsset,
                   fallbackIcon: Icons.settings_outlined,
                   currentIndex: currentIndex,
@@ -86,9 +86,9 @@ class _Divider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(
-      width: _kDividerWidth,
+      width: NavigationConstants.dividerWidth,
       child: DecoratedBox(
-        decoration: BoxDecoration(color: _kDividerColor),
+        decoration: BoxDecoration(color: NavigationConstants.dividerColor),
         child: SizedBox.expand(),
       ),
     );
