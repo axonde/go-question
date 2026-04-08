@@ -15,6 +15,8 @@ class _NotificationsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final adjustedHeight = height;
+
     return LayoutBuilder(
       builder: (_, constraints) => GQButton(
         onPressed: onTap,
@@ -22,7 +24,7 @@ class _NotificationsButton extends StatelessWidget {
         fontSize: UiConstants.textSize,
         baseColor: _green,
         width: constraints.maxWidth,
-        height: height,
+        height: adjustedHeight,
       ),
     );
   }

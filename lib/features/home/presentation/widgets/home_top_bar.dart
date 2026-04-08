@@ -54,16 +54,17 @@ class HomeTopBar extends StatelessWidget {
             vertical: UiConstants.verticalPadding,
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: UiConstants.boxUnit,
             children: [
-              Flexible(
+              Expanded(
                 child: _AchievementButton(
                   onTap: onAchievementsTap,
                   visible: showAchievements,
                   height: buttonH,
                 ),
               ),
-              Flexible(
+              Expanded(
                 flex: 5,
                 child: _CityButton(
                   city: city,
@@ -71,7 +72,7 @@ class HomeTopBar extends StatelessWidget {
                   height: buttonH,
                 ),
               ),
-              Flexible(
+              Expanded(
                 flex: 5,
                 child: _NotificationsButton(
                   onTap: onNotificationsTap,

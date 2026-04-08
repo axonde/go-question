@@ -29,31 +29,43 @@ class HomeActionButtons extends StatelessWidget {
           child: Row(
             spacing: UiConstants.boxUnit,
             children: [
-              Flexible(
-                child: LayoutBuilder(
-                  builder: (_, c) => GQButton(
-                    onPressed: onBattleSheetTap,
-                    text: EventTexts.buttonSearch,
-                    baseColor: AppColors.secondary,
-                    width: c.maxWidth,
-                    height: h,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: UiConstants.leftPadding * 2,
+                    right: UiConstants.rightPadding / 2,
+                  ),
+                  child: LayoutBuilder(
+                    builder: (_, c) => GQButton(
+                      onPressed: onBattleSheetTap,
+                      text: EventTexts.buttonSearch,
+                      baseColor: AppColors.secondary,
+                      width: c.maxWidth,
+                      height: h,
+                    ),
                   ),
                 ),
               ),
-              Flexible(
-                child: LayoutBuilder(
-                  builder: (_, c) => GQButton(
-                    onPressed: onCreateEventTap,
-                    text: EventTexts.buttonNew,
-                    baseColor: AppColors.primary,
-                    mainGradient: const LinearGradient(
-                      colors: [Color(0xFF0092F5), Color(0xFF008FF2)],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: UiConstants.leftPadding / 2,
+                    right: UiConstants.rightPadding * 2,
+                  ),
+                  child: LayoutBuilder(
+                    builder: (_, c) => GQButton(
+                      onPressed: onCreateEventTap,
+                      text: EventTexts.buttonNew,
+                      baseColor: AppColors.primary,
+                      mainGradient: const LinearGradient(
+                        colors: [Color(0xFF0092F5), Color(0xFF008FF2)],
+                      ),
+                      outerGradient: const LinearGradient(
+                        colors: [Color(0xFF005BC0), Color(0xFF0055B8)],
+                      ),
+                      width: c.maxWidth,
+                      height: h,
                     ),
-                    outerGradient: const LinearGradient(
-                      colors: [Color(0xFF005BC0), Color(0xFF0055B8)],
-                    ),
-                    width: c.maxWidth,
-                    height: h,
                   ),
                 ),
               ),
