@@ -21,7 +21,7 @@ class HomeActionButtons extends StatelessWidget {
         final h = constraints.maxHeight - UiConstants.verticalPadding * 2;
 
         return Padding(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: UiConstants.horizontalPadding * 2,
             vertical: UiConstants.verticalPadding,
           ),
@@ -29,7 +29,6 @@ class HomeActionButtons extends StatelessWidget {
             spacing: UiConstants.boxUnit,
             children: [
               Flexible(
-                flex: 1,
                 child: LayoutBuilder(
                   builder: (_, c) => GQButton(
                     onPressed: onBattleSheetTap,
@@ -41,7 +40,6 @@ class HomeActionButtons extends StatelessWidget {
                 ),
               ),
               Flexible(
-                flex: 1,
                 child: LayoutBuilder(
                   builder: (_, c) => GQButton(
                     onPressed: onModeDialogTap,
