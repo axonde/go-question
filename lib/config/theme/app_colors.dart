@@ -57,4 +57,8 @@ class AppColors {
   /// Цвет ошибок и невалидных состояний.
   /// Пример: `ThemeData(colorScheme: ... copyWith(error: AppColors.error))`.
   static const Color error = Color(0xFFFE4450);
+
+  /// Цвет заголовка панели уведомлений.
+  /// Пример: `Container(color: AppColors.notificationHeader)`.
+  static const Color notificationHeader = Color(0xFF5EA3D3);
 }
