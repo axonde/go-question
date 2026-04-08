@@ -10,7 +10,6 @@ class EventEntity with _$EventEntity {
     required String id,
     required String title,
     required String description,
-    required String imageUrl,
     @TimestampConverter() required DateTime startTime,
     required String location,
     required String category,
