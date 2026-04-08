@@ -9,8 +9,12 @@ part of 'profile_model.dart';
 _$ProfileModelImpl _$$ProfileModelImplFromJson(Map<String, dynamic> json) =>
     _$ProfileModelImpl(
       uid: json['uid'] as String,
+      email: json['email'] as String,
       name: json['name'] as String,
-      age: (json['age'] as num?)?.toInt(),
+      nickname: json['nickname'] as String,
+      birthDate: const TimestampConverter().fromJson(json['birthDate']),
+      city: json['city'] as String?,
+      trophies: (json['trophies'] as num?)?.toInt() ?? 0,
       visitedEventsCount: (json['visitedEventsCount'] as num?)?.toInt() ?? 0,
       createdEventsCount: (json['createdEventsCount'] as num?)?.toInt() ?? 0,
       createdAt: const TimestampConverter().fromJson(json['createdAt']),
@@ -20,10 +24,22 @@ _$ProfileModelImpl _$$ProfileModelImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$ProfileModelImplToJson(_$ProfileModelImpl instance) =>
     <String, dynamic>{
       'uid': instance.uid,
+      'email': instance.email,
       'name': instance.name,
-      'age': instance.age,
+      'nickname': instance.nickname,
+      'birthDate': _$JsonConverterToJson<dynamic, DateTime>(
+        instance.birthDate,
+        const TimestampConverter().toJson,
+      ),
+      'city': instance.city,
+      'trophies': instance.trophies,
       'visitedEventsCount': instance.visitedEventsCount,
       'createdEventsCount': instance.createdEventsCount,
       'createdAt': const TimestampConverter().toJson(instance.createdAt),
       'updatedAt': const TimestampConverter().toJson(instance.updatedAt),
     };
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) => value == null ? null : toJson(value);

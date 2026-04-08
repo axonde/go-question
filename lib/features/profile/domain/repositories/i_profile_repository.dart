@@ -15,7 +15,9 @@ abstract class IProfileRepository {
   /// Returns Success(profile) on success, Failure for any domain/data errors.
   Future<Result<Profile, ProfileFailure>> createInitialProfile({
     required String uid,
+    required String initialEmail,
     required String initialName,
+    required String initialNickname,
   });
 
   /// Updates profile in data source.

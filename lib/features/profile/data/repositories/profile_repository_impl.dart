@@ -44,6 +44,15 @@ class ProfileRepositoryImpl implements IProfileRepository {
       profile.validate(); // Ensure entity invariants
       return Success(profile);
     } catch (error) {
+      if (error is ArgumentError) {
+        return Failure(
+          ProfileFailure(
+            ProfileFailureType.invalidName,
+            message: error.message?.toString() ?? error.toString(),
+          ),
+        );
+      }
+
       final mappedException = mapProfileFirestoreException(error);
       final failure = _errorMapper.map(mappedException);
       return Failure(failure);
@@ -53,22 +62,29 @@ class ProfileRepositoryImpl implements IProfileRepository {
   @override
   Future<Result<Profile, ProfileFailure>> createInitialProfile({
     required String uid,
+    required String initialEmail,
     required String initialName,
+    required String initialNickname,
   }) async {
     try {
-      // Validate name before calling datasource
-      final trimmed = initialName.trim();
-      if (trimmed.isEmpty) {
-        return const Failure(
-          ProfileFailure(
-            ProfileFailureType.invalidName,
-            message: ProfileFailureMessages.nameCannotBeEmptyOrWhitespace,
-          ),
-        );
-      }
+      final normalizedName = initialName.trim();
+      final normalizedEmail = initialEmail.trim();
+      final normalizedNickname = initialNickname.trim();
 
-      // Create on datasource
-      await _remoteDataSource.createInitialProfile(uid: uid, name: trimmed);
+      final initialProfile = Profile(
+        uid: uid,
+        email: normalizedEmail,
+        name: normalizedName,
+        nickname: normalizedNickname,
+      );
+      initialProfile.validate();
+
+      await _remoteDataSource.createInitialProfile(
+        uid: uid,
+        email: initialProfile.email,
+        name: initialProfile.name,
+        nickname: initialProfile.nickname,
+      );
 
       // Fetch the created profile to return
       final modelOrNull = await _remoteDataSource.getProfile(uid);
@@ -86,6 +102,15 @@ class ProfileRepositoryImpl implements IProfileRepository {
       profile.validate();
       return Success(profile);
     } catch (error) {
+      if (error is ArgumentError) {
+        return Failure(
+          ProfileFailure(
+            ProfileFailureType.invalidName,
+            message: error.message?.toString() ?? error.toString(),
+          ),
+        );
+      }
+
       final mappedException = mapProfileFirestoreException(error);
       final failure = _errorMapper.map(mappedException);
       return Failure(failure);
@@ -97,15 +122,42 @@ class ProfileRepositoryImpl implements IProfileRepository {
     try {
       profile.validate(); // Enforce invariants before update
 
+      final currentProfileModel = await _remoteDataSource.getProfile(
+        profile.uid,
+      );
+      if (currentProfileModel != null) {
+        final currentProfile = currentProfileModel.toEntity();
+        if (currentProfile.nickname != profile.nickname) {
+          return const Failure(
+            ProfileFailure(
+              ProfileFailureType.invalidName,
+              message: ProfileFailureMessages.nicknameIsImmutable,
+            ),
+          );
+        }
+      }
+
       await _remoteDataSource.updateProfileBasics(
         uid: profile.uid,
+        email: profile.email,
         name: profile.name,
-        age: profile.age,
+        birthDate: profile.birthDate,
+        city: profile.city,
+        trophies: profile.trophies,
       );
 
       // Return updated profile
       return Success(profile);
     } catch (error) {
+      if (error is ArgumentError) {
+        return Failure(
+          ProfileFailure(
+            ProfileFailureType.invalidName,
+            message: error.message?.toString() ?? error.toString(),
+          ),
+        );
+      }
+
       final mappedException = mapProfileFirestoreException(error);
       final failure = _errorMapper.map(mappedException);
       return Failure(failure);
@@ -116,6 +168,15 @@ class ProfileRepositoryImpl implements IProfileRepository {
   Future<Result<Profile, ProfileFailure>> incrementVisitedEventsCount(
     String uid,
   ) async {
+    if (uid.trim().isEmpty) {
+      return const Failure(
+        ProfileFailure(
+          ProfileFailureType.invalidName,
+          message: ProfileValidationMessages.uidCannotBeEmpty,
+        ),
+      );
+    }
+
     try {
       await _remoteDataSource.incrementVisitedEvents(uid);
 
@@ -135,6 +196,15 @@ class ProfileRepositoryImpl implements IProfileRepository {
       profile.validate();
       return Success(profile);
     } catch (error) {
+      if (error is ArgumentError) {
+        return Failure(
+          ProfileFailure(
+            ProfileFailureType.invalidName,
+            message: error.message?.toString() ?? error.toString(),
+          ),
+        );
+      }
+
       final mappedException = mapProfileFirestoreException(error);
       final failure = _errorMapper.map(mappedException);
       return Failure(failure);
@@ -145,6 +215,15 @@ class ProfileRepositoryImpl implements IProfileRepository {
   Future<Result<Profile, ProfileFailure>> incrementCreatedEventsCount(
     String uid,
   ) async {
+    if (uid.trim().isEmpty) {
+      return const Failure(
+        ProfileFailure(
+          ProfileFailureType.invalidName,
+          message: ProfileValidationMessages.uidCannotBeEmpty,
+        ),
+      );
+    }
+
     try {
       await _remoteDataSource.incrementCreatedEvents(uid);
 
@@ -164,6 +243,15 @@ class ProfileRepositoryImpl implements IProfileRepository {
       profile.validate();
       return Success(profile);
     } catch (error) {
+      if (error is ArgumentError) {
+        return Failure(
+          ProfileFailure(
+            ProfileFailureType.invalidName,
+            message: error.message?.toString() ?? error.toString(),
+          ),
+        );
+      }
+
       final mappedException = mapProfileFirestoreException(error);
       final failure = _errorMapper.map(mappedException);
       return Failure(failure);

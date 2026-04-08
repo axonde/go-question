@@ -10,6 +10,11 @@ import 'package:go_question/features/auth/domain/errors/auth_exception_to_failur
 import 'package:go_question/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:go_question/features/auth/domain/services/auth_page_memory.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:go_question/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:go_question/features/profile/data/source/profile_remote_datasource.dart';
+import 'package:go_question/features/profile/domain/errors/profile_exception_to_failure_mapper.dart';
+import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
+import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/score/presentation/bloc/score_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -36,15 +41,35 @@ Future<void> init() async {
     () => AuthRepositoryImpl(sl(), sl(), sl()),
   );
 
+  sl.registerLazySingleton<IAuthRemoteDataSource>(
+    () => AuthRemoteDataSourceImpl(sl(), sl()),
+  );
+
+  //! Features - Profile
+
+  sl.registerFactory(() => ProfileBloc(sl()));
+
+  sl.registerLazySingleton<ProfileExceptionToFailureMapper>(
+    () => const ProfileExceptionToFailureMapperImpl(),
+  );
+
+  sl.registerLazySingleton<IProfileRepository>(
+    () => ProfileRepositoryImpl(sl(), sl()),
+  );
+
+  sl.registerLazySingleton<IProfileRemoteDataSource>(
+    () => ProfileRemoteDataSourceImpl(sl(), sl()),
+  );
+
+  //! Router
+
   sl.registerLazySingleton<AuthGuard>(() => AuthGuard(sl()));
   sl.registerLazySingleton<GuestGuard>(() => GuestGuard(sl()));
   sl.registerLazySingleton<AppRouter>(
     () => AppRouter(authGuard: sl(), guestGuard: sl()),
   );
 
-  sl.registerLazySingleton<IAuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(sl(), sl()),
-  );
+  //! Other features
 
   sl.registerFactory(() => ScoreBloc());
 

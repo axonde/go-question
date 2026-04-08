@@ -8,8 +8,11 @@ part 'profile.freezed.dart';
 ///
 /// Invariants enforced:
 /// - uid: required, immutable
+/// - email: required, non-empty after trim
 /// - name: required, non-empty after trim
-/// - age: nullable, >= 0 when present
+/// - nickname: required, non-empty after trim
+/// - birthDate: nullable, must not be in future when present
+/// - trophies: >= 0, default 0
 /// - counters: >= 0, default 0
 ///
 /// Broken invariants throw ArgumentError.
@@ -17,8 +20,12 @@ part 'profile.freezed.dart';
 class Profile with _$Profile {
   const factory Profile({
     required String uid,
+    required String email,
     required String name,
-    int? age,
+    required String nickname,
+    DateTime? birthDate,
+    String? city,
+    @Default(0) int trophies,
     @Default(0) int visitedEventsCount,
     @Default(0) int createdEventsCount,
   }) = _Profile;
@@ -31,11 +38,22 @@ class Profile with _$Profile {
     if (uid.isEmpty) {
       throw ArgumentError(ProfileValidationMessages.uidCannotBeEmpty);
     }
+    if (email.trim().isEmpty) {
+      throw ArgumentError(ProfileValidationMessages.emailCannotBeEmpty);
+    }
     if (name.trim().isEmpty) {
       throw ArgumentError(ProfileValidationMessages.nameCannotBeEmpty);
     }
-    if (age != null && age! < 0) {
-      throw ArgumentError('${ProfileValidationMessages.ageInvalid} $age');
+    if (nickname.trim().isEmpty) {
+      throw ArgumentError(ProfileValidationMessages.nicknameCannotBeEmpty);
+    }
+    if (birthDate != null && birthDate!.isAfter(DateTime.now())) {
+      throw ArgumentError(
+        '${ProfileValidationMessages.birthDateInFuture} $birthDate',
+      );
+    }
+    if (trophies < 0) {
+      throw ArgumentError(ProfileValidationMessages.trophiesInvalid);
     }
     if (visitedEventsCount < 0) {
       throw ArgumentError(ProfileValidationMessages.visitedEventsCountInvalid);

@@ -9,8 +9,12 @@ part 'profile_model.g.dart';
 /// ProfileModel - DTO for Firestore storage.
 ///
 /// Maps to users/{uid} document with fields:
+/// - email: String
 /// - name: String
-/// - age: int | null
+/// - nickname: String
+/// - birthDate: Timestamp | null
+/// - city: String | null
+/// - trophies: int
 /// - visitedEventsCount: int
 /// - createdEventsCount: int
 /// - createdAt: Timestamp
@@ -19,8 +23,12 @@ part 'profile_model.g.dart';
 class ProfileModel with _$ProfileModel {
   const factory ProfileModel({
     required String uid,
+    required String email,
     required String name,
-    int? age,
+    required String nickname,
+    @TimestampConverter() DateTime? birthDate,
+    String? city,
+    @Default(0) int trophies,
     @Default(0) int visitedEventsCount,
     @Default(0) int createdEventsCount,
     @TimestampConverter() required DateTime createdAt,
@@ -36,8 +44,12 @@ class ProfileModel with _$ProfileModel {
   Profile toEntity() {
     return Profile(
       uid: uid,
+      email: email,
       name: name,
-      age: age,
+      nickname: nickname,
+      birthDate: birthDate,
+      city: city,
+      trophies: trophies,
       visitedEventsCount: visitedEventsCount,
       createdEventsCount: createdEventsCount,
     );
@@ -48,8 +60,12 @@ class ProfileModel with _$ProfileModel {
     final now = DateTime.now();
     return ProfileModel(
       uid: profile.uid,
+      email: profile.email,
       name: profile.name,
-      age: profile.age,
+      nickname: profile.nickname,
+      birthDate: profile.birthDate,
+      city: profile.city,
+      trophies: profile.trophies,
       visitedEventsCount: profile.visitedEventsCount,
       createdEventsCount: profile.createdEventsCount,
       createdAt: now,

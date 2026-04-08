@@ -1,7 +1,7 @@
 part of '../profile_screen.dart';
 
 class _Avatar extends StatelessWidget {
-  _Avatar();
+  const _Avatar();
 
   @override
   Widget build(BuildContext context) {

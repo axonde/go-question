@@ -4,11 +4,13 @@ import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_theme.dart';
 import 'package:go_question/core/widgets/app_background.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/startup/presentation/widgets/startup_video_gate.dart';
 import 'package:go_question/injection_container/injection_container.dart';
 
 class GoQuestionApp extends StatelessWidget {
   const GoQuestionApp({super.key});
+  static const String _defaultProfileName = 'User';
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +21,31 @@ class GoQuestionApp extends StatelessWidget {
         BlocProvider<AuthBloc>(
           create: (_) => sl<AuthBloc>()..add(const AuthStarted()),
         ),
+        BlocProvider<ProfileBloc>(create: (_) => sl<ProfileBloc>()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
           if (state.status == AuthStatus.authenticated) {
+            appRouter.replace(const MainRoute());
+            return;
+          }
+
+          if (state.status == AuthStatus.awaitingProfile) {
+            final user = state.user;
+            if (user != null) {
+              context.read<ProfileBloc>().add(
+                EnsureProfileExistsRequested(
+                  uid: user.uid,
+                  initialEmail: user.email,
+                  initialName: _defaultProfileName,
+                  initialNickname: user.nickname,
+                ),
+              );
+            }
+
+            // Do profile initialization in background to avoid blocking UX
+            // with a dedicated loading screen.
             appRouter.replace(const MainRoute());
             return;
           }

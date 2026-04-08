@@ -1,6 +1,6 @@
 import '../../../../core/errors/exception.dart';
 
-/// Thrown when profile invariant is violated (e.g., invalid name or age).
+/// Thrown when profile invariant is violated.
 final class ProfileValidationException extends BaseAppException {
   final String violation;
 

@@ -18,8 +18,12 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$Profile {
   String get uid => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  int? get age => throw _privateConstructorUsedError;
+  String get nickname => throw _privateConstructorUsedError;
+  DateTime? get birthDate => throw _privateConstructorUsedError;
+  String? get city => throw _privateConstructorUsedError;
+  int get trophies => throw _privateConstructorUsedError;
   int get visitedEventsCount => throw _privateConstructorUsedError;
   int get createdEventsCount => throw _privateConstructorUsedError;
 
@@ -36,8 +40,12 @@ abstract class $ProfileCopyWith<$Res> {
   @useResult
   $Res call({
     String uid,
+    String email,
     String name,
-    int? age,
+    String nickname,
+    DateTime? birthDate,
+    String? city,
+    int trophies,
     int visitedEventsCount,
     int createdEventsCount,
   });
@@ -59,8 +67,12 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
   @override
   $Res call({
     Object? uid = null,
+    Object? email = null,
     Object? name = null,
-    Object? age = freezed,
+    Object? nickname = null,
+    Object? birthDate = freezed,
+    Object? city = freezed,
+    Object? trophies = null,
     Object? visitedEventsCount = null,
     Object? createdEventsCount = null,
   }) {
@@ -70,14 +82,30 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
                 ? _value.uid
                 : uid // ignore: cast_nullable_to_non_nullable
                       as String,
+            email: null == email
+                ? _value.email
+                : email // ignore: cast_nullable_to_non_nullable
+                      as String,
             name: null == name
                 ? _value.name
                 : name // ignore: cast_nullable_to_non_nullable
                       as String,
-            age: freezed == age
-                ? _value.age
-                : age // ignore: cast_nullable_to_non_nullable
-                      as int?,
+            nickname: null == nickname
+                ? _value.nickname
+                : nickname // ignore: cast_nullable_to_non_nullable
+                      as String,
+            birthDate: freezed == birthDate
+                ? _value.birthDate
+                : birthDate // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
+            city: freezed == city
+                ? _value.city
+                : city // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            trophies: null == trophies
+                ? _value.trophies
+                : trophies // ignore: cast_nullable_to_non_nullable
+                      as int,
             visitedEventsCount: null == visitedEventsCount
                 ? _value.visitedEventsCount
                 : visitedEventsCount // ignore: cast_nullable_to_non_nullable
@@ -102,8 +130,12 @@ abstract class _$$ProfileImplCopyWith<$Res> implements $ProfileCopyWith<$Res> {
   @useResult
   $Res call({
     String uid,
+    String email,
     String name,
-    int? age,
+    String nickname,
+    DateTime? birthDate,
+    String? city,
+    int trophies,
     int visitedEventsCount,
     int createdEventsCount,
   });
@@ -124,8 +156,12 @@ class __$$ProfileImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? uid = null,
+    Object? email = null,
     Object? name = null,
-    Object? age = freezed,
+    Object? nickname = null,
+    Object? birthDate = freezed,
+    Object? city = freezed,
+    Object? trophies = null,
     Object? visitedEventsCount = null,
     Object? createdEventsCount = null,
   }) {
@@ -135,14 +171,30 @@ class __$$ProfileImplCopyWithImpl<$Res>
             ? _value.uid
             : uid // ignore: cast_nullable_to_non_nullable
                   as String,
+        email: null == email
+            ? _value.email
+            : email // ignore: cast_nullable_to_non_nullable
+                  as String,
         name: null == name
             ? _value.name
             : name // ignore: cast_nullable_to_non_nullable
                   as String,
-        age: freezed == age
-            ? _value.age
-            : age // ignore: cast_nullable_to_non_nullable
-                  as int?,
+        nickname: null == nickname
+            ? _value.nickname
+            : nickname // ignore: cast_nullable_to_non_nullable
+                  as String,
+        birthDate: freezed == birthDate
+            ? _value.birthDate
+            : birthDate // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        city: freezed == city
+            ? _value.city
+            : city // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        trophies: null == trophies
+            ? _value.trophies
+            : trophies // ignore: cast_nullable_to_non_nullable
+                  as int,
         visitedEventsCount: null == visitedEventsCount
             ? _value.visitedEventsCount
             : visitedEventsCount // ignore: cast_nullable_to_non_nullable
@@ -161,8 +213,12 @@ class __$$ProfileImplCopyWithImpl<$Res>
 class _$ProfileImpl extends _Profile {
   const _$ProfileImpl({
     required this.uid,
+    required this.email,
     required this.name,
-    this.age,
+    required this.nickname,
+    this.birthDate,
+    this.city,
+    this.trophies = 0,
     this.visitedEventsCount = 0,
     this.createdEventsCount = 0,
   }) : super._();
@@ -170,9 +226,18 @@ class _$ProfileImpl extends _Profile {
   @override
   final String uid;
   @override
+  final String email;
+  @override
   final String name;
   @override
-  final int? age;
+  final String nickname;
+  @override
+  final DateTime? birthDate;
+  @override
+  final String? city;
+  @override
+  @JsonKey()
+  final int trophies;
   @override
   @JsonKey()
   final int visitedEventsCount;
@@ -182,7 +247,7 @@ class _$ProfileImpl extends _Profile {
 
   @override
   String toString() {
-    return 'Profile(uid: $uid, name: $name, age: $age, visitedEventsCount: $visitedEventsCount, createdEventsCount: $createdEventsCount)';
+    return 'Profile(uid: $uid, email: $email, name: $name, nickname: $nickname, birthDate: $birthDate, city: $city, trophies: $trophies, visitedEventsCount: $visitedEventsCount, createdEventsCount: $createdEventsCount)';
   }
 
   @override
@@ -191,8 +256,15 @@ class _$ProfileImpl extends _Profile {
         (other.runtimeType == runtimeType &&
             other is _$ProfileImpl &&
             (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.email, email) || other.email == email) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.age, age) || other.age == age) &&
+            (identical(other.nickname, nickname) ||
+                other.nickname == nickname) &&
+            (identical(other.birthDate, birthDate) ||
+                other.birthDate == birthDate) &&
+            (identical(other.city, city) || other.city == city) &&
+            (identical(other.trophies, trophies) ||
+                other.trophies == trophies) &&
             (identical(other.visitedEventsCount, visitedEventsCount) ||
                 other.visitedEventsCount == visitedEventsCount) &&
             (identical(other.createdEventsCount, createdEventsCount) ||
@@ -203,8 +275,12 @@ class _$ProfileImpl extends _Profile {
   int get hashCode => Object.hash(
     runtimeType,
     uid,
+    email,
     name,
-    age,
+    nickname,
+    birthDate,
+    city,
+    trophies,
     visitedEventsCount,
     createdEventsCount,
   );
@@ -221,8 +297,12 @@ class _$ProfileImpl extends _Profile {
 abstract class _Profile extends Profile {
   const factory _Profile({
     required final String uid,
+    required final String email,
     required final String name,
-    final int? age,
+    required final String nickname,
+    final DateTime? birthDate,
+    final String? city,
+    final int trophies,
     final int visitedEventsCount,
     final int createdEventsCount,
   }) = _$ProfileImpl;
@@ -231,9 +311,17 @@ abstract class _Profile extends Profile {
   @override
   String get uid;
   @override
+  String get email;
+  @override
   String get name;
   @override
-  int? get age;
+  String get nickname;
+  @override
+  DateTime? get birthDate;
+  @override
+  String? get city;
+  @override
+  int get trophies;
   @override
   int get visitedEventsCount;
   @override

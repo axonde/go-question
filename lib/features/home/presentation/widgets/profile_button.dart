@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/home_ui_constants.dart';
 import 'package:go_question/core/widgets/pressable.dart';
+import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/score/presentation/bloc/score_bloc.dart';
 
 part 'profile_button/profile_avatar.dart';
@@ -13,7 +16,7 @@ part 'profile_button/profile_user_info.dart';
 // ProfileButton — карточка профиля на главном экране.
 //
 // Ответственность: считать размер слота (LayoutBuilder) и скомпоновать части.
-// Данные: user из AuthBloc, score из ScoreBloc.
+// Данные: profile из ProfileBloc.
 // ─────────────────────────────────────────────────────────────────────────────
 
 class ProfileButton extends StatelessWidget {
@@ -54,54 +57,51 @@ class _ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        const name = 'maximka';
+    final profile = context.watch<ProfileBloc>().state.profile;
+    final authUser = context.watch<AuthBloc>().state.user;
+    final profileName = profile?.name.trim();
+    final safeName = (profileName == null || profileName.isEmpty)
+        ? 'User'
+        : profileName;
+    final profileNickname = profile?.nickname.trim() ?? '';
+    final authNickname = authUser?.nickname.trim() ?? '';
+    final nickname = profileNickname.isNotEmpty
+        ? profileNickname
+        : (authNickname.isNotEmpty ? authNickname : 'user');
+    final profileScore = profile?.trophies ?? 0;
 
-        return Builder(
-          builder: (context) {
-            return DecoratedBox(
-              decoration: BoxDecoration(
-                color: HomeUiConstants.panelBackground.withValues(alpha: 0.7),
-                border: Border.all(color: HomeUiConstants.participantAccent),
-                borderRadius: BorderRadius.circular(
-                  UiConstants.borderRadius * 5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: HomeUiConstants.panelShadow.withValues(alpha: 0.6),
-                    offset: const Offset(0, HomeUiConstants.cardShadowOffset),
-                  ),
-                ],
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: HomeUiConstants.panelBackground.withValues(alpha: 0.7),
+        border: Border.all(color: HomeUiConstants.participantAccent),
+        borderRadius: BorderRadius.circular(UiConstants.borderRadius * 5),
+        boxShadow: [
+          BoxShadow(
+            color: HomeUiConstants.panelShadow.withValues(alpha: 0.6),
+            offset: const Offset(0, HomeUiConstants.cardShadowOffset),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: UiConstants.leftPadding * 1.5,
+        ),
+        child: Row(
+          children: [
+            _ProfileAvatar(size: slotHeight * 0.72),
+            const SizedBox(width: UiConstants.boxUnit),
+            Expanded(
+              child: _ProfileUserInfo(
+                name: safeName,
+                nickname: nickname,
+                slotHeight: slotHeight,
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: UiConstants.leftPadding * 1.5,
-                ),
-                child: Row(
-                  children: [
-                    _ProfileAvatar(size: slotHeight * 0.72),
-                    const SizedBox(width: UiConstants.boxUnit),
-                    Expanded(
-                      child: _ProfileUserInfo(
-                        name: name,
-                        nickname:
-                            null, // TODO: добавить поле nickname в UserEntity
-                        slotHeight: slotHeight,
-                      ),
-                    ),
-                    const SizedBox(width: UiConstants.boxUnit),
-                    _ProfileScoreBadge(
-                      score: 13, // mock
-                      slotHeight: slotHeight,
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
+            ),
+            const SizedBox(width: UiConstants.boxUnit),
+            _ProfileScoreBadge(score: profileScore, slotHeight: slotHeight),
+          ],
+        ),
+      ),
     );
   }
 }
