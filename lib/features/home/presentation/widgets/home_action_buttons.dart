@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 
 /// Две кнопки действия в нижней части главного экрана.
 class HomeActionButtons extends StatelessWidget {
   final VoidCallback onBattleSheetTap;
-  final VoidCallback onModeDialogTap;
+  final VoidCallback onCreateEventTap;
 
   const HomeActionButtons({
     super.key,
     required this.onBattleSheetTap,
-    required this.onModeDialogTap,
+    required this.onCreateEventTap,
   });
 
   @override
@@ -21,7 +22,7 @@ class HomeActionButtons extends StatelessWidget {
         final h = constraints.maxHeight - UiConstants.verticalPadding * 2;
 
         return Padding(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: UiConstants.horizontalPadding * 2,
             vertical: UiConstants.verticalPadding,
           ),
@@ -29,11 +30,10 @@ class HomeActionButtons extends StatelessWidget {
             spacing: UiConstants.boxUnit,
             children: [
               Flexible(
-                flex: 1,
                 child: LayoutBuilder(
                   builder: (_, c) => GQButton(
                     onPressed: onBattleSheetTap,
-                    text: 'Поиск',
+                    text: EventTexts.buttonSearch,
                     baseColor: AppColors.secondary,
                     width: c.maxWidth,
                     height: h,
@@ -41,11 +41,10 @@ class HomeActionButtons extends StatelessWidget {
                 ),
               ),
               Flexible(
-                flex: 1,
                 child: LayoutBuilder(
                   builder: (_, c) => GQButton(
-                    onPressed: onModeDialogTap,
-                    text: 'Новое',
+                    onPressed: onCreateEventTap,
+                    text: EventTexts.buttonNew,
                     baseColor: AppColors.primary,
                     mainGradient: const LinearGradient(
                       colors: [Color(0xFF0092F5), Color(0xFF008FF2)],

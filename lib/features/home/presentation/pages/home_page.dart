@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/core/constants/event_texts.dart';
+import 'package:go_question/features/events/domain/entities/event_entity.dart';
+import 'package:go_question/features/events/presentation/pages/create_event_dialog.dart';
 import 'package:go_question/features/events/presentation/pages/search_events_page.dart';
 
 import '../widgets/city_selector_sheet.dart';
@@ -6,7 +9,6 @@ import '../widgets/home_action_buttons.dart';
 import '../widgets/home_events.dart';
 import '../widgets/home_placeholder.dart';
 import '../widgets/home_top_bar.dart';
-import '../widgets/mode_dialog.dart';
 import '../widgets/notifications_sheet.dart';
 import '../widgets/profile_button.dart';
 
@@ -35,12 +37,21 @@ class HomePage extends StatelessWidget {
       minChildSize: 0.5,
       maxChildSize: 0.95,
       expand: false,
-      builder: (_, __) => const SearchEventsSheet(),
+      builder: (_, _) => const SearchEventsSheet(),
     ),
   );
 
-  void _showModeDialog(BuildContext context) =>
-      showDialog(context: context, builder: (_) => const ModeDialog());
+  void _showCreateEventDialog(BuildContext context) => showDialog<EventEntity>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => CreateEventDialog(
+      onCreate: (_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(EventTexts.createSnackCreated)),
+        );
+      },
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +74,7 @@ class HomePage extends StatelessWidget {
               id: _HomeSlot.actions,
               child: HomeActionButtons(
                 onBattleSheetTap: () => _showSearchEvents(context),
-                onModeDialogTap: () => _showModeDialog(context),
+                onCreateEventTap: () => _showCreateEventDialog(context),
               ),
             ),
             LayoutId(id: _HomeSlot.events, child: const HomeEvents()),

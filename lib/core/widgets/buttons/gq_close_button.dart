@@ -22,7 +22,6 @@ class GqCloseButton extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(
             color: AppColors.stroke,
-            width: UiConstants.strokeWidth,
           ),
           borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
           color: AppColors.redBackground,

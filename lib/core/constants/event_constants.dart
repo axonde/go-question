@@ -4,6 +4,15 @@ class EventConstants {
   static const statusOpen = 'open';
   static const statusUpcoming = 'upcoming';
   static const statusClosed = 'closed';
+  static const statuses = [statusOpen, statusUpcoming, statusClosed];
+  static const createDialogBorderWidth = 8.0;
+  static const createDialogBorderColorValue = 0xFF576278;
+  static const createDialogBackgroundAssetPath =
+      'assets/images/background/background.webp';
+
+  static const defaultImageUrl = '';
+  static const defaultParticipants = 0;
+  static const fallbackOrganizerId = 'current-user-id';
 
   static const monthsLong = [
     '',

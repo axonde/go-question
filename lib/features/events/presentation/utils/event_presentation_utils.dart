@@ -50,4 +50,13 @@ class EventPresentationUtils {
         return const Color(0xFF62697B);
     }
   }
+
+  static String createEventId(DateTime now) =>
+      now.millisecondsSinceEpoch.toString();
+
+  static String resolveOrganizerId(String? accountId) {
+    final value = (accountId ?? '').trim();
+    if (value.isEmpty) return EventConstants.fallbackOrganizerId;
+    return value;
+  }
 }
