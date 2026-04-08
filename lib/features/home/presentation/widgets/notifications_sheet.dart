@@ -13,6 +13,7 @@ part 'notifications_sheet/notifications_list.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 
 class NotificationData {
+  final String id;
   final String title;
   final String body;
   final bool showAccept;
@@ -31,6 +32,7 @@ class NotificationData {
   final String? eventCategory;
 
   const NotificationData({
+    required this.id,
     required this.title,
     required this.body,
     this.showAccept = false,
@@ -51,12 +53,12 @@ class NotificationData {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Временные захардкоженные уведомления.
-// TODO: заменить на загрузку из Firestore.
+// Моки для быстрого отображения (как в поиске).
 // ─────────────────────────────────────────────────────────────────────────────
 
 const _kMockNotifications = [
   NotificationData(
+    id: '1',
     title: 'Запрос на участие',
     body:
         'Джиган хочет присоединиться к вашему ивенту: "Вечеринка на пляже", который состоится 04.04.2027 в 17:00.',
@@ -67,7 +69,8 @@ const _kMockNotifications = [
     userAge: '28 лет',
     userGender: 'Мужской',
     userCity: 'Санкт-Петербург',
-    userBio: 'Люблю активный отдых, спорт и новые знакомства. Участвую в мероприятиях уже 2 года.',
+    userBio:
+        'Люблю активный отдых, спорт и новые знакомства. Участвую в мероприятиях уже 2 года.',
     userEventsAttended: 24,
     userEventsOrganized: 3,
     eventTitle: 'Вечеринка на пляже',
@@ -76,6 +79,7 @@ const _kMockNotifications = [
     eventCategory: 'Отдых и развлечения',
   ),
   NotificationData(
+    id: '2',
     title: 'Событие скоро начнется!',
     body:
         'Событие "Вечеринка на пляже", которое состоится 04.04.2027 в 17:00, начнется через 2 часа. Не забудьте подготовиться!',
@@ -85,6 +89,7 @@ const _kMockNotifications = [
     eventCategory: 'Отдых и развлечения',
   ),
   NotificationData(
+    id: '3',
     title: 'Новое сообщение',
     body: 'У вас новое сообщение от организатора турнира.',
     userName: 'Организатор Иван',
@@ -92,7 +97,8 @@ const _kMockNotifications = [
     userAge: '35 лет',
     userGender: 'Мужской',
     userCity: 'Москва',
-    userBio: 'Профессиональный организатор спортивных мероприятий. Опыт работы 5 лет.',
+    userBio:
+        'Профессиональный организатор спортивных мероприятий. Опыт работы 5 лет.',
     userEventsAttended: 15,
     userEventsOrganized: 42,
     eventTitle: 'Турнир по настольному теннису',
@@ -159,7 +165,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFF1565C0), Color(0xFF0D47A1)],
+          colors: [Color(0xFF43C521), Color(0xFF3AB71D)],
         ),
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(UiConstants.borderRadius * 8),
@@ -174,24 +180,68 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            const Center(
-              child: ClashStrokeText(
-                'Уведомления',
-                fontSize: UiConstants.textSize * 1.5,
-                shadows: [
-                  Shadow(offset: Offset(0, UiConstants.textShadowOffsetY)),
-                ],
-              ),
-            ),
+            const Center(child: _StrokeTitle(text: 'Уведомления')),
             Align(
               alignment: Alignment.centerRight,
-              child: GqCloseButton(
-                onTap: () => Navigator.of(context).pop(),
-              ),
+              child: GqCloseButton(onTap: () => Navigator.of(context).pop()),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _StrokeTitle — заголовок с чёрной обводкой и тенью (как в поиске).
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _StrokeTitle extends StatelessWidget {
+  final String text;
+  final double fontSize;
+  final int maxLines;
+
+  const _StrokeTitle({
+    required this.text,
+    this.fontSize = UiConstants.textSize * 1.5,
+    this.maxLines = 1,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Text(
+          text,
+          maxLines: maxLines,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontFamily: 'Clash',
+            fontFamilyFallback: const ['Roboto', 'sans-serif'],
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = UiConstants.strokeWidth
+              ..color = Colors.black,
+          ),
+        ),
+        Text(
+          text,
+          maxLines: maxLines,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontFamily: 'Clash',
+            fontFamilyFallback: const ['Roboto', 'sans-serif'],
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: const [
+              Shadow(offset: Offset(0, UiConstants.textShadowOffsetY)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

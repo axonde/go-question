@@ -22,15 +22,16 @@ class NotificationCard extends StatelessWidget {
         alignment: Alignment.topCenter,
         clipBehavior: Clip.none,
         child: Container(
-          decoration: BoxDecoration(
-            color: const Color(0xFFDEE7F6),
-            borderRadius: BorderRadius.circular(UiConstants.borderRadius * 2.5),
-            border: Border.all(color: AppColors.lightStroke),
-            boxShadow: const [
+          decoration: const BoxDecoration(
+            color: Color(0xFFDEE7F6),
+            border: Border.fromBorderSide(BorderSide(color: Color(0xFF62697B))),
+            borderRadius: BorderRadius.all(
+              Radius.circular(UiConstants.borderRadius * 5),
+            ),
+            boxShadow: [
               BoxShadow(
-                color: Color(0x33000000),
-                offset: Offset(0, 2),
-                blurRadius: 4,
+                color: Color(0x55000000),
+                offset: Offset(0, UiConstants.shadowOffsetY),
               ),
             ],
           ),
@@ -39,25 +40,22 @@ class NotificationCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              ClashStrokeText(
-                data.title,
-                fontSize: 20,
-                strokeWidth: 2.5,
+              _StrokeTitle(
+                text: data.title,
+                fontSize: UiConstants.textSize * 1.05,
                 maxLines: 2,
-                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 8),
               Text(
                 data.body,
-                maxLines: isExpanded ? null : 2,
+                maxLines: isExpanded ? null : 3,
                 overflow: isExpanded ? null : TextOverflow.ellipsis,
                 style: const TextStyle(
-                  fontFamily: 'Russo One',
-                  fontFamilyFallback: ['Clash', 'Roboto', 'sans-serif'],
-                  color: Color(0xFF62697B),
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  height: 1.25,
+                  fontFamily: 'RussoOne',
+                  fontFamilyFallback: ['Roboto', 'sans-serif'],
+                  fontSize: UiConstants.textSize * 0.68,
+                  color: Color(0xFF7187A8),
+                  height: 1.35,
                 ),
               ),
               // Раскрывающийся контент
@@ -75,10 +73,10 @@ class NotificationCard extends StatelessWidget {
                 const Text(
                   'Нажмите на уведомление, чтобы узнать детали.',
                   style: TextStyle(
-                    fontFamily: 'Roboto',
+                    fontFamily: 'RussoOne',
                     color: Color(0xFF8A93A6),
                     fontSize: 11,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
@@ -177,11 +175,10 @@ class _UserInfo extends StatelessWidget {
               height: UiConstants.boxUnit * 6,
               decoration: BoxDecoration(
                 color: AppColors.primaryVariant,
-                borderRadius:
-                    BorderRadius.circular(UiConstants.borderRadius * 4),
-                border: Border.all(
-                  color: AppColors.stroke,
+                borderRadius: BorderRadius.circular(
+                  UiConstants.borderRadius * 4,
                 ),
+                border: Border.all(color: AppColors.stroke),
               ),
               child: const Icon(
                 Icons.person,
@@ -197,17 +194,17 @@ class _UserInfo extends StatelessWidget {
                 children: [
                   ClashStrokeText(
                     data.userName ?? 'User',
-                    fontSize: 20,
+                    fontSize: UiConstants.textSize * 0.875,
                     strokeWidth: 2,
                   ),
                   const SizedBox(height: 4),
                   Text(
                     'Рейтинг: ${data.userRating ?? '0 🏆'}',
                     style: const TextStyle(
-                      fontFamily: 'Clash',
+                      fontFamily: 'RussoOne',
                       fontSize: 14,
                       color: AppColors.primaryVariant,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],
@@ -217,7 +214,9 @@ class _UserInfo extends StatelessWidget {
         ),
         const SizedBox(height: UiConstants.boxUnit * 1.5),
         // Детальная информация
-        if (data.userAge != null || data.userGender != null || data.userCity != null)
+        if (data.userAge != null ||
+            data.userGender != null ||
+            data.userCity != null)
           Container(
             padding: const EdgeInsets.all(UiConstants.boxUnit * 1.5),
             decoration: BoxDecoration(
@@ -290,20 +289,21 @@ class _UserInfo extends StatelessWidget {
           const Text(
             'О себе:',
             style: TextStyle(
-              fontFamily: 'Clash',
+              fontFamily: 'RussoOne',
               fontSize: 14,
               color: Color(0xFF3A4560),
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w400,
             ),
           ),
           const SizedBox(height: UiConstants.boxUnit * 0.5),
           Text(
             data.userBio!,
             style: const TextStyle(
-              fontFamily: 'Roboto',
+              fontFamily: 'RussoOne',
               fontSize: 13,
               color: Color(0xFF62697B),
               height: 1.4,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ],
@@ -320,10 +320,7 @@ class _UserDetailRow extends StatelessWidget {
   final IconData icon;
   final String label;
 
-  const _UserDetailRow({
-    required this.icon,
-    required this.label,
-  });
+  const _UserDetailRow({required this.icon, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -339,10 +336,10 @@ class _UserDetailRow extends StatelessWidget {
           child: Text(
             label,
             style: const TextStyle(
-              fontFamily: 'Roboto',
+              fontFamily: 'RussoOne',
               fontSize: 13,
               color: Color(0xFF3A4560),
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),
@@ -389,18 +386,19 @@ class _StatChip extends StatelessWidget {
           Text(
             value,
             style: const TextStyle(
-              fontFamily: 'Clash',
+              fontFamily: 'RussoOne',
               fontSize: 16,
               color: AppColors.primary,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w400,
             ),
           ),
           Text(
             label,
             style: const TextStyle(
-              fontFamily: 'Roboto',
+              fontFamily: 'RussoOne',
               fontSize: 10,
               color: Color(0xFF546E7A),
+              fontWeight: FontWeight.w400,
             ),
           ),
         ],
@@ -423,16 +421,10 @@ class _EventDetails extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (data.eventTitle != null)
-          _DetailRow(
-            icon: Icons.event,
-            label: data.eventTitle!,
-          ),
+          _DetailRow(icon: Icons.event, label: data.eventTitle!),
         if (data.eventDate != null) ...[
           const SizedBox(height: UiConstants.boxUnit * 0.75),
-          _DetailRow(
-            icon: Icons.access_time_outlined,
-            label: data.eventDate!,
-          ),
+          _DetailRow(icon: Icons.access_time_outlined, label: data.eventDate!),
         ],
         if (data.eventLocation != null) ...[
           const SizedBox(height: UiConstants.boxUnit * 0.75),
@@ -443,10 +435,7 @@ class _EventDetails extends StatelessWidget {
         ],
         if (data.eventCategory != null) ...[
           const SizedBox(height: UiConstants.boxUnit * 0.75),
-          _DetailRow(
-            icon: Icons.category_outlined,
-            label: data.eventCategory!,
-          ),
+          _DetailRow(icon: Icons.category_outlined, label: data.eventCategory!),
         ],
       ],
     );
@@ -461,10 +450,7 @@ class _DetailRow extends StatelessWidget {
   final IconData icon;
   final String label;
 
-  const _DetailRow({
-    required this.icon,
-    required this.label,
-  });
+  const _DetailRow({required this.icon, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -477,10 +463,10 @@ class _DetailRow extends StatelessWidget {
           child: Text(
             label,
             style: const TextStyle(
-              fontFamily: 'Clash',
-              fontFamilyFallback: ['Roboto', 'sans-serif'],
+              fontFamily: 'RussoOne',
               fontSize: UiConstants.textSize * 0.8,
               color: Color(0xFF3A4560),
+              fontWeight: FontWeight.w400,
             ),
           ),
         ),

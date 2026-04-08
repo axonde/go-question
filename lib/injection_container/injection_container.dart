@@ -48,6 +48,19 @@ Future<void> init() async {
 
   sl.registerFactory(() => ScoreCubit());
 
+  //! Features - Notifications
+  // TODO: Раскомментируйте эти строки для подключения Firestore:
+  // sl.registerLazySingleton<INotificationsRemoteDataSource>(
+  //   () => NotificationsRemoteDataSourceImpl(sl()),
+  // );
+  // sl.registerLazySingleton<INotificationsRepository>(
+  //   () => NotificationsRepositoryImpl(sl()),
+  // );
+  // Не забудьте добавить импорты:
+  // import 'package:go_question/features/notifications/data/repositories/notifications_repository_impl.dart';
+  // import 'package:go_question/features/notifications/data/source/notifications_remote_data_source.dart';
+  // import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
+
   //! Core
 
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
