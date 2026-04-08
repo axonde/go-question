@@ -72,7 +72,6 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
       id: EventPresentationUtils.createEventId(now),
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
-      imageUrl: EventConstants.defaultImageUrl,
       startTime: _startTime,
       location: _locationController.text.trim(),
       category: _categoryController.text.trim(),

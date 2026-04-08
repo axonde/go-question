@@ -161,16 +161,16 @@ class _InfoCard extends StatelessWidget {
   String get _dateLabel =>
       EventPresentationUtils.formatLongDateTime(event.startTime);
 
+  Color get _priceColor =>
+      event.price == 0 ? const Color(0xFF2E7D32) : const Color(0xFF5D4037);
+
   String get _priceLabel => event.price == 0
       ? EventTexts.filterFree
       : '${event.price.toInt()} ${EventTexts.currencyRub}';
 
-  Color get _priceColor =>
-      event.price == 0 ? const Color(0xFF2E7D32) : const Color(0xFF5D4037);
+  Color get _statusColor => EventPresentationUtils.statusColor(event.status);
 
   String get _statusLabel => EventPresentationUtils.statusLabel(event.status);
-
-  Color get _statusColor => EventPresentationUtils.statusColor(event.status);
 
   @override
   Widget build(BuildContext context) {
@@ -286,18 +286,18 @@ class _SectionLabel extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _StrokeTitle extends StatelessWidget {
+  static const _family = EventTexts.fontClash;
+  static const _fallback = EventTexts.fontFallback;
   final String text;
-  final double fontSize;
-  final int maxLines;
 
+  final double fontSize;
+
+  final int maxLines;
   const _StrokeTitle({
     required this.text,
     this.fontSize = UiConstants.textSize * 1.5,
     this.maxLines = 1,
   });
-
-  static const _family = EventTexts.fontClash;
-  static const _fallback = EventTexts.fontFallback;
 
   @override
   Widget build(BuildContext context) {
