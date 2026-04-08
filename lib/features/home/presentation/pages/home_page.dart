@@ -27,12 +27,9 @@ class HomePage extends StatelessWidget {
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => DraggableScrollableSheet(
-      initialChildSize: 0.88,
-      minChildSize: 0.5,
-      maxChildSize: 0.95,
-      expand: false,
-      builder: (_, controller) => const NotificationsSheet(),
+    builder: (_) => const FractionallySizedBox(
+      heightFactor: 0.85,
+      child: NotificationsSheet(),
     ),
   );
 

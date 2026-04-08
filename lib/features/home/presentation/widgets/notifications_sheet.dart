@@ -122,6 +122,8 @@ class NotificationsSheet extends StatelessWidget {
                 child: ClashStrokeText(
                   'Уведомления',
                   fontSize: UiConstants.textSize * 1.5,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   shadows: [
                     Shadow(offset: Offset(0, UiConstants.textShadowOffsetY)),
                   ],

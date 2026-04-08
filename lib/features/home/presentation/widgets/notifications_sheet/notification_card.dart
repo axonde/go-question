@@ -16,7 +16,10 @@ class NotificationCard extends StatelessWidget {
           context: context,
           isScrollControlled: true,
           backgroundColor: Colors.transparent,
-          builder: (_) => NotificationDetailsSheet(data: data),
+          builder: (_) => FractionallySizedBox(
+            heightFactor: 0.85,
+            child: NotificationDetailsSheet(data: data),
+          ),
         );
       },
       child: Container(
