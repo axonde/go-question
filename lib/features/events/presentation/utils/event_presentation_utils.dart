@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/core/constants/event_constants.dart';
+import 'package:go_question/core/constants/event_texts.dart';
 
 enum EventViewerRole { organizer, participant }
 
@@ -27,11 +28,11 @@ class EventPresentationUtils {
   static String statusLabel(String status) {
     switch (status) {
       case EventConstants.statusOpen:
-        return 'Открыт';
+        return EventTexts.statusLabelOpen;
       case EventConstants.statusUpcoming:
-        return 'Скоро';
+        return EventTexts.statusLabelUpcoming;
       case EventConstants.statusClosed:
-        return 'Закрыт';
+        return EventTexts.statusLabelClosed;
       default:
         return status;
     }

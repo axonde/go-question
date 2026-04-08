@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/features/events/domain/event_entity.dart';
 import 'package:go_question/features/events/presentation/utils/event_presentation_utils.dart';
@@ -46,20 +47,20 @@ class EventDetailSheet extends StatelessWidget {
                 UiConstants.boxUnit * 2,
               ),
               children: [
-                const _SectionLabel(text: 'Описание'),
+                const _SectionLabel(text: EventTexts.sectionDescription),
                 const SizedBox(height: UiConstants.boxUnit),
                 Text(
                   event.description,
                   style: const TextStyle(
-                    fontFamily: 'RussoOne',
-                    fontFamilyFallback: ['Roboto', 'sans-serif'],
+                    fontFamily: EventTexts.fontRussoOne,
+                    fontFamilyFallback: EventTexts.fontFallback,
                     fontSize: UiConstants.textSize * 0.75,
                     color: Color(0xFF3A4560),
                     height: 1.5,
                   ),
                 ),
                 const SizedBox(height: UiConstants.boxUnit * 2),
-                const _SectionLabel(text: 'Детали'),
+                const _SectionLabel(text: EventTexts.sectionDetails),
                 const SizedBox(height: UiConstants.boxUnit),
                 _InfoCard(event: event),
               ],
@@ -78,11 +79,11 @@ class EventDetailSheet extends StatelessWidget {
                   // TODO: отправить запрос на участие через Cubit/Bloc.
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Запрос на участие отправлен'),
+                      content: Text(EventTexts.snackBarJoinRequestSent),
                     ),
                   );
                 },
-                text: 'Записаться',
+                text: EventTexts.buttonJoin,
                 baseColor: const Color(0xFF2E7D32),
                 mainGradient: const LinearGradient(
                   colors: [Color(0xFF43A047), Color(0xFF388E3C)],
@@ -160,8 +161,9 @@ class _InfoCard extends StatelessWidget {
   String get _dateLabel =>
       EventPresentationUtils.formatLongDateTime(event.startTime);
 
-  String get _priceLabel =>
-      event.price == 0 ? 'Бесплатно' : '${event.price.toInt()} ₽';
+  String get _priceLabel => event.price == 0
+      ? EventTexts.filterFree
+      : '${event.price.toInt()} ${EventTexts.currencyRub}';
 
   Color get _priceColor =>
       event.price == 0 ? const Color(0xFF2E7D32) : const Color(0xFF5D4037);
@@ -200,7 +202,8 @@ class _InfoCard extends StatelessWidget {
             _InfoDivider(),
             _InfoRow(
               icon: Icons.people_outline,
-              label: '${event.participants} / ${event.maxUsers} участников',
+              label:
+                  '${event.participants} / ${event.maxUsers} ${EventTexts.participantsWord}',
             ),
             _InfoDivider(),
             _InfoRow(
@@ -253,8 +256,8 @@ class _InfoRow extends StatelessWidget {
           child: Text(
             label,
             style: TextStyle(
-              fontFamily: 'Clash',
-              fontFamilyFallback: const ['Roboto', 'sans-serif'],
+              fontFamily: EventTexts.fontClash,
+              fontFamilyFallback: EventTexts.fontFallback,
               fontSize: UiConstants.textSize * 0.875,
               color: color,
             ),
@@ -293,8 +296,8 @@ class _StrokeTitle extends StatelessWidget {
     this.maxLines = 1,
   });
 
-  static const _family = 'Clash';
-  static const _fallback = ['Roboto', 'sans-serif'];
+  static const _family = EventTexts.fontClash;
+  static const _fallback = EventTexts.fontFallback;
 
   @override
   Widget build(BuildContext context) {

@@ -64,8 +64,8 @@ class EventSearchCard extends StatelessWidget {
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    fontFamily: 'RussoOne',
-                    fontFamilyFallback: ['Roboto', 'sans-serif'],
+                    fontFamily: EventTexts.fontRussoOne,
+                    fontFamilyFallback: EventTexts.fontFallback,
                     fontSize: UiConstants.textSize * 0.68,
                     color: Color(0xFF7187A8),
                     height: 1.35,
@@ -145,8 +145,9 @@ class _ExpandedDetails extends StatelessWidget {
   String get _dateLabel =>
       EventPresentationUtils.formatLongDateTime(event.startTime);
 
-  String get _priceLabel =>
-      event.price == 0 ? 'Бесплатно' : '${event.price.toInt()} ₽';
+  String get _priceLabel => event.price == 0
+      ? EventTexts.filterFree
+      : '${event.price.toInt()} ${EventTexts.currencyRub}';
 
   Color get _priceColor =>
       event.price == 0 ? const Color(0xFF2E7D32) : const Color(0xFF5D4037);
@@ -168,7 +169,8 @@ class _ExpandedDetails extends StatelessWidget {
         const SizedBox(height: UiConstants.boxUnit * 0.75),
         _DetailRow(
           icon: Icons.people_outline,
-          label: '${event.participants} / ${event.maxUsers} участников',
+          label:
+              '${event.participants} / ${event.maxUsers} ${EventTexts.participantsWord}',
         ),
         const SizedBox(height: UiConstants.boxUnit * 0.75),
         _DetailRow(
@@ -209,8 +211,8 @@ class _DetailRow extends StatelessWidget {
           child: Text(
             label,
             style: TextStyle(
-              fontFamily: 'Clash',
-              fontFamilyFallback: const ['Roboto', 'sans-serif'],
+              fontFamily: EventTexts.fontClash,
+              fontFamilyFallback: EventTexts.fontFallback,
               fontSize: UiConstants.textSize * 0.8,
               color: color,
             ),
@@ -269,17 +271,17 @@ class _OrganizerRow extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  fontFamily: 'Clash',
-                  fontFamilyFallback: ['Roboto', 'sans-serif'],
+                  fontFamily: EventTexts.fontClash,
+                  fontFamilyFallback: EventTexts.fontFallback,
                   fontSize: UiConstants.textSize * 0.875,
                   color: Color(0xFF3A4560),
                 ),
               ),
               const Text(
-                'Организатор',
+                EventTexts.organizerLabel,
                 style: TextStyle(
-                  fontFamily: 'RussoOne',
-                  fontFamilyFallback: ['Roboto', 'sans-serif'],
+                  fontFamily: EventTexts.fontRussoOne,
+                  fontFamilyFallback: EventTexts.fontFallback,
                   fontSize: UiConstants.textSize * 0.62,
                   color: Color(0xFF7187A8),
                 ),
@@ -318,10 +320,10 @@ class _JoinAction extends StatelessWidget {
     onPressed: () {
       // TODO: запрос на участие через Cubit/Bloc.
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Запрос на участие отправлен')),
+        const SnackBar(content: Text(EventTexts.snackBarJoinRequestSent)),
       );
     },
-    text: 'Записаться',
+    text: EventTexts.buttonJoin,
     baseColor: const Color(0xFF2E7D32),
     mainGradient: const LinearGradient(
       colors: [Color(0xFF43A047), Color(0xFF388E3C)],
@@ -348,10 +350,10 @@ class _OrganizerActions extends StatelessWidget {
           onPressed: () {
             // TODO: открыть редактирование ивента.
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Редактирование ивента')),
+              const SnackBar(content: Text(EventTexts.snackBarEditEvent)),
             );
           },
-          text: 'Редактировать',
+          text: EventTexts.buttonEdit,
           baseColor: const Color(0xFF1565C0),
           mainGradient: const LinearGradient(
             colors: [Color(0xFF1976D2), Color(0xFF1565C0)],
@@ -366,11 +368,13 @@ class _OrganizerActions extends StatelessWidget {
         GQButton(
           onPressed: () {
             // TODO: открыть список участников.
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('Список участников')));
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(EventTexts.snackBarParticipantsList),
+              ),
+            );
           },
-          text: 'Участники',
+          text: EventTexts.buttonParticipants,
           baseColor: const Color(0xFF2E7D32),
           mainGradient: const LinearGradient(
             colors: [Color(0xFF43A047), Color(0xFF388E3C)],
@@ -397,8 +401,9 @@ class _MetaRow extends StatelessWidget {
   String get _timeLabel =>
       EventPresentationUtils.formatShortDateTime(event.startTime);
 
-  String get _priceLabel =>
-      event.price == 0 ? 'Бесплатно' : '${event.price.toInt()} ₽';
+  String get _priceLabel => event.price == 0
+      ? EventTexts.filterFree
+      : '${event.price.toInt()} ${EventTexts.currencyRub}';
 
   Color get _priceColor =>
       event.price == 0 ? const Color(0xFF2E7D32) : const Color(0xFF5D4037);
@@ -461,8 +466,8 @@ class _MetaChip extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontFamily: 'Clash',
-              fontFamilyFallback: const ['Roboto', 'sans-serif'],
+              fontFamily: EventTexts.fontClash,
+              fontFamilyFallback: EventTexts.fontFallback,
               fontSize: UiConstants.textSize * 0.68,
               color: color,
             ),
