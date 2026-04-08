@@ -102,268 +102,50 @@ class SearchEventsSheet extends StatefulWidget {
   State<SearchEventsSheet> createState() => _SearchEventsSheetState();
 }
 
-class _SearchEventsSheetState extends State<SearchEventsSheet> {
-  String? _expandedId;
-  bool _showFilters = false;
-
-  // ── Состояние фильтров ─────────────────────────────────────────────────────
-  final Set<String> _selectedLocations = {};
-  final Set<String> _selectedCategories = {};
-  bool? _priceFilter; // null = все, true = бесплатно, false = платно
-  bool _spotsFilter = false; // только с свободными местами
-
-  static final _allLocations =
-      _kMockEvents.map((e) => e.location).toSet().toList()..sort();
-  static final _allCategories =
-      _kMockEvents.map((e) => e.category).toSet().toList()..sort();
-
-  int get _activeFilterCount =>
-      _selectedLocations.length +
-      _selectedCategories.length +
-      (_priceFilter != null ? 1 : 0) +
-      (_spotsFilter ? 1 : 0);
-
-  List<EventEntity> get _filtered => _kMockEvents.where((e) {
-    if (_selectedLocations.isNotEmpty &&
-        !_selectedLocations.contains(e.location)) {
-      return false;
-    }
-    if (_selectedCategories.isNotEmpty &&
-        !_selectedCategories.contains(e.category)) {
-      return false;
-    }
-    if (_priceFilter == true && e.price != 0) return false;
-    if (_priceFilter == false && e.price == 0) return false;
-    if (_spotsFilter && e.participants >= e.maxUsers) return false;
-    return true;
-  }).toList();
-
-  EventViewerRole _viewerRoleFor(EventEntity event) =>
-      EventPresentationUtils.viewerRoleByEventId(event.id);
-
-  void _resetFilters() => setState(() {
-    _selectedLocations.clear();
-    _selectedCategories.clear();
-    _priceFilter = null;
-    _spotsFilter = false;
-    _expandedId = null;
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final filtered = _filtered;
-
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(UiConstants.borderRadius * 8),
-        ),
-        border: Border(
-          top: BorderSide(color: Color(0xFF62697B)),
-          left: BorderSide(color: Color(0xFF62697B)),
-          right: BorderSide(color: Color(0xFF62697B)),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0xCC000000),
-            offset: Offset(0, -UiConstants.shadowOffsetY),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          _SheetHeader(
-            activeFilterCount: _activeFilterCount,
-            onFiltersTap: () => setState(() => _showFilters = !_showFilters),
-            onClose: () => Navigator.of(context).pop(),
-          ),
-          AnimatedSize(
-            duration: const Duration(milliseconds: 280),
-            curve: Curves.easeInOutCubic,
-            alignment: Alignment.topCenter,
-            clipBehavior: Clip.none,
-            child: _showFilters
-                ? _FilterPanel(
-                    allLocations: _allLocations,
-                    allCategories: _allCategories,
-                    selectedLocations: _selectedLocations,
-                    selectedCategories: _selectedCategories,
-                    priceFilter: _priceFilter,
-                    spotsFilter: _spotsFilter,
-                    activeCount: _activeFilterCount,
-                    onLocationTap: (loc) => setState(() {
-                      if (!_selectedLocations.remove(loc)) {
-                        _selectedLocations.add(loc);
-                      }
-                      _expandedId = null;
-                    }),
-                    onCategoryTap: (cat) => setState(() {
-                      if (!_selectedCategories.remove(cat)) {
-                        _selectedCategories.add(cat);
-                      }
-                      _expandedId = null;
-                    }),
-                    onPriceTap: (val) => setState(() {
-                      _priceFilter = val;
-                      _expandedId = null;
-                    }),
-                    onSpotsTap: () => setState(() {
-                      _spotsFilter = !_spotsFilter;
-                      _expandedId = null;
-                    }),
-                    onReset: _resetFilters,
-                    onApply: () => setState(() => _showFilters = false),
-                  )
-                : const SizedBox.shrink(),
-          ),
-          Expanded(
-            child: filtered.isEmpty
-                ? const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(UiConstants.boxUnit * 3),
-                      child: Text(
-                        EventTexts.emptyEventsByFilters,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: EventTexts.fontClash,
-                          fontFamilyFallback: EventTexts.fontFallback,
-                          fontSize: UiConstants.textSize * 0.875,
-                          color: Color(0xFF62697B),
-                        ),
-                      ),
-                    ),
-                  )
-                : ListView.separated(
-                    padding: const EdgeInsets.all(UiConstants.boxUnit * 2),
-                    itemCount: filtered.length,
-                    separatorBuilder: (_, __) =>
-                        const SizedBox(height: UiConstants.boxUnit * 1.5),
-                    itemBuilder: (_, i) {
-                      final event = filtered[i];
-                      return EventSearchCard(
-                        key: ValueKey(event.id),
-                        event: event,
-                        viewerRole: _viewerRoleFor(event),
-                        isExpanded: _expandedId == event.id,
-                        onToggle: () => setState(() {
-                          _expandedId = _expandedId == event.id
-                              ? null
-                              : event.id;
-                        }),
-                      );
-                    },
-                  ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// _SheetHeader — заголовок с центрированным названием, кнопкой фильтров
-// и кнопкой закрытия.
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _SheetHeader extends StatelessWidget {
-  final int activeFilterCount;
-  final VoidCallback onFiltersTap;
-  final VoidCallback onClose;
-
-  const _SheetHeader({
-    required this.activeFilterCount,
-    required this.onFiltersTap,
-    required this.onClose,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF1565C0), Color(0xFF0D47A1)],
-        ),
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(UiConstants.borderRadius * 8),
-        ),
-        boxShadow: [BoxShadow(color: Color(0xCC000000), offset: Offset(0, 2))],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: UiConstants.horizontalPadding * 2,
-          vertical: UiConstants.verticalPadding * 1.5,
-        ),
-        child: Row(
-          children: [
-            _FiltersButton(count: activeFilterCount, onTap: onFiltersTap),
-            const Expanded(
-              child: Center(
-                child: _StrokeTitle(text: EventTexts.searchHeaderTitle),
-              ),
-            ),
-            GqCloseButton(onTap: onClose),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// _FiltersButton — кнопка открытия панели фильтров.
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _FiltersButton extends StatelessWidget {
-  final int count;
+class _FilterChip extends StatelessWidget {
+  final String label;
+  final bool active;
   final VoidCallback onTap;
 
-  const _FiltersButton({required this.count, required this.onTap});
+  const _FilterChip({
+    required this.label,
+    required this.active,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final hasActive = count > 0;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(
           horizontal: UiConstants.boxUnit * 1.25,
-          vertical: UiConstants.gap,
+          vertical: UiConstants.boxUnit * 0.5,
         ),
         decoration: BoxDecoration(
-          color: hasActive
-              ? Colors.white.withValues(alpha: 0.25)
-              : Colors.white.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
+          color: active ? const Color(0xFF1565C0) : const Color(0xFFDEE7F6),
+          borderRadius: BorderRadius.circular(UiConstants.borderRadius * 5),
           border: Border.fromBorderSide(
-            BorderSide(color: Colors.white.withValues(alpha: 0.5)),
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.tune_rounded,
-              color: Colors.white,
-              size: UiConstants.textSize,
+            BorderSide(
+              color: active ? const Color(0xFF0D47A1) : const Color(0xFF62697B),
             ),
-            if (hasActive) ...[
-              const SizedBox(width: UiConstants.boxUnit * 0.5),
-              Text(
-                '$count',
-                style: const TextStyle(
-                  fontFamily: EventTexts.fontClash,
-                  fontFamilyFallback: EventTexts.fontFallback,
-                  fontSize: UiConstants.textSize * 0.75,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: active ? const Color(0x55000000) : const Color(0x22000000),
+              offset: const Offset(0, UiConstants.shadowOffsetY),
+            ),
           ],
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontFamily: EventTexts.fontClash,
+            fontFamilyFallback: EventTexts.fontFallback,
+            fontSize: UiConstants.textSize * 0.75,
+            color: active ? Colors.white : const Color(0xFF3A4560),
+          ),
         ),
       ),
     );
@@ -526,6 +308,64 @@ class _FilterPanel extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// _FiltersButton — кнопка открытия панели фильтров.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _FiltersButton extends StatelessWidget {
+  final int count;
+  final VoidCallback onTap;
+
+  const _FiltersButton({required this.count, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final hasActive = count > 0;
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(
+          horizontal: UiConstants.boxUnit * 1.25,
+          vertical: UiConstants.gap,
+        ),
+        decoration: BoxDecoration(
+          color: hasActive
+              ? Colors.white.withValues(alpha: 0.25)
+              : Colors.white.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
+          border: Border.fromBorderSide(
+            BorderSide(color: Colors.white.withValues(alpha: 0.5)),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.tune_rounded,
+              color: Colors.white,
+              size: UiConstants.textSize,
+            ),
+            if (hasActive) ...[
+              const SizedBox(width: UiConstants.boxUnit * 0.5),
+              Text(
+                '$count',
+                style: const TextStyle(
+                  fontFamily: EventTexts.fontClash,
+                  fontFamilyFallback: EventTexts.fontFallback,
+                  fontSize: UiConstants.textSize * 0.75,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _FilterSectionLabel extends StatelessWidget {
   final String text;
   const _FilterSectionLabel({required this.text});
@@ -543,50 +383,210 @@ class _FilterSectionLabel extends StatelessWidget {
   );
 }
 
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final bool active;
-  final VoidCallback onTap;
+class _SearchEventsSheetState extends State<SearchEventsSheet> {
+  static final _allLocations =
+      _kMockEvents.map((e) => e.location).toSet().toList()..sort();
+  static final _allCategories =
+      _kMockEvents.map((e) => e.category).toSet().toList()..sort();
 
-  const _FilterChip({
-    required this.label,
-    required this.active,
-    required this.onTap,
+  String? _expandedId;
+  bool _showFilters = false;
+  // ── Состояние фильтров ─────────────────────────────────────────────────────
+  final Set<String> _selectedLocations = {};
+  final Set<String> _selectedCategories = {};
+
+  bool? _priceFilter; // null = все, true = бесплатно, false = платно
+  bool _spotsFilter = false; // только с свободными местами
+
+  int get _activeFilterCount =>
+      _selectedLocations.length +
+      _selectedCategories.length +
+      (_priceFilter != null ? 1 : 0) +
+      (_spotsFilter ? 1 : 0);
+
+  List<EventEntity> get _filtered => _kMockEvents.where((e) {
+    if (_selectedLocations.isNotEmpty &&
+        !_selectedLocations.contains(e.location)) {
+      return false;
+    }
+    if (_selectedCategories.isNotEmpty &&
+        !_selectedCategories.contains(e.category)) {
+      return false;
+    }
+    if (_priceFilter == true && e.price != 0) return false;
+    if (_priceFilter == false && e.price == 0) return false;
+    if (_spotsFilter && e.participants >= e.maxUsers) return false;
+    return true;
+  }).toList();
+
+  @override
+  Widget build(BuildContext context) {
+    final filtered = _filtered;
+
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(UiConstants.borderRadius * 8),
+        ),
+        border: Border(
+          top: BorderSide(color: Color(0xFF62697B)),
+          left: BorderSide(color: Color(0xFF62697B)),
+          right: BorderSide(color: Color(0xFF62697B)),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xCC000000),
+            offset: Offset(0, -UiConstants.shadowOffsetY),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          _SheetHeader(
+            activeFilterCount: _activeFilterCount,
+            onFiltersTap: () => setState(() => _showFilters = !_showFilters),
+            onClose: () => Navigator.of(context).pop(),
+          ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 280),
+            curve: Curves.easeInOutCubic,
+            alignment: Alignment.topCenter,
+            clipBehavior: Clip.none,
+            child: _showFilters
+                ? _FilterPanel(
+                    allLocations: _allLocations,
+                    allCategories: _allCategories,
+                    selectedLocations: _selectedLocations,
+                    selectedCategories: _selectedCategories,
+                    priceFilter: _priceFilter,
+                    spotsFilter: _spotsFilter,
+                    activeCount: _activeFilterCount,
+                    onLocationTap: (loc) => setState(() {
+                      if (!_selectedLocations.remove(loc)) {
+                        _selectedLocations.add(loc);
+                      }
+                      _expandedId = null;
+                    }),
+                    onCategoryTap: (cat) => setState(() {
+                      if (!_selectedCategories.remove(cat)) {
+                        _selectedCategories.add(cat);
+                      }
+                      _expandedId = null;
+                    }),
+                    onPriceTap: (val) => setState(() {
+                      _priceFilter = val;
+                      _expandedId = null;
+                    }),
+                    onSpotsTap: () => setState(() {
+                      _spotsFilter = !_spotsFilter;
+                      _expandedId = null;
+                    }),
+                    onReset: _resetFilters,
+                    onApply: () => setState(() => _showFilters = false),
+                  )
+                : const SizedBox.shrink(),
+          ),
+          Expanded(
+            child: filtered.isEmpty
+                ? const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(UiConstants.boxUnit * 3),
+                      child: Text(
+                        EventTexts.emptyEventsByFilters,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: EventTexts.fontClash,
+                          fontFamilyFallback: EventTexts.fontFallback,
+                          fontSize: UiConstants.textSize * 0.875,
+                          color: Color(0xFF62697B),
+                        ),
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.all(UiConstants.boxUnit * 2),
+                    itemCount: filtered.length,
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(height: UiConstants.boxUnit * 1.5),
+                    itemBuilder: (_, i) {
+                      final event = filtered[i];
+                      return EventSearchCard(
+                        key: ValueKey(event.id),
+                        event: event,
+                        viewerRole: _viewerRoleFor(event),
+                        isExpanded: _expandedId == event.id,
+                        onToggle: () => setState(() {
+                          _expandedId = _expandedId == event.id
+                              ? null
+                              : event.id;
+                        }),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _resetFilters() => setState(() {
+    _selectedLocations.clear();
+    _selectedCategories.clear();
+    _priceFilter = null;
+    _spotsFilter = false;
+    _expandedId = null;
+  });
+
+  EventViewerRole _viewerRoleFor(EventEntity event) =>
+      EventPresentationUtils.viewerRoleByEventId(event.id);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _SheetHeader — заголовок с центрированным названием, кнопкой фильтров
+// и кнопкой закрытия.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _SheetHeader extends StatelessWidget {
+  final int activeFilterCount;
+  final VoidCallback onFiltersTap;
+  final VoidCallback onClose;
+
+  const _SheetHeader({
+    required this.activeFilterCount,
+    required this.onFiltersTap,
+    required this.onClose,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF1565C0), Color(0xFF0D47A1)],
+        ),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(UiConstants.borderRadius * 8),
+        ),
+        boxShadow: [BoxShadow(color: Color(0xCC000000), offset: Offset(0, 2))],
+      ),
+      child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: UiConstants.boxUnit * 1.25,
-          vertical: UiConstants.boxUnit * 0.5,
+          horizontal: UiConstants.horizontalPadding * 2,
+          vertical: UiConstants.verticalPadding * 1.5,
         ),
-        decoration: BoxDecoration(
-          color: active ? const Color(0xFF1565C0) : const Color(0xFFDEE7F6),
-          borderRadius: BorderRadius.circular(UiConstants.borderRadius * 5),
-          border: Border.fromBorderSide(
-            BorderSide(
-              color: active ? const Color(0xFF0D47A1) : const Color(0xFF62697B),
+        child: Row(
+          children: [
+            _FiltersButton(count: activeFilterCount, onTap: onFiltersTap),
+            const Expanded(
+              child: Center(
+                child: _StrokeTitle(text: EventTexts.searchHeaderTitle),
+              ),
             ),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: active ? const Color(0x55000000) : const Color(0x22000000),
-              offset: const Offset(0, UiConstants.shadowOffsetY),
-            ),
+            GqCloseButton(onTap: onClose),
           ],
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontFamily: EventTexts.fontClash,
-            fontFamilyFallback: EventTexts.fontFallback,
-            fontSize: UiConstants.textSize * 0.75,
-            color: active ? Colors.white : const Color(0xFF3A4560),
-          ),
         ),
       ),
     );
@@ -598,18 +598,18 @@ class _FilterChip extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _StrokeTitle extends StatelessWidget {
+  static const _family = EventTexts.fontClash;
+  static const _fallback = EventTexts.fontFallback;
   final String text;
-  final double fontSize;
-  final int maxLines;
 
+  final double fontSize;
+
+  final int maxLines;
   const _StrokeTitle({
     required this.text,
     this.fontSize = UiConstants.textSize * 1.5,
     this.maxLines = 1,
   });
-
-  static const _family = EventTexts.fontClash;
-  static const _fallback = EventTexts.fontFallback;
 
   @override
   Widget build(BuildContext context) {

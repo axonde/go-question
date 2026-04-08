@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
 import 'package:go_question/core/types/result.dart';
+import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
+
 import 'event_detail_event.dart';
 import 'event_detail_state.dart';
 
@@ -16,7 +17,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     });
   }
 
-  Future<void> _onStarted(String id, Emitter<EventDetailState> emit) async {
+  Future<void> _onRefreshed(String id, Emitter<EventDetailState> emit) async {
     emit(const EventDetailState.loading());
     final result = await _repository.getEventById(id);
     result.fold(
@@ -25,7 +26,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
     );
   }
 
-  Future<void> _onRefreshed(String id, Emitter<EventDetailState> emit) async {
+  Future<void> _onStarted(String id, Emitter<EventDetailState> emit) async {
     emit(const EventDetailState.loading());
     final result = await _repository.getEventById(id);
     result.fold(

@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_question/core/types/result.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
-import 'package:go_question/core/types/result.dart';
+
 import 'event_create_event.dart';
 import 'event_create_state.dart';
 
