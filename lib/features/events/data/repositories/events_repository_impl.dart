@@ -4,8 +4,6 @@ import 'package:go_question/features/events/domain/entities/event_entity.dart';
 import 'package:go_question/features/events/domain/errors/event_failures.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
 
-import '../models/event_model.dart';
-
 class EventsRepositoryImpl implements IEventsRepository {
   final FirebaseFirestore firestore;
 
@@ -14,12 +12,7 @@ class EventsRepositoryImpl implements IEventsRepository {
   @override
   Future<Result<void, EventFailure>> createEvent(EventEntity event) async {
     try {
-      final eventModel = EventModel.fromEntity(event);
-
-      await firestore
-          .collection('events')
-          .doc(eventModel.id)
-          .set(eventModel.toMap());
+      await firestore.collection('events').doc(event.id).set(event.toJson());
 
       return const Success(null);
     } catch (e) {

@@ -15,21 +15,32 @@ final _privateConstructorUsedError = UnsupportedError(
   'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
 );
 
+EventEntity _$EventEntityFromJson(Map<String, dynamic> json) {
+  return _EventEntity.fromJson(json);
+}
+
 /// @nodoc
 mixin _$EventEntity {
   String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get imageUrl => throw _privateConstructorUsedError;
-  DateTime get date => throw _privateConstructorUsedError;
+  @TimestampConverter()
+  DateTime get startTime => throw _privateConstructorUsedError;
   String get location => throw _privateConstructorUsedError;
   String get category => throw _privateConstructorUsedError;
   double get price => throw _privateConstructorUsedError;
+  int get maxUsers => throw _privateConstructorUsedError;
   int get participants => throw _privateConstructorUsedError;
   String get organizer => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
+  @TimestampConverter()
   DateTime get createdAt => throw _privateConstructorUsedError;
+  @TimestampConverter()
   DateTime get updatedAt => throw _privateConstructorUsedError;
+
+  /// Serializes this EventEntity to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of EventEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -50,15 +61,16 @@ abstract class $EventEntityCopyWith<$Res> {
     String title,
     String description,
     String imageUrl,
-    DateTime date,
+    @TimestampConverter() DateTime startTime,
     String location,
     String category,
     double price,
+    int maxUsers,
     int participants,
     String organizer,
     String status,
-    DateTime createdAt,
-    DateTime updatedAt,
+    @TimestampConverter() DateTime createdAt,
+    @TimestampConverter() DateTime updatedAt,
   });
 }
 
@@ -81,10 +93,11 @@ class _$EventEntityCopyWithImpl<$Res, $Val extends EventEntity>
     Object? title = null,
     Object? description = null,
     Object? imageUrl = null,
-    Object? date = null,
+    Object? startTime = null,
     Object? location = null,
     Object? category = null,
     Object? price = null,
+    Object? maxUsers = null,
     Object? participants = null,
     Object? organizer = null,
     Object? status = null,
@@ -109,9 +122,9 @@ class _$EventEntityCopyWithImpl<$Res, $Val extends EventEntity>
                 ? _value.imageUrl
                 : imageUrl // ignore: cast_nullable_to_non_nullable
                       as String,
-            date: null == date
-                ? _value.date
-                : date // ignore: cast_nullable_to_non_nullable
+            startTime: null == startTime
+                ? _value.startTime
+                : startTime // ignore: cast_nullable_to_non_nullable
                       as DateTime,
             location: null == location
                 ? _value.location
@@ -125,6 +138,10 @@ class _$EventEntityCopyWithImpl<$Res, $Val extends EventEntity>
                 ? _value.price
                 : price // ignore: cast_nullable_to_non_nullable
                       as double,
+            maxUsers: null == maxUsers
+                ? _value.maxUsers
+                : maxUsers // ignore: cast_nullable_to_non_nullable
+                      as int,
             participants: null == participants
                 ? _value.participants
                 : participants // ignore: cast_nullable_to_non_nullable
@@ -165,15 +182,16 @@ abstract class _$$EventEntityImplCopyWith<$Res>
     String title,
     String description,
     String imageUrl,
-    DateTime date,
+    @TimestampConverter() DateTime startTime,
     String location,
     String category,
     double price,
+    int maxUsers,
     int participants,
     String organizer,
     String status,
-    DateTime createdAt,
-    DateTime updatedAt,
+    @TimestampConverter() DateTime createdAt,
+    @TimestampConverter() DateTime updatedAt,
   });
 }
 
@@ -195,10 +213,11 @@ class __$$EventEntityImplCopyWithImpl<$Res>
     Object? title = null,
     Object? description = null,
     Object? imageUrl = null,
-    Object? date = null,
+    Object? startTime = null,
     Object? location = null,
     Object? category = null,
     Object? price = null,
+    Object? maxUsers = null,
     Object? participants = null,
     Object? organizer = null,
     Object? status = null,
@@ -223,9 +242,9 @@ class __$$EventEntityImplCopyWithImpl<$Res>
             ? _value.imageUrl
             : imageUrl // ignore: cast_nullable_to_non_nullable
                   as String,
-        date: null == date
-            ? _value.date
-            : date // ignore: cast_nullable_to_non_nullable
+        startTime: null == startTime
+            ? _value.startTime
+            : startTime // ignore: cast_nullable_to_non_nullable
                   as DateTime,
         location: null == location
             ? _value.location
@@ -239,6 +258,10 @@ class __$$EventEntityImplCopyWithImpl<$Res>
             ? _value.price
             : price // ignore: cast_nullable_to_non_nullable
                   as double,
+        maxUsers: null == maxUsers
+            ? _value.maxUsers
+            : maxUsers // ignore: cast_nullable_to_non_nullable
+                  as int,
         participants: null == participants
             ? _value.participants
             : participants // ignore: cast_nullable_to_non_nullable
@@ -265,23 +288,27 @@ class __$$EventEntityImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$EventEntityImpl implements _EventEntity {
   const _$EventEntityImpl({
     required this.id,
     required this.title,
     required this.description,
     required this.imageUrl,
-    required this.date,
+    @TimestampConverter() required this.startTime,
     required this.location,
     required this.category,
     required this.price,
+    required this.maxUsers,
     required this.participants,
     required this.organizer,
     required this.status,
-    required this.createdAt,
-    required this.updatedAt,
+    @TimestampConverter() required this.createdAt,
+    @TimestampConverter() required this.updatedAt,
   });
+
+  factory _$EventEntityImpl.fromJson(Map<String, dynamic> json) =>
+      _$$EventEntityImplFromJson(json);
 
   @override
   final String id;
@@ -292,7 +319,8 @@ class _$EventEntityImpl implements _EventEntity {
   @override
   final String imageUrl;
   @override
-  final DateTime date;
+  @TimestampConverter()
+  final DateTime startTime;
   @override
   final String location;
   @override
@@ -300,19 +328,23 @@ class _$EventEntityImpl implements _EventEntity {
   @override
   final double price;
   @override
+  final int maxUsers;
+  @override
   final int participants;
   @override
   final String organizer;
   @override
   final String status;
   @override
+  @TimestampConverter()
   final DateTime createdAt;
   @override
+  @TimestampConverter()
   final DateTime updatedAt;
 
   @override
   String toString() {
-    return 'EventEntity(id: $id, title: $title, description: $description, imageUrl: $imageUrl, date: $date, location: $location, category: $category, price: $price, participants: $participants, organizer: $organizer, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'EventEntity(id: $id, title: $title, description: $description, imageUrl: $imageUrl, startTime: $startTime, location: $location, category: $category, price: $price, maxUsers: $maxUsers, participants: $participants, organizer: $organizer, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -326,12 +358,15 @@ class _$EventEntityImpl implements _EventEntity {
                 other.description == description) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
-            (identical(other.date, date) || other.date == date) &&
+            (identical(other.startTime, startTime) ||
+                other.startTime == startTime) &&
             (identical(other.location, location) ||
                 other.location == location) &&
             (identical(other.category, category) ||
                 other.category == category) &&
             (identical(other.price, price) || other.price == price) &&
+            (identical(other.maxUsers, maxUsers) ||
+                other.maxUsers == maxUsers) &&
             (identical(other.participants, participants) ||
                 other.participants == participants) &&
             (identical(other.organizer, organizer) ||
@@ -343,6 +378,7 @@ class _$EventEntityImpl implements _EventEntity {
                 other.updatedAt == updatedAt));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
     runtimeType,
@@ -350,10 +386,11 @@ class _$EventEntityImpl implements _EventEntity {
     title,
     description,
     imageUrl,
-    date,
+    startTime,
     location,
     category,
     price,
+    maxUsers,
     participants,
     organizer,
     status,
@@ -368,6 +405,11 @@ class _$EventEntityImpl implements _EventEntity {
   @pragma('vm:prefer-inline')
   _$$EventEntityImplCopyWith<_$EventEntityImpl> get copyWith =>
       __$$EventEntityImplCopyWithImpl<_$EventEntityImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$EventEntityImplToJson(this);
+  }
 }
 
 abstract class _EventEntity implements EventEntity {
@@ -376,16 +418,20 @@ abstract class _EventEntity implements EventEntity {
     required final String title,
     required final String description,
     required final String imageUrl,
-    required final DateTime date,
+    @TimestampConverter() required final DateTime startTime,
     required final String location,
     required final String category,
     required final double price,
+    required final int maxUsers,
     required final int participants,
     required final String organizer,
     required final String status,
-    required final DateTime createdAt,
-    required final DateTime updatedAt,
+    @TimestampConverter() required final DateTime createdAt,
+    @TimestampConverter() required final DateTime updatedAt,
   }) = _$EventEntityImpl;
+
+  factory _EventEntity.fromJson(Map<String, dynamic> json) =
+      _$EventEntityImpl.fromJson;
 
   @override
   String get id;
@@ -396,7 +442,8 @@ abstract class _EventEntity implements EventEntity {
   @override
   String get imageUrl;
   @override
-  DateTime get date;
+  @TimestampConverter()
+  DateTime get startTime;
   @override
   String get location;
   @override
@@ -404,14 +451,18 @@ abstract class _EventEntity implements EventEntity {
   @override
   double get price;
   @override
+  int get maxUsers;
+  @override
   int get participants;
   @override
   String get organizer;
   @override
   String get status;
   @override
+  @TimestampConverter()
   DateTime get createdAt;
   @override
+  @TimestampConverter()
   DateTime get updatedAt;
 
   /// Create a copy of EventEntity
