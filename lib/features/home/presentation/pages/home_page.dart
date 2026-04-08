@@ -35,7 +35,7 @@ class HomePage extends StatelessWidget {
       minChildSize: 0.5,
       maxChildSize: 0.95,
       expand: false,
-      builder: (_, __) => const SearchEventsSheet(),
+      builder: (_, _) => const SearchEventsSheet(),
     ),
   );
 
