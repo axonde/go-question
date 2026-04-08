@@ -2,19 +2,23 @@ import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+part 'score_event.dart';
 part 'score_state.dart';
 
 /// Управляет «кубками» пользователя.
 ///
 /// Очки начисляются при создании ивента — случайное значение от 20 до 40.
 /// Максимум: [maxScore]. При достижении максимума значение фиксируется.
-class ScoreCubit extends Cubit<ScoreState> {
+class ScoreBloc extends Bloc<ScoreEvent, ScoreState> {
   static const int maxScore = 99999;
 
-  ScoreCubit() : super(const ScoreState(0));
+  ScoreBloc() : super(const ScoreState(0)) {
+    on<ScoreEventAdded>(_onEventAdded);
+    on<ScoreValueSet>(_onValueSet);
+  }
 
   /// Вызывается при создании ивента. Начисляет 20–40 очков.
-  void addEventScore() {
+  void _onEventAdded(ScoreEventAdded event, Emitter<ScoreState> emit) {
     final current = state.value;
     if (current >= maxScore) return;
 
@@ -23,7 +27,7 @@ class ScoreCubit extends Cubit<ScoreState> {
   }
 
   /// Прямая установка значения (например, при загрузке из Firestore).
-  void setValue(int value) {
-    emit(ScoreState(value.clamp(0, maxScore)));
+  void _onValueSet(ScoreValueSet event, Emitter<ScoreState> emit) {
+    emit(ScoreState(event.value.clamp(0, maxScore)));
   }
 }
