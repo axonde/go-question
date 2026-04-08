@@ -76,7 +76,7 @@ class EventDetailSheet extends StatelessWidget {
             child: LayoutBuilder(
               builder: (_, c) => GQButton(
                 onPressed: () {
-                  // TODO: отправить запрос на участие через Cubit/Bloc.
+                  // TODO: отправить запрос на участие через BLoC.
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text(EventTexts.snackBarJoinRequestSent),

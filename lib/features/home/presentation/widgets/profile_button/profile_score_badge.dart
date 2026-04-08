@@ -45,7 +45,7 @@ class _ScoreBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isMax = score >= ScoreCubit.maxScore;
+    final isMax = score >= ScoreBloc.maxScore;
     final label = isMax ? 'макс.' : score.toString();
     final fontSize = slotHeight * 0.32;
 
