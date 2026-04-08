@@ -19,6 +19,12 @@ class NotificationData {
   final bool showReject;
   final String? userName;
   final String? userRating;
+  final String? userAge;
+  final String? userGender;
+  final String? userCity;
+  final String? userBio;
+  final int? userEventsAttended;
+  final int? userEventsOrganized;
   final String? eventTitle;
   final String? eventDate;
   final String? eventLocation;
@@ -31,6 +37,12 @@ class NotificationData {
     this.showReject = false,
     this.userName,
     this.userRating,
+    this.userAge,
+    this.userGender,
+    this.userCity,
+    this.userBio,
+    this.userEventsAttended,
+    this.userEventsOrganized,
     this.eventTitle,
     this.eventDate,
     this.eventLocation,
@@ -52,6 +64,12 @@ const _kMockNotifications = [
     showReject: true,
     userName: 'Джиган',
     userRating: '158 🏆',
+    userAge: '28 лет',
+    userGender: 'Мужской',
+    userCity: 'Санкт-Петербург',
+    userBio: 'Люблю активный отдых, спорт и новые знакомства. Участвую в мероприятиях уже 2 года.',
+    userEventsAttended: 24,
+    userEventsOrganized: 3,
     eventTitle: 'Вечеринка на пляже',
     eventDate: '04.04.2027 в 17:00',
     eventLocation: 'Пляж "Ласковый берег", Санкт-Петербург',
@@ -71,6 +89,12 @@ const _kMockNotifications = [
     body: 'У вас новое сообщение от организатора турнира.',
     userName: 'Организатор Иван',
     userRating: '245 🏆',
+    userAge: '35 лет',
+    userGender: 'Мужской',
+    userCity: 'Москва',
+    userBio: 'Профессиональный организатор спортивных мероприятий. Опыт работы 5 лет.',
+    userEventsAttended: 15,
+    userEventsOrganized: 42,
     eventTitle: 'Турнир по настольному теннису',
     eventDate: '15.04.2027 в 10:00',
     eventLocation: 'Спортивный комплекс "Олимп"',
