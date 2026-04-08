@@ -6,6 +6,8 @@ import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/icons/gq_edit_icon.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 
+import '../constants/profile_presentation.dart';
+
 part 'components/avatar.dart';
 part 'components/characteristics.dart';
 part 'components/profile.dart';
@@ -38,7 +40,9 @@ class _ProfileContent extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
             image: const DecorationImage(
-              image: AssetImage('assets/images/background/background.webp'),
+              image: AssetImage(
+                ProfilePresentationConstants.backgroundImagePath,
+              ),
               fit: BoxFit.cover,
             ),
           ),
@@ -61,18 +65,21 @@ class _ProfileContent extends StatelessWidget {
 
                 _Avatar(),
 
-                const _Profile(name: 'Maxim Maximka', nick: 'papeiko'),
+                const _Profile(
+                  name: ProfilePresentationConstants.demoName,
+                  nick: ProfilePresentationConstants.demoNick,
+                ),
 
-                const _Characteristics(
-                  yearsOld: '19 лет',
-                  city: 'Санкт-Петербург',
-                  mail: 'danil-kolbasenko@gmail.com',
+                _Characteristics(
+                  yearsOld: ProfilePresentationConstants.demoYearsOld,
+                  city: ProfilePresentationConstants.demoCity,
+                  mail: ProfilePresentationConstants.demoEmail,
                 ),
 
                 const SizedBox(height: 24),
 
                 Text(
-                  'Для редактирования нажмите на выбранное поле',
+                  ProfilePresentationConstants.editHintText,
                   style: AppTextStyles.labelMedium.merge(
                     const TextStyle(color: AppColors.textSecondary),
                   ),

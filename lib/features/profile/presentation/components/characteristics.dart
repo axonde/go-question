@@ -54,23 +54,23 @@ class _FieldState extends State<_Field> {
     showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Редактировать'),
+        title: const Text(ProfilePresentationConstants.dialogTitle),
         content: TextField(
           controller: controller,
           autofocus: true,
           decoration: const InputDecoration(
-            hintText: 'Введите значение',
+            hintText: ProfilePresentationConstants.dialogInputHint,
             border: OutlineInputBorder(),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Отмена'),
+            child: const Text(ProfilePresentationConstants.dialogCancelButton),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, controller.text),
-            child: const Text('Сохранить'),
+            child: const Text(ProfilePresentationConstants.dialogSaveButton),
           ),
         ],
       ),

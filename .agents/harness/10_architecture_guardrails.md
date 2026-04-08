@@ -4,7 +4,7 @@
 
 The architecture is fixed and must be preserved:
 
-- State: `BLoC` / `Cubit`
+- State: `BLoC`
 - DI: `GetIt`
 - Navigation: `auto_route`
 - Backend/infra: `Firebase`
@@ -15,17 +15,17 @@ The architecture is fixed and must be preserved:
 
 Keep this dependency direction:
 
-`UI/Widgets -> Bloc/Cubit -> Domain contracts -> Data implementations -> Firebase/External`
+`UI/Widgets -> Bloc -> Domain contracts -> Data implementations -> Firebase/External`
 
 Do not create reverse dependencies.
 
 ## Layer Rules
 
-- Presentation layer contains widgets, pages, bloc/cubit, listeners.
+- Presentation layer contains widgets, pages, bloc, listeners.
 - Domain contracts (interfaces, failures, entities) stay framework-light.
 - Data layer owns Firebase SDK calls and DTO mapping.
 - UI must not call Firebase SDK directly.
-- Bloc/Cubit must not depend directly on other Bloc/Cubit instances for business flows; share repositories/services instead.
+- Bloc must not depend directly on other Bloc instances for business flows; share repositories/services instead.
 - Do not propagate raw exceptions into UI states; map exceptions to typed failures and return `Result`.
 
 ## Multi-Developer Feature Rule
@@ -34,7 +34,7 @@ When several developers work on one feature, split by layers with explicit owner
 
 - Domain owner defines contracts first (`entities`, repository interfaces, failures, result contracts).
 - Data owner implements contracts second (datasources, repository impl, exception-to-failure mapping).
-- Presentation owner finishes third (bloc/cubit, then screen integration).
+- Presentation owner finishes third (pure bloc only, then screen integration).
 
 The implementation order is mandatory: `domain -> data -> presentation`.
 Parallel work is allowed only after domain contracts are agreed and stable.
