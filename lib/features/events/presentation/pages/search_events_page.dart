@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
-import 'package:go_question/features/events/domain/event_entity.dart';
+import 'package:go_question/features/events/domain/entities/event_entity.dart';
 
 part 'search_events_page/event_search_card.dart';
 
@@ -17,7 +17,7 @@ final _kMockEvents = [
     description:
         'Открытый городской турнир для всех уровней подготовки. Приглашаем игроков от 15 кю до 3 дана включительно. Призовой фонд — сертификаты и памятные призы.',
     imageUrl: '',
-    startTime: DateTime(2026, 4, 12, 10, 0),
+    startTime: DateTime(2026, 4, 12, 10),
     location: 'Санкт-Петербург',
     category: 'Турнир',
     price: 0,
@@ -25,8 +25,8 @@ final _kMockEvents = [
     participants: 32,
     organizer: 'Клуб СПбГУ',
     status: 'open',
-    createdAt: DateTime(2026, 3, 1),
-    updatedAt: DateTime(2026, 3, 1),
+    createdAt: DateTime(2026, 3),
+    updatedAt: DateTime(2026, 3),
   ),
   EventEntity(
     id: '2',
@@ -34,7 +34,7 @@ final _kMockEvents = [
     description:
         'Внутренний чемпионат клуба «Камень» по системе Mac-Mahon. Участие только для членов клуба.',
     imageUrl: '',
-    startTime: DateTime(2026, 4, 15, 12, 0),
+    startTime: DateTime(2026, 4, 15, 12),
     location: 'Москва',
     category: 'Чемпионат',
     price: 500,
@@ -68,7 +68,7 @@ final _kMockEvents = [
     description:
         'Кубок города среди любителей. Принимают участие игроки без разряда.',
     imageUrl: '',
-    startTime: DateTime(2026, 5, 5, 11, 0),
+    startTime: DateTime(2026, 5, 5, 11),
     location: 'Новосибирск',
     category: 'Кубок',
     price: 200,
@@ -85,7 +85,7 @@ final _kMockEvents = [
     description:
         'Неформальный фестиваль с мастер-классами, лекциями и товарищескими партиями. Подходит для начинающих.',
     imageUrl: '',
-    startTime: DateTime(2026, 6, 1, 10, 0),
+    startTime: DateTime(2026, 6, 1, 10),
     location: 'Екатеринбург',
     category: 'Фестиваль',
     price: 0,
@@ -132,11 +132,13 @@ class _SearchEventsSheetState extends State<SearchEventsSheet> {
 
   List<EventEntity> get _filtered => _kMockEvents.where((e) {
     if (_selectedLocations.isNotEmpty &&
-        !_selectedLocations.contains(e.location))
+        !_selectedLocations.contains(e.location)) {
       return false;
+    }
     if (_selectedCategories.isNotEmpty &&
-        !_selectedCategories.contains(e.category))
+        !_selectedCategories.contains(e.category)) {
       return false;
+    }
     if (_priceFilter == true && e.price != 0) return false;
     if (_priceFilter == false && e.price == 0) return false;
     if (_spotsFilter && e.participants >= e.maxUsers) return false;
@@ -162,23 +164,13 @@ class _SearchEventsSheetState extends State<SearchEventsSheet> {
           top: Radius.circular(UiConstants.borderRadius * 8),
         ),
         border: Border(
-          top: BorderSide(
-            color: Color(0xFF62697B),
-            width: UiConstants.borderWidth / 2,
-          ),
-          left: BorderSide(
-            color: Color(0xFF62697B),
-            width: UiConstants.borderWidth / 2,
-          ),
-          right: BorderSide(
-            color: Color(0xFF62697B),
-            width: UiConstants.borderWidth / 2,
-          ),
+          top: BorderSide(color: Color(0xFF62697B)),
+          left: BorderSide(color: Color(0xFF62697B)),
+          right: BorderSide(color: Color(0xFF62697B)),
         ),
         boxShadow: [
           BoxShadow(
             color: Color(0xCC000000),
-            blurRadius: 0,
             offset: Offset(0, -UiConstants.shadowOffsetY),
           ),
         ],
@@ -240,7 +232,7 @@ class _SearchEventsSheetState extends State<SearchEventsSheet> {
               ),
               Expanded(
                 child: filtered.isEmpty
-                    ? Center(
+                    ? const Center(
                         child: Padding(
                           padding: EdgeInsets.all(UiConstants.boxUnit * 3),
                           child: Text(
@@ -248,22 +240,19 @@ class _SearchEventsSheetState extends State<SearchEventsSheet> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: 'Clash',
-                              fontFamilyFallback: const [
-                                'Roboto',
-                                'sans-serif',
-                              ],
+                              fontFamilyFallback: ['Roboto', 'sans-serif'],
                               fontSize: UiConstants.textSize * 0.875,
-                              color: const Color(0xFF62697B),
+                              color: Color(0xFF62697B),
                             ),
                           ),
                         ),
                       )
                     : ListView.separated(
                         clipBehavior: Clip.none,
-                        padding: EdgeInsets.all(UiConstants.boxUnit * 2),
+                        padding: const EdgeInsets.all(UiConstants.boxUnit * 2),
                         itemCount: filtered.length,
-                        separatorBuilder: (_, __) =>
-                            SizedBox(height: UiConstants.boxUnit * 1.5),
+                        separatorBuilder: (_, _) =>
+                            const SizedBox(height: UiConstants.boxUnit * 1.5),
                         itemBuilder: (_, i) {
                           final event = filtered[i];
                           return EventSearchCard(
@@ -326,24 +315,17 @@ class _SheetHeader extends StatelessWidget {
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(UiConstants.borderRadius * 8),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0xCC000000),
-            blurRadius: 0,
-            offset: Offset(0, 2),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Color(0xCC000000), offset: Offset(0, 2))],
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: UiConstants.horizontalPadding * 2,
           vertical: UiConstants.verticalPadding * 1.5,
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _FiltersButton(count: activeFilterCount, onTap: onFiltersTap),
-            Expanded(
+            const Expanded(
               child: Center(child: _StrokeTitle(text: 'Поиск ивента')),
             ),
             GqCloseButton(onTap: onClose),
@@ -371,7 +353,7 @@ class _FiltersButton extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: UiConstants.boxUnit * 1.25,
           vertical: UiConstants.gap,
         ),
@@ -381,10 +363,7 @@ class _FiltersButton extends StatelessWidget {
               : Colors.white.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
           border: Border.fromBorderSide(
-            BorderSide(
-              color: Colors.white.withValues(alpha: 0.5),
-              width: UiConstants.borderWidth / 2,
-            ),
+            BorderSide(color: Colors.white.withValues(alpha: 0.5)),
           ),
         ),
         child: Row(
@@ -396,7 +375,7 @@ class _FiltersButton extends StatelessWidget {
               size: UiConstants.textSize,
             ),
             if (hasActive) ...[
-              SizedBox(width: UiConstants.boxUnit * 0.5),
+              const SizedBox(width: UiConstants.boxUnit * 0.5),
               Text(
                 '$count',
                 style: const TextStyle(
@@ -455,15 +434,10 @@ class _FilterPanel extends StatelessWidget {
     return DecoratedBox(
       decoration: const BoxDecoration(
         color: Color(0xFFEBF0FA),
-        border: Border(
-          bottom: BorderSide(
-            color: Color(0xFF62697B),
-            width: UiConstants.borderWidth / 2,
-          ),
-        ),
+        border: Border(bottom: BorderSide(color: Color(0xFF62697B))),
       ),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(
+        padding: const EdgeInsets.fromLTRB(
           UiConstants.boxUnit * 2,
           UiConstants.boxUnit * 1.5,
           UiConstants.boxUnit * 2,
@@ -474,8 +448,8 @@ class _FilterPanel extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // ── Строка 1: Бесплатно / Платно / Есть места ─────────────────
-            _FilterSectionLabel(text: 'Стоимость и места'),
-            SizedBox(height: UiConstants.boxUnit * 0.75),
+            const _FilterSectionLabel(text: 'Стоимость и места'),
+            const SizedBox(height: UiConstants.boxUnit * 0.75),
             Wrap(
               spacing: UiConstants.boxUnit,
               runSpacing: UiConstants.boxUnit * 0.75,
@@ -497,10 +471,10 @@ class _FilterPanel extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: UiConstants.boxUnit * 1.25),
+            const SizedBox(height: UiConstants.boxUnit * 1.25),
             // ── Строка 2: Категории ────────────────────────────────────────
-            _FilterSectionLabel(text: 'Категория'),
-            SizedBox(height: UiConstants.boxUnit * 0.75),
+            const _FilterSectionLabel(text: 'Категория'),
+            const SizedBox(height: UiConstants.boxUnit * 0.75),
             Wrap(
               spacing: UiConstants.boxUnit,
               runSpacing: UiConstants.boxUnit * 0.75,
@@ -513,10 +487,10 @@ class _FilterPanel extends StatelessWidget {
                   ),
               ],
             ),
-            SizedBox(height: UiConstants.boxUnit * 1.25),
+            const SizedBox(height: UiConstants.boxUnit * 1.25),
             // ── Строка 3: Города ───────────────────────────────────────────
-            _FilterSectionLabel(text: 'Город'),
-            SizedBox(height: UiConstants.boxUnit * 0.75),
+            const _FilterSectionLabel(text: 'Город'),
+            const SizedBox(height: UiConstants.boxUnit * 0.75),
             Wrap(
               spacing: UiConstants.boxUnit,
               runSpacing: UiConstants.boxUnit * 0.75,
@@ -610,7 +584,7 @@ class _FilterChip extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: UiConstants.boxUnit * 1.25,
           vertical: UiConstants.boxUnit * 0.5,
         ),
@@ -620,13 +594,11 @@ class _FilterChip extends StatelessWidget {
           border: Border.fromBorderSide(
             BorderSide(
               color: active ? const Color(0xFF0D47A1) : const Color(0xFF62697B),
-              width: UiConstants.borderWidth / 2,
             ),
           ),
           boxShadow: [
             BoxShadow(
               color: active ? const Color(0x55000000) : const Color(0x22000000),
-              blurRadius: 0,
               offset: const Offset(0, UiConstants.shadowOffsetY),
             ),
           ],
@@ -693,11 +665,7 @@ class _StrokeTitle extends StatelessWidget {
             fontWeight: FontWeight.bold,
             color: Colors.white,
             shadows: const [
-              Shadow(
-                color: Colors.black,
-                offset: Offset(0, UiConstants.textShadowOffsetY),
-                blurRadius: 0,
-              ),
+              Shadow(offset: Offset(0, UiConstants.textShadowOffsetY)),
             ],
           ),
         ),

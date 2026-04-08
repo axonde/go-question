@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
-import 'package:go_question/features/events/domain/event_entity.dart';
+import 'package:go_question/features/events/domain/entities/event_entity.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EventDetailSheet — всплывающее окно с деталями ивента.
@@ -22,23 +22,13 @@ class EventDetailSheet extends StatelessWidget {
           top: Radius.circular(UiConstants.borderRadius * 8),
         ),
         border: Border(
-          top: BorderSide(
-            color: Color(0xFF62697B),
-            width: UiConstants.borderWidth / 2,
-          ),
-          left: BorderSide(
-            color: Color(0xFF62697B),
-            width: UiConstants.borderWidth / 2,
-          ),
-          right: BorderSide(
-            color: Color(0xFF62697B),
-            width: UiConstants.borderWidth / 2,
-          ),
+          top: BorderSide(color: Color(0xFF62697B)),
+          left: BorderSide(color: Color(0xFF62697B)),
+          right: BorderSide(color: Color(0xFF62697B)),
         ),
         boxShadow: [
           BoxShadow(
             color: Color(0xCC000000),
-            blurRadius: 0,
             offset: Offset(0, -UiConstants.shadowOffsetY),
           ),
         ],
@@ -48,15 +38,15 @@ class EventDetailSheet extends StatelessWidget {
           _DetailSheetHeader(event: event),
           Expanded(
             child: ListView(
-              padding: EdgeInsets.fromLTRB(
+              padding: const EdgeInsets.fromLTRB(
                 UiConstants.boxUnit * 2,
                 UiConstants.boxUnit * 2,
                 UiConstants.boxUnit * 2,
                 UiConstants.boxUnit * 2,
               ),
               children: [
-                _SectionLabel(text: 'Описание'),
-                SizedBox(height: UiConstants.boxUnit),
+                const _SectionLabel(text: 'Описание'),
+                const SizedBox(height: UiConstants.boxUnit),
                 Text(
                   event.description,
                   style: const TextStyle(
@@ -67,15 +57,15 @@ class EventDetailSheet extends StatelessWidget {
                     height: 1.5,
                   ),
                 ),
-                SizedBox(height: UiConstants.boxUnit * 2),
-                _SectionLabel(text: 'Детали'),
-                SizedBox(height: UiConstants.boxUnit),
+                const SizedBox(height: UiConstants.boxUnit * 2),
+                const _SectionLabel(text: 'Детали'),
+                const SizedBox(height: UiConstants.boxUnit),
                 _InfoCard(event: event),
               ],
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(
+            padding: const EdgeInsets.fromLTRB(
               UiConstants.boxUnit * 2,
               0,
               UiConstants.boxUnit * 2,
@@ -131,26 +121,17 @@ class _DetailSheetHeader extends StatelessWidget {
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(UiConstants.borderRadius * 8),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0xCC000000),
-            blurRadius: 0,
-            offset: Offset(0, 2),
-          ),
-        ],
+        boxShadow: [BoxShadow(color: Color(0xCC000000), offset: Offset(0, 2))],
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: UiConstants.horizontalPadding * 2,
           vertical: UiConstants.verticalPadding * 1.5,
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
-              child: _StrokeTitle(text: event.title, maxLines: 2),
-            ),
-            SizedBox(width: UiConstants.boxUnit),
+            Expanded(child: _StrokeTitle(text: event.title, maxLines: 2)),
+            const SizedBox(width: UiConstants.boxUnit),
             GQButton(
               onPressed: () => Navigator.of(context).pop(),
               icon: Icons.close_rounded,
@@ -181,9 +162,18 @@ class _InfoCard extends StatelessWidget {
     final m = t.minute.toString().padLeft(2, '0');
     const months = [
       '',
-      'января', 'февраля', 'марта', 'апреля',
-      'мая', 'июня', 'июля', 'августа',
-      'сентября', 'октября', 'ноября', 'декабря',
+      'января',
+      'февраля',
+      'марта',
+      'апреля',
+      'мая',
+      'июня',
+      'июля',
+      'августа',
+      'сентября',
+      'октября',
+      'ноября',
+      'декабря',
     ];
     return '${t.day} ${months[t.month]} ${t.year}, $h:$m';
   }
@@ -196,19 +186,27 @@ class _InfoCard extends StatelessWidget {
 
   String get _statusLabel {
     switch (event.status) {
-      case 'open':     return 'Открыт';
-      case 'upcoming': return 'Скоро';
-      case 'closed':   return 'Закрыт';
-      default:         return event.status;
+      case 'open':
+        return 'Открыт';
+      case 'upcoming':
+        return 'Скоро';
+      case 'closed':
+        return 'Закрыт';
+      default:
+        return event.status;
     }
   }
 
   Color get _statusColor {
     switch (event.status) {
-      case 'open':     return const Color(0xFF1565C0);
-      case 'upcoming': return const Color(0xFFF57F17);
-      case 'closed':   return const Color(0xFFB71C1C);
-      default:         return const Color(0xFF62697B);
+      case 'open':
+        return const Color(0xFF1565C0);
+      case 'upcoming':
+        return const Color(0xFFF57F17);
+      case 'closed':
+        return const Color(0xFFB71C1C);
+      default:
+        return const Color(0xFF62697B);
     }
   }
 
@@ -217,26 +215,19 @@ class _InfoCard extends StatelessWidget {
     return DecoratedBox(
       decoration: const BoxDecoration(
         color: Color(0xFFDEE7F6),
-        border: Border.fromBorderSide(
-          BorderSide(
-            color: Color(0xFF62697B),
-            width: UiConstants.borderWidth / 2,
-          ),
-        ),
+        border: Border.fromBorderSide(BorderSide(color: Color(0xFF62697B))),
         borderRadius: BorderRadius.all(
           Radius.circular(UiConstants.borderRadius * 5),
         ),
         boxShadow: [
           BoxShadow(
             color: Color(0x55000000),
-            blurRadius: 0,
-            spreadRadius: 0,
             offset: Offset(0, UiConstants.shadowOffsetY),
           ),
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(UiConstants.boxUnit * 2),
+        padding: const EdgeInsets.all(UiConstants.boxUnit * 2),
         child: Column(
           children: [
             _InfoRow(icon: Icons.access_time_outlined, label: _dateLabel),
@@ -273,9 +264,9 @@ class _InfoCard extends StatelessWidget {
 class _InfoDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return const Padding(
       padding: EdgeInsets.symmetric(vertical: UiConstants.boxUnit * 0.75),
-      child: const Divider(height: 1, thickness: 0.5, color: Color(0xFF62697B)),
+      child: Divider(height: 1, thickness: 0.5, color: Color(0xFF62697B)),
     );
   }
 }
@@ -297,7 +288,7 @@ class _InfoRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, size: UiConstants.textSize, color: color),
-        SizedBox(width: UiConstants.boxUnit),
+        const SizedBox(width: UiConstants.boxUnit),
         Expanded(
           child: Text(
             label,
@@ -375,11 +366,7 @@ class _StrokeTitle extends StatelessWidget {
             fontWeight: FontWeight.bold,
             color: Colors.white,
             shadows: const [
-              Shadow(
-                color: Colors.black,
-                offset: Offset(0, UiConstants.textShadowOffsetY),
-                blurRadius: 0,
-              ),
+              Shadow(offset: Offset(0, UiConstants.textShadowOffsetY)),
             ],
           ),
         ),

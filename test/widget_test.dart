@@ -19,3 +19,4 @@
 //     expect(find.byType(MaterialApp), findsOneWidget);
 //   });
 // }
+void main() {}
