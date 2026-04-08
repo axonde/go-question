@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/main_nav_page.dart';
+import 'package:go_question/features/auth/domain/entities/auth_page.dart';
 
 import '../../../../injection_container/injection_container.dart';
 import '../bloc/auth_bloc.dart';
-import '../bloc/auth_state.dart';
 import 'login_page.dart';
 import 'sign_up_page.dart';
 import 'verify_mail_page.dart';
