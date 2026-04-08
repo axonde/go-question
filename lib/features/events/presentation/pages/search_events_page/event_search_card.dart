@@ -6,14 +6,14 @@ part of '../search_events_page.dart';
 
 class EventSearchCard extends StatelessWidget {
   final EventEntity event;
-  final bool isOrganizer;
+  final EventViewerRole viewerRole;
   final bool isExpanded;
   final VoidCallback onToggle;
 
   const EventSearchCard({
     super.key,
     required this.event,
-    required this.isOrganizer,
+    required this.viewerRole,
     required this.isExpanded,
     required this.onToggle,
   });
@@ -48,7 +48,7 @@ class EventSearchCard extends StatelessWidget {
         child: DecoratedBox(
           decoration: _cardDecoration,
           child: Padding(
-            padding: EdgeInsets.all(UiConstants.boxUnit * 1.5),
+            padding: const EdgeInsets.all(UiConstants.boxUnit * 1.5),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -58,7 +58,7 @@ class EventSearchCard extends StatelessWidget {
                   fontSize: UiConstants.textSize * 1.05,
                   maxLines: 2,
                 ),
-                SizedBox(height: UiConstants.boxUnit),
+                const SizedBox(height: UiConstants.boxUnit),
                 Text(
                   event.description,
                   maxLines: 3,
@@ -81,13 +81,13 @@ class EventSearchCard extends StatelessWidget {
                       ? _ExpandedContent(event: event)
                       : const SizedBox.shrink(),
                 ),
-                SizedBox(height: UiConstants.boxUnit * 1.25),
+                const SizedBox(height: UiConstants.boxUnit * 1.25),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Expanded(child: _MetaRow(event: event)),
-                    SizedBox(width: UiConstants.boxUnit * 1.5),
-                    _CardActions(event: event, isOrganizer: isOrganizer),
+                    const SizedBox(width: UiConstants.boxUnit * 1.5),
+                    _CardActions(event: event, viewerRole: viewerRole),
                   ],
                 ),
               ],
@@ -113,13 +113,13 @@ class _ExpandedContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(height: UiConstants.boxUnit * 1.5),
+        const SizedBox(height: UiConstants.boxUnit * 1.5),
         const _CardDivider(),
-        SizedBox(height: UiConstants.boxUnit * 1.25),
+        const SizedBox(height: UiConstants.boxUnit * 1.25),
         _ExpandedDetails(event: event),
-        SizedBox(height: UiConstants.boxUnit * 1.25),
+        const SizedBox(height: UiConstants.boxUnit * 1.25),
         const _CardDivider(),
-        SizedBox(height: UiConstants.boxUnit * 1.25),
+        const SizedBox(height: UiConstants.boxUnit * 1.25),
         _OrganizerRow(event: event),
       ],
     );
@@ -142,27 +142,8 @@ class _ExpandedDetails extends StatelessWidget {
   final EventEntity event;
   const _ExpandedDetails({required this.event});
 
-  String get _dateLabel {
-    final t = event.startTime;
-    final h = t.hour.toString().padLeft(2, '0');
-    final m = t.minute.toString().padLeft(2, '0');
-    const months = [
-      '',
-      'января',
-      'февраля',
-      'марта',
-      'апреля',
-      'мая',
-      'июня',
-      'июля',
-      'августа',
-      'сентября',
-      'октября',
-      'ноября',
-      'декабря',
-    ];
-    return '${t.day} ${months[t.month]} ${t.year}, $h:$m';
-  }
+  String get _dateLabel =>
+      EventPresentationUtils.formatLongDateTime(event.startTime);
 
   String get _priceLabel =>
       event.price == 0 ? 'Бесплатно' : '${event.price.toInt()} ₽';
@@ -170,31 +151,9 @@ class _ExpandedDetails extends StatelessWidget {
   Color get _priceColor =>
       event.price == 0 ? const Color(0xFF2E7D32) : const Color(0xFF5D4037);
 
-  String get _statusLabel {
-    switch (event.status) {
-      case 'open':
-        return 'Открыт';
-      case 'upcoming':
-        return 'Скоро';
-      case 'closed':
-        return 'Закрыт';
-      default:
-        return event.status;
-    }
-  }
+  String get _statusLabel => EventPresentationUtils.statusLabel(event.status);
 
-  Color get _statusColor {
-    switch (event.status) {
-      case 'open':
-        return const Color(0xFF1565C0);
-      case 'upcoming':
-        return const Color(0xFFF57F17);
-      case 'closed':
-        return const Color(0xFFB71C1C);
-      default:
-        return const Color(0xFF62697B);
-    }
-  }
+  Color get _statusColor => EventPresentationUtils.statusColor(event.status);
 
   @override
   Widget build(BuildContext context) {
@@ -202,22 +161,22 @@ class _ExpandedDetails extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         _DetailRow(icon: Icons.access_time_outlined, label: _dateLabel),
-        SizedBox(height: UiConstants.boxUnit * 0.75),
+        const SizedBox(height: UiConstants.boxUnit * 0.75),
         _DetailRow(icon: Icons.location_on_outlined, label: event.location),
-        SizedBox(height: UiConstants.boxUnit * 0.75),
+        const SizedBox(height: UiConstants.boxUnit * 0.75),
         _DetailRow(icon: Icons.category_outlined, label: event.category),
-        SizedBox(height: UiConstants.boxUnit * 0.75),
+        const SizedBox(height: UiConstants.boxUnit * 0.75),
         _DetailRow(
           icon: Icons.people_outline,
           label: '${event.participants} / ${event.maxUsers} участников',
         ),
-        SizedBox(height: UiConstants.boxUnit * 0.75),
+        const SizedBox(height: UiConstants.boxUnit * 0.75),
         _DetailRow(
           icon: Icons.payments_outlined,
           label: _priceLabel,
           color: _priceColor,
         ),
-        SizedBox(height: UiConstants.boxUnit * 0.75),
+        const SizedBox(height: UiConstants.boxUnit * 0.75),
         _DetailRow(
           icon: Icons.info_outline,
           label: _statusLabel,
@@ -245,7 +204,7 @@ class _DetailRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, size: UiConstants.textSize, color: color),
-        SizedBox(width: UiConstants.boxUnit),
+        const SizedBox(width: UiConstants.boxUnit),
         Expanded(
           child: Text(
             label,
@@ -299,7 +258,7 @@ class _OrganizerRow extends StatelessWidget {
             size: UiConstants.boxUnit * 3,
           ),
         ),
-        SizedBox(width: UiConstants.boxUnit),
+        const SizedBox(width: UiConstants.boxUnit),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,13 +275,13 @@ class _OrganizerRow extends StatelessWidget {
                   color: Color(0xFF3A4560),
                 ),
               ),
-              Text(
+              const Text(
                 'Организатор',
                 style: TextStyle(
                   fontFamily: 'RussoOne',
-                  fontFamilyFallback: const ['Roboto', 'sans-serif'],
+                  fontFamilyFallback: ['Roboto', 'sans-serif'],
                   fontSize: UiConstants.textSize * 0.62,
-                  color: const Color(0xFF7187A8),
+                  color: Color(0xFF7187A8),
                 ),
               ),
             ],
@@ -339,13 +298,14 @@ class _OrganizerRow extends StatelessWidget {
 
 class _CardActions extends StatelessWidget {
   final EventEntity event;
-  final bool isOrganizer;
+  final EventViewerRole viewerRole;
 
-  const _CardActions({required this.event, required this.isOrganizer});
+  const _CardActions({required this.event, required this.viewerRole});
 
   @override
-  Widget build(BuildContext context) =>
-      isOrganizer ? _OrganizerActions(event: event) : _JoinAction(event: event);
+  Widget build(BuildContext context) => viewerRole == EventViewerRole.organizer
+      ? _OrganizerActions(event: event)
+      : _JoinAction(event: event);
 }
 
 class _JoinAction extends StatelessWidget {
@@ -434,27 +394,8 @@ class _MetaRow extends StatelessWidget {
   final EventEntity event;
   const _MetaRow({required this.event});
 
-  String get _timeLabel {
-    final t = event.startTime;
-    final h = t.hour.toString().padLeft(2, '0');
-    final m = t.minute.toString().padLeft(2, '0');
-    const months = [
-      '',
-      'янв',
-      'фев',
-      'мар',
-      'апр',
-      'май',
-      'июн',
-      'июл',
-      'авг',
-      'сен',
-      'окт',
-      'ноя',
-      'дек',
-    ];
-    return '${t.day} ${months[t.month]}, $h:$m';
-  }
+  String get _timeLabel =>
+      EventPresentationUtils.formatShortDateTime(event.startTime);
 
   String get _priceLabel =>
       event.price == 0 ? 'Бесплатно' : '${event.price.toInt()} ₽';
@@ -476,7 +417,7 @@ class _MetaRow extends StatelessWidget {
                 label: _timeLabel,
               ),
             ),
-            SizedBox(width: UiConstants.boxUnit),
+            const SizedBox(width: UiConstants.boxUnit),
             Flexible(
               child: _MetaChip(
                 icon: Icons.people_outline,
@@ -485,7 +426,7 @@ class _MetaRow extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: UiConstants.boxUnit * 0.4),
+        const SizedBox(height: UiConstants.boxUnit * 0.4),
         _MetaChip(
           icon: Icons.payments_outlined,
           label: _priceLabel,
@@ -513,7 +454,7 @@ class _MetaChip extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: UiConstants.textSize * 0.85, color: color),
-        SizedBox(width: UiConstants.boxUnit * 0.3),
+        const SizedBox(width: UiConstants.boxUnit * 0.3),
         Flexible(
           child: Text(
             label,
