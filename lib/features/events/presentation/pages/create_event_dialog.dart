@@ -9,8 +9,9 @@ import 'package:go_question/features/events/presentation/utils/event_presentatio
 
 class CreateEventDialog extends StatefulWidget {
   final ValueChanged<EventEntity>? onCreate;
+  final String? organizerAccountId;
 
-  const CreateEventDialog({super.key, this.onCreate});
+  const CreateEventDialog({super.key, this.onCreate, this.organizerAccountId});
 
   @override
   State<CreateEventDialog> createState() => _CreateEventDialogState();
@@ -18,15 +19,11 @@ class CreateEventDialog extends StatefulWidget {
 
 class _CreateEventDialogState extends State<CreateEventDialog> {
   final _formKey = GlobalKey<FormState>();
-  final _idController = TextEditingController();
   final _titleController = TextEditingController();
   final _locationController = TextEditingController();
   final _categoryController = TextEditingController();
   final _priceController = TextEditingController();
   final _maxUsersController = TextEditingController();
-  final _participantsController = TextEditingController();
-  final _organizerController = TextEditingController();
-  final _imageUrlController = TextEditingController();
   final _descriptionController = TextEditingController();
 
   DateTime _startTime = DateTime.now();
@@ -34,15 +31,11 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
 
   @override
   void dispose() {
-    _idController.dispose();
     _titleController.dispose();
     _locationController.dispose();
     _categoryController.dispose();
     _priceController.dispose();
     _maxUsersController.dispose();
-    _participantsController.dispose();
-    _organizerController.dispose();
-    _imageUrlController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -75,19 +68,20 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
 
   EventEntity _buildEvent() {
     final now = DateTime.now();
-    final id = _idController.text.trim();
     return EventEntity(
-      id: id.isEmpty ? now.millisecondsSinceEpoch.toString() : id,
+      id: EventPresentationUtils.createEventId(now),
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
-      imageUrl: _imageUrlController.text.trim(),
+      imageUrl: EventConstants.defaultImageUrl,
       startTime: _startTime,
       location: _locationController.text.trim(),
       category: _categoryController.text.trim(),
       price: double.tryParse(_priceController.text.replaceAll(',', '.')) ?? 0,
       maxUsers: int.tryParse(_maxUsersController.text) ?? 0,
-      participants: int.tryParse(_participantsController.text) ?? 0,
-      organizer: _organizerController.text.trim(),
+      participants: EventConstants.defaultParticipants,
+      organizer: EventPresentationUtils.resolveOrganizerId(
+        widget.organizerAccountId,
+      ),
       status: _status,
       createdAt: now,
       updatedAt: now,
@@ -111,163 +105,133 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
         constraints: const BoxConstraints(maxWidth: 560, maxHeight: 760),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFF1E75C6), Color(0xFF0F4F9C)],
-            ),
             borderRadius: BorderRadius.circular(UiConstants.borderRadius * 6),
-            border: Border.all(color: const Color(0xFF7892B5)),
+            border: Border.all(
+              color: const Color(EventConstants.createDialogBorderColorValue),
+              width: UiConstants.boxUnit,
+            ),
             boxShadow: const [
               BoxShadow(color: Color(0x88000000), offset: Offset(0, 6)),
             ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(UiConstants.boxUnit * 2),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    const Expanded(
-                      child: Center(
-                        child: _StrokeTitle(text: EventTexts.createHeaderTitle),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4.5),
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    EventConstants.createDialogBackgroundAssetPath,
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: ColoredBox(
+                color: const Color(0x99104A86),
+                child: Padding(
+                  padding: const EdgeInsets.all(UiConstants.boxUnit * 2),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: Center(
+                              child: _StrokeTitle(
+                                text: EventTexts.createHeaderTitle,
+                              ),
+                            ),
+                          ),
+                          GqCloseButton(
+                            onTap: () => Navigator.of(context).pop(),
+                          ),
+                        ],
                       ),
-                    ),
-                    GqCloseButton(onTap: () => Navigator.of(context).pop()),
-                  ],
-                ),
-                const SizedBox(height: UiConstants.boxUnit * 1.5),
-                _ImagePlaceholder(onTap: () {}),
-                const SizedBox(height: UiConstants.boxUnit * 1.5),
-                Expanded(
-                  child: Form(
-                    key: _formKey,
-                    child: ListView(
-                      children: [
-                        _FormInput(
-                          label: EventTexts.createFieldId,
-                          hint: EventTexts.createHintId,
-                          controller: _idController,
-                        ),
-                        _FormInput(
-                          label: EventTexts.createFieldTitle,
-                          hint: EventTexts.createHintTitle,
-                          controller: _titleController,
-                          validator: (v) {
-                            if ((v ?? '').trim().isEmpty) {
-                              return EventTexts.createValidationTitle;
-                            }
-                            return null;
-                          },
-                        ),
-                        _FormDateTimeInput(
-                          label: EventTexts.createFieldStart,
-                          value: EventPresentationUtils.formatLongDateTime(
-                            _startTime,
+                      const SizedBox(height: UiConstants.boxUnit * 1.5),
+                      Expanded(
+                        child: Form(
+                          key: _formKey,
+                          child: ListView(
+                            children: [
+                              _FormInput(
+                                label: EventTexts.createFieldTitle,
+                                hint: EventTexts.createHintTitle,
+                                controller: _titleController,
+                                validator: (v) {
+                                  if ((v ?? '').trim().isEmpty) {
+                                    return EventTexts.createValidationTitle;
+                                  }
+                                  return null;
+                                },
+                              ),
+                              _FormDateTimeInput(
+                                label: EventTexts.createFieldStart,
+                                value:
+                                    EventPresentationUtils.formatLongDateTime(
+                                      _startTime,
+                                    ),
+                                onTap: _pickStartTime,
+                              ),
+                              _FormInput(
+                                label: EventTexts.createFieldLocation,
+                                hint: EventTexts.createHintLocation,
+                                controller: _locationController,
+                              ),
+                              _FormInput(
+                                label: EventTexts.createFieldCategory,
+                                hint: EventTexts.createHintCategory,
+                                controller: _categoryController,
+                              ),
+                              _FormInput(
+                                label: EventTexts.createFieldPrice,
+                                hint: EventTexts.createHintPrice,
+                                controller: _priceController,
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                      decimal: true,
+                                    ),
+                              ),
+                              _FormInput(
+                                label: EventTexts.createFieldMaxUsers,
+                                hint: EventTexts.createHintMaxUsers,
+                                controller: _maxUsersController,
+                                keyboardType: TextInputType.number,
+                              ),
+                              _FormStatusInput(
+                                label: EventTexts.createFieldStatus,
+                                value: _status,
+                                onChanged: (value) =>
+                                    setState(() => _status = value),
+                              ),
+                              _FormInput(
+                                label: EventTexts.createFieldDescription,
+                                hint: EventTexts.createHintDescription,
+                                controller: _descriptionController,
+                                maxLines: 4,
+                              ),
+                            ],
                           ),
-                          onTap: _pickStartTime,
                         ),
-                        _FormInput(
-                          label: EventTexts.createFieldLocation,
-                          hint: EventTexts.createHintLocation,
-                          controller: _locationController,
-                        ),
-                        _FormInput(
-                          label: EventTexts.createFieldCategory,
-                          hint: EventTexts.createHintCategory,
-                          controller: _categoryController,
-                        ),
-                        _FormInput(
-                          label: EventTexts.createFieldPrice,
-                          hint: EventTexts.createHintPrice,
-                          controller: _priceController,
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
+                      ),
+                      const SizedBox(height: UiConstants.boxUnit),
+                      SizedBox(
+                        width: double.infinity,
+                        child: GQButton(
+                          onPressed: _submit,
+                          text: EventTexts.buttonAdd,
+                          baseColor: const Color(0xFFFFC00F),
+                          mainGradient: const LinearGradient(
+                            colors: [Color(0xFFFFD54F), Color(0xFFFFC107)],
                           ),
+                          outerGradient: const LinearGradient(
+                            colors: [Color(0xFFF9A825), Color(0xFFF57F17)],
+                          ),
+                          height: UiConstants.boxUnit * 6,
                         ),
-                        _FormInput(
-                          label: EventTexts.createFieldMaxUsers,
-                          hint: EventTexts.createHintMaxUsers,
-                          controller: _maxUsersController,
-                          keyboardType: TextInputType.number,
-                        ),
-                        _FormInput(
-                          label: EventTexts.createFieldParticipants,
-                          hint: EventTexts.createHintParticipants,
-                          controller: _participantsController,
-                          keyboardType: TextInputType.number,
-                        ),
-                        _FormInput(
-                          label: EventTexts.createFieldOrganizer,
-                          hint: EventTexts.createHintOrganizer,
-                          controller: _organizerController,
-                        ),
-                        _FormStatusInput(
-                          label: EventTexts.createFieldStatus,
-                          value: _status,
-                          onChanged: (value) => setState(() => _status = value),
-                        ),
-                        _FormInput(
-                          label: EventTexts.createFieldImageUrl,
-                          hint: EventTexts.createHintImageUrl,
-                          controller: _imageUrlController,
-                        ),
-                        _FormInput(
-                          label: EventTexts.createFieldDescription,
-                          hint: EventTexts.createHintDescription,
-                          controller: _descriptionController,
-                          maxLines: 4,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: UiConstants.boxUnit),
-                SizedBox(
-                  width: double.infinity,
-                  child: GQButton(
-                    onPressed: _submit,
-                    text: EventTexts.buttonAdd,
-                    baseColor: const Color(0xFFFFC00F),
-                    mainGradient: const LinearGradient(
-                      colors: [Color(0xFFFFD54F), Color(0xFFFFC107)],
-                    ),
-                    outerGradient: const LinearGradient(
-                      colors: [Color(0xFFF9A825), Color(0xFFF57F17)],
-                    ),
-                    height: UiConstants.boxUnit * 6,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ImagePlaceholder extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _ImagePlaceholder({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: UiConstants.boxUnit * 12,
-        decoration: BoxDecoration(
-          color: const Color(0x1AFFFFFF),
-          borderRadius: BorderRadius.circular(UiConstants.borderRadius * 3),
-          border: Border.all(color: const Color(0xFF71A7D7)),
-        ),
-        child: const Center(
-          child: Icon(
-            Icons.camera_alt_rounded,
-            color: Color(0xFF7FA5CD),
-            size: UiConstants.boxUnit * 6,
           ),
         ),
       ),
