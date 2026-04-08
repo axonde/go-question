@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/constants/navigation_constants.dart';
 import 'package:go_question/core/constants/navigation_texts.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 
@@ -11,8 +12,6 @@ const _kBattleAsset = 'assets/icons/png/battle.png';
 const _kSettingsAsset = 'assets/icons/png/settings.png';
 
 const double _kBarHeight = UiConstants.boxUnit * 13;
-const double _kDividerWidth = 3.0;
-const Color _kDividerColor = Color(0xFF7C9DA4);
 
 class ClashNavBar extends StatelessWidget {
   final int currentIndex;
@@ -87,9 +86,9 @@ class _Divider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(
-      width: _kDividerWidth,
+      width: NavigationConstants.dividerWidth,
       child: DecoratedBox(
-        decoration: BoxDecoration(color: _kDividerColor),
+        decoration: BoxDecoration(color: NavigationConstants.dividerColor),
         child: SizedBox.expand(),
       ),
     );

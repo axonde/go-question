@@ -10,12 +10,14 @@ class _SettingsSectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: const Color(0xFF0E3457).withValues(alpha: 0.74),
-        border: Border.all(color: const Color(0xFF5EA3D3)),
+        color: SettingsUiConstants.cardBackground.withValues(alpha: 0.74),
+        border: Border.all(color: SettingsUiConstants.cardBorder),
         borderRadius: BorderRadius.circular(UiConstants.borderRadius * 5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.45),
+            color: Colors.black.withValues(
+              alpha: SettingsUiConstants.cardShadowAlpha,
+            ),
             offset: const Offset(0, UiConstants.shadowOffsetY),
           ),
         ],

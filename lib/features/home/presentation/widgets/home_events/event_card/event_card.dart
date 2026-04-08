@@ -36,9 +36,9 @@ class _EventCard extends StatelessWidget {
                               ? Icons.edit_calendar
                               : Icons.sports_esports,
                           color: isOrganizer
-                              ? const Color(0xFFFFD700)
-                              : const Color(0xFF5EA3D3),
-                          size: 40,
+                              ? HomeUiConstants.organizerAccent
+                              : HomeUiConstants.participantAccent,
+                          size: HomeUiConstants.eventCardIconSize,
                         ),
                       ),
                     ),
@@ -56,7 +56,7 @@ class _EventCard extends StatelessWidget {
                             fontFamilyFallback: EventTexts.fontFallback,
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                       ),
@@ -77,11 +77,13 @@ class _EventCard extends StatelessWidget {
                                 fontFamilyFallback: EventTexts.fontFallback,
                                 fontSize: 12,
                                 color: isOrganizer
-                                    ? const Color(0xFFFFD700)
-                                    : const Color(0xFF5EA3D3),
+                                    ? HomeUiConstants.organizerAccent
+                                    : HomeUiConstants.participantAccent,
                               ),
                             ),
-                            const SizedBox(height: 2),
+                            const SizedBox(
+                              height: HomeUiConstants.eventMetaSpacing,
+                            ),
                             Text(
                               EventPresentationUtils.formatShortDateTime(
                                 event.startTime,
@@ -90,7 +92,9 @@ class _EventCard extends StatelessWidget {
                                 fontFamily: EventTexts.fontClash,
                                 fontFamilyFallback: EventTexts.fontFallback,
                                 fontSize: 12,
-                                color: Colors.white.withValues(alpha: 0.5),
+                                color: AppColors.textPrimary.withValues(
+                                  alpha: 0.5,
+                                ),
                               ),
                             ),
                           ],

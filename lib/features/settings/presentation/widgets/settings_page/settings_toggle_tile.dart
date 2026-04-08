@@ -17,9 +17,9 @@ class _SettingsToggleTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.06),
+        color: SettingsUiConstants.tileBackground,
         borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        border: Border.all(color: SettingsUiConstants.tileBorder),
       ),
       child: SwitchListTile(
         contentPadding: const EdgeInsets.symmetric(
@@ -47,7 +47,7 @@ class _SettingsToggleTile extends StatelessWidget {
         activeThumbColor: AppColors.secondary,
         activeTrackColor: AppColors.secondary.withValues(alpha: 0.35),
         inactiveThumbColor: AppColors.textSecondary,
-        inactiveTrackColor: Colors.white.withValues(alpha: 0.12),
+        inactiveTrackColor: SettingsUiConstants.inactiveTrack,
       ),
     );
   }

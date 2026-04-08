@@ -65,8 +65,8 @@ class _TopBarText extends StatelessWidget {
             fontWeight: FontWeight.bold,
             foreground: Paint()
               ..style = PaintingStyle.stroke
-              ..strokeWidth = UiConstants.strokeWidth
-              ..color = Colors.black,
+              ..strokeWidth = HomeUiConstants.topBarTextStrokeWidth
+              ..color = AppColors.stroke,
           ),
         ),
         Text(
@@ -77,7 +77,7 @@ class _TopBarText extends StatelessWidget {
             fontFamilyFallback: fallback,
             fontSize: fontSize,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: AppColors.textPrimary,
           ),
         ),
       ],

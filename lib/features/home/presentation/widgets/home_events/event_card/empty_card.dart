@@ -7,15 +7,18 @@ class _EmptyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: const Color(0xFF0E3457).withValues(alpha: 0.35),
+        color: HomeUiConstants.panelBackground.withValues(alpha: 0.35),
         border: Border.fromBorderSide(
-          BorderSide(color: const Color(0xFF5EA3D3).withValues(alpha: 0.3)),
+          BorderSide(color: AppColors.inputBorder.withValues(alpha: 0.3)),
         ),
         borderRadius: const BorderRadius.all(
           Radius.circular(UiConstants.borderRadius * 5),
         ),
         boxShadow: const [
-          BoxShadow(color: Color(0x44000000), offset: Offset(0, 2)),
+          BoxShadow(
+            color: HomeUiConstants.emptyCardShadow,
+            offset: Offset(0, HomeUiConstants.cardShadowOffset),
+          ),
         ],
       ),
     );

@@ -17,12 +17,14 @@ class _FriendCard extends StatelessWidget {
       onTap: onTap,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: const Color(0xFF0E3457).withValues(alpha: 0.72),
-          border: Border.all(color: const Color(0xFF5EA3D3)),
+          color: FriendsUiConstants.panelBackground.withValues(alpha: 0.72),
+          border: Border.all(color: FriendsUiConstants.panelBorder),
           borderRadius: BorderRadius.circular(UiConstants.borderRadius * 5),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.35),
+              color: Colors.black.withValues(
+                alpha: FriendsUiConstants.cardShadowAlpha,
+              ),
               offset: const Offset(0, 2),
             ),
           ],
@@ -40,15 +42,13 @@ class _FriendCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: user.avatarColor,
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.7),
-                  ),
+                  border: Border.all(color: FriendsUiConstants.avatarBorder),
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   user.name.isEmpty ? '?' : user.name[0],
                   style: const TextStyle(
-                    color: AppColors.stroke,
+                    color: FriendsUiConstants.avatarText,
                     fontSize: UiConstants.textSize * 1.1,
                     fontWeight: FontWeight.w900,
                   ),

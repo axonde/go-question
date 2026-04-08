@@ -9,9 +9,9 @@ class _FriendsEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: const Color(0xFF0E3457).withValues(alpha: 0.56),
+        color: FriendsUiConstants.emptyStateBackground,
         borderRadius: BorderRadius.circular(UiConstants.borderRadius * 5),
-        border: Border.all(color: const Color(0xFF5EA3D3)),
+        border: Border.all(color: FriendsUiConstants.panelBorder),
       ),
       child: Padding(
         padding: const EdgeInsets.all(UiConstants.boxUnit * 2),

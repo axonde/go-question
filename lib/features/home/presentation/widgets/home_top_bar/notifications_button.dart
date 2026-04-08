@@ -11,8 +11,6 @@ class _NotificationsButton extends StatelessWidget {
 
   const _NotificationsButton({required this.onTap, required this.height});
 
-  static const _green = Color(0xFF43C521);
-
   @override
   Widget build(BuildContext context) {
     final adjustedHeight = height;
@@ -22,7 +20,7 @@ class _NotificationsButton extends StatelessWidget {
         onPressed: onTap,
         text: 'Уведомления',
         fontSize: UiConstants.textSize,
-        baseColor: _green,
+        baseColor: HomeUiConstants.notificationButtonBackground,
         width: constraints.maxWidth,
         height: adjustedHeight,
       ),

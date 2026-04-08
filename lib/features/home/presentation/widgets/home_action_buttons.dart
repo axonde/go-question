@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
+import 'package:go_question/core/constants/home_ui_constants.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 
 /// Две кнопки действия в нижней части главного экрана.
@@ -58,10 +59,16 @@ class HomeActionButtons extends StatelessWidget {
                       text: EventTexts.buttonNew,
                       baseColor: AppColors.primary,
                       mainGradient: const LinearGradient(
-                        colors: [Color(0xFF0092F5), Color(0xFF008FF2)],
+                        colors: [
+                          HomeUiConstants.createButtonMainStart,
+                          HomeUiConstants.createButtonMainEnd,
+                        ],
                       ),
                       outerGradient: const LinearGradient(
-                        colors: [Color(0xFF005BC0), Color(0xFF0055B8)],
+                        colors: [
+                          HomeUiConstants.createButtonOuterStart,
+                          HomeUiConstants.createButtonOuterEnd,
+                        ],
                       ),
                       width: c.maxWidth,
                       height: h,

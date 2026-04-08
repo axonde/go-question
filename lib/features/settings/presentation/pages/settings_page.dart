@@ -3,6 +3,7 @@ import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/settings_constants.dart';
 import 'package:go_question/core/constants/settings_texts.dart';
+import 'package:go_question/core/constants/settings_ui_constants.dart';
 
 import '../widgets/sign_out_button.dart';
 

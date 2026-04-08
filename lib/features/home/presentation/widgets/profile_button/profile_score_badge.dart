@@ -18,7 +18,7 @@ class _ProfileScoreBadge extends StatelessWidget {
         // TODO: заменить на кастомную иконку кубка
         Icon(
           Icons.emoji_events,
-          color: const Color(0xFFFFD700),
+          color: HomeUiConstants.achievementIcon,
           size: slotHeight * 0.65,
         ),
         SizedBox(width: slotHeight * 0.08),
@@ -38,9 +38,6 @@ class _ScoreBadge extends StatelessWidget {
   final int score;
   final double slotHeight;
 
-  static const _badgeBg = Color(0xFF0D1929);
-  static const _scoreColor = Color(0xFFFFC00F);
-
   const _ScoreBadge({required this.score, required this.slotHeight});
 
   @override
@@ -57,7 +54,7 @@ class _ScoreBadge extends StatelessWidget {
         vertical: slotHeight * 0.08,
       ),
       decoration: BoxDecoration(
-        color: _badgeBg,
+        color: HomeUiConstants.profileBadgeBackground,
         borderRadius: BorderRadius.circular(slotHeight * 0.2),
       ),
       child: Stack(
@@ -73,7 +70,7 @@ class _ScoreBadge extends StatelessWidget {
               foreground: Paint()
                 ..style = PaintingStyle.stroke
                 ..strokeWidth = fontSize * 0.07
-                ..color = Colors.black,
+                ..color = AppColors.stroke,
             ),
           ),
           Text(
@@ -83,7 +80,7 @@ class _ScoreBadge extends StatelessWidget {
               fontFamilyFallback: const ['Roboto', 'sans-serif'],
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: _scoreColor,
+              color: HomeUiConstants.profileBadgeScore,
             ),
           ),
         ],

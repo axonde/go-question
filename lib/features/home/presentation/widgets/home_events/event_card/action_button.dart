@@ -10,7 +10,7 @@ class _ActionButton extends StatelessWidget {
   const _ActionButton({
     required this.text,
     required this.onTap,
-    this.baseColor = const Color(0xFF1565C0),
+    this.baseColor = AppColors.primaryVariant,
   });
 
   @override

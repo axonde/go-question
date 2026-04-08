@@ -18,12 +18,12 @@ class _EventDetailsDialog extends StatelessWidget {
       insetPadding: const EdgeInsets.all(UiConstants.boxUnit * 2),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: const Color(0xFF0E3457),
+          color: HomeUiConstants.panelBackground,
           borderRadius: BorderRadius.circular(UiConstants.borderRadius * 6),
-          border: Border.all(color: const Color(0xFF5EA3D3)),
+          border: Border.all(color: AppColors.inputBorder),
           boxShadow: const [
             BoxShadow(
-              color: Color(0xAA000000),
+              color: HomeUiConstants.eventDialogShadow,
               offset: Offset(0, UiConstants.shadowOffsetY),
             ),
           ],
@@ -45,7 +45,7 @@ class _EventDetailsDialog extends StatelessWidget {
                         fontFamily: EventTexts.fontClash,
                         fontFamilyFallback: EventTexts.fontFallback,
                         fontSize: UiConstants.textSize * 1.1,
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -84,7 +84,7 @@ class _EventDetailsDialog extends StatelessWidget {
                   fontFamily: EventTexts.fontClash,
                   fontFamilyFallback: EventTexts.fontFallback,
                   fontSize: UiConstants.textSize * 0.72,
-                  color: Color(0xFFD8E7F8),
+                  color: HomeUiConstants.eventDetailText,
                 ),
               ),
               const SizedBox(height: UiConstants.boxUnit * 1.5),
@@ -94,7 +94,7 @@ class _EventDetailsDialog extends StatelessWidget {
                     Expanded(
                       child: _ActionButton(
                         text: EventTexts.buttonParticipants,
-                        baseColor: const Color(0xFFFFC00F),
+                        baseColor: AppColors.secondary,
                         onTap: () {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -124,7 +124,7 @@ class _EventDetailsDialog extends StatelessWidget {
               ] else ...[
                 _ActionButton(
                   text: EventTexts.buttonLeaveEvent,
-                  baseColor: const Color(0xFFC62828),
+                  baseColor: HomeUiConstants.eventLeaveButton,
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

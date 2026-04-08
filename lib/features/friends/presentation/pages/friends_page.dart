@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/friends_texts.dart';
+import 'package:go_question/core/constants/friends_ui_constants.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 
@@ -134,34 +135,34 @@ const _mockUsers = <_FriendUserData>[
     name: 'Максим Лебедев',
     city: 'Санкт-Петербург',
     level: 14,
-    avatarColor: Color(0xFF5EA3D3),
+    avatarColor: FriendsUiConstants.avatarBlue,
   ),
   _FriendUserData(
     id: 'GO-2140',
     name: 'Арина Шульга',
     city: 'Москва',
     level: 11,
-    avatarColor: Color(0xFFFFC00F),
+    avatarColor: FriendsUiConstants.avatarYellow,
   ),
   _FriendUserData(
     id: 'GO-7711',
     name: 'Егор Савчук',
     city: 'Казань',
     level: 9,
-    avatarColor: Color(0xFF57D6A4),
+    avatarColor: FriendsUiConstants.avatarGreen,
   ),
   _FriendUserData(
     id: 'GO-9910',
     name: 'Дарья Ким',
     city: 'Сочи',
     level: 16,
-    avatarColor: Color(0xFFFC7E6B),
+    avatarColor: FriendsUiConstants.avatarOrange,
   ),
   _FriendUserData(
     id: 'GO-5521',
     name: 'Никита Воронов',
     city: 'Екатеринбург',
     level: 7,
-    avatarColor: Color(0xFF9E84FF),
+    avatarColor: FriendsUiConstants.avatarPurple,
   ),
 ];

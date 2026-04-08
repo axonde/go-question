@@ -56,11 +56,13 @@ class _FriendsSearchResult extends StatelessWidget {
                 vertical: UiConstants.verticalPadding,
               ),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.08),
+                color: FriendsUiConstants.alreadyFriendBackground,
                 borderRadius: BorderRadius.circular(
                   UiConstants.borderRadius * 4,
                 ),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+                border: Border.all(
+                  color: FriendsUiConstants.alreadyFriendBorder,
+                ),
               ),
               child: const Text(
                 FriendsTexts.alreadyFriend,
@@ -91,7 +93,7 @@ class _FriendsSearchResult extends StatelessWidget {
                 child: const Text(
                   FriendsTexts.addFriend,
                   style: TextStyle(
-                    color: AppColors.stroke,
+                    color: FriendsUiConstants.avatarText,
                     fontSize: UiConstants.textSize * 0.72,
                     fontWeight: FontWeight.w900,
                   ),
