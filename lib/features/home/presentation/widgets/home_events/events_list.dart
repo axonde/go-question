@@ -10,7 +10,7 @@ part of '../home_events.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _EventsList extends StatelessWidget {
-  final List<_EventData> events;
+  final List<_EventCardData> events;
 
   const _EventsList({required this.events});
 
@@ -55,7 +55,7 @@ class _EventsList extends StatelessWidget {
             width: cardW,
             height: cardH,
             child: i < events.length
-                ? _EventCard(event: events[i])
+                ? _EventCard(eventCardData: events[i])
                 : const _EmptyCard(),
           ),
         ],
@@ -75,7 +75,7 @@ class _EventsList extends StatelessWidget {
             SizedBox(
               width: cardW,
               height: cardH,
-              child: _EventCard(event: events[i]),
+              child: _EventCard(eventCardData: events[i]),
             ),
           ],
           SizedBox(width: hPad),

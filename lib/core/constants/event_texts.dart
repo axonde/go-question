@@ -18,6 +18,8 @@ class EventTexts {
   static const buttonSearch = 'Поиск';
   static const buttonNew = 'Новое';
   static const buttonAdd = 'Добавить';
+  static const buttonLeaveEvent = 'Покинуть';
+  static const buttonClose = 'Закрыть';
 
   static const sectionDescription = 'Описание';
   static const sectionDetails = 'Детали';
@@ -28,10 +30,13 @@ class EventTexts {
   static const createHeaderTitle = 'Создание ивента';
 
   static const organizerLabel = 'Организатор';
+  static const roleOrganizer = 'организатор';
+  static const roleParticipant = 'участник';
 
   static const snackBarJoinRequestSent = 'Запрос на участие отправлен';
   static const snackBarEditEvent = 'Редактирование ивента';
   static const snackBarParticipantsList = 'Список участников';
+  static const snackBarLeftEvent = 'Вы покинули мероприятие';
 
   static const emptyEventsByFilters = 'Нет ивентов по выбранным фильтрам';
   static const createImagePlaceholder = 'Добавить фото';
