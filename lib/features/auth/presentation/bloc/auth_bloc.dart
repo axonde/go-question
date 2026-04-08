@@ -2,12 +2,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/core/types/result.dart';
 
 import '../../../../core/constants/auth_messages.dart';
+import '../../domain/entities/auth_page.dart';
+import '../../domain/entities/registration_input_entity.dart';
 import '../../domain/repositories/i_auth_repository.dart';
 import '../../domain/services/auth_page_memory.dart';
 import '../validators/auth_field_validators.dart';
-import 'auth_state.dart';
 
 part 'auth_event.dart';
+part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final IAuthRepository _repo;

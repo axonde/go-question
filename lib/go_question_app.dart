@@ -4,7 +4,6 @@ import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_theme.dart';
 import 'package:go_question/core/widgets/app_background.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:go_question/features/auth/presentation/bloc/auth_state.dart';
 import 'package:go_question/injection_container/injection_container.dart';
 
 class GoQuestionApp extends StatelessWidget {

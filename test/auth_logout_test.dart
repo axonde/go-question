@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_question/core/types/result.dart';
+import 'package:go_question/features/auth/domain/entities/auth_page.dart';
 import 'package:go_question/features/auth/domain/entities/registration_input_entity.dart';
 import 'package:go_question/features/auth/domain/errors/auth_failure.dart';
 import 'package:go_question/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:go_question/features/auth/domain/services/auth_page_memory.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:go_question/features/auth/presentation/bloc/auth_state.dart';
 import 'package:go_question/features/settings/presentation/pages/settings_page.dart';
 
 class FakeAuthRepository implements IAuthRepository {
