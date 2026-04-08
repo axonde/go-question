@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/features/events/presentation/pages/search_events_page.dart';
 
-import '../widgets/battle_sheet.dart';
+
 import '../widgets/city_selector_sheet.dart';
 import '../widgets/home_action_buttons.dart';
 import '../widgets/home_events.dart';
@@ -26,9 +27,17 @@ class HomePage extends StatelessWidget {
     builder: (_) => const NotificationsSheet(),
   );
 
-  void _showBattleSheet(BuildContext context) => showModalBottomSheet(
+  void _showSearchEvents(BuildContext context) => showModalBottomSheet(
     context: context,
-    builder: (_) => const BattleSheet(),
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => DraggableScrollableSheet(
+      initialChildSize: 0.88,
+      minChildSize: 0.5,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (_, __) => const SearchEventsSheet(),
+    ),
   );
 
   void _showModeDialog(BuildContext context) =>
@@ -54,7 +63,7 @@ class HomePage extends StatelessWidget {
             LayoutId(
               id: _HomeSlot.actions,
               child: HomeActionButtons(
-                onBattleSheetTap: () => _showBattleSheet(context),
+                onBattleSheetTap: () => _showSearchEvents(context),
                 onModeDialogTap: () => _showModeDialog(context),
               ),
             ),
