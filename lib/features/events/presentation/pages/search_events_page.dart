@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/constants/event_constants.dart';
+import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
+import 'package:go_question/features/events/presentation/utils/event_presentation_utils.dart';
 
 part 'search_events_page/event_search_card.dart';
 
@@ -13,86 +16,81 @@ part 'search_events_page/event_search_card.dart';
 final _kMockEvents = [
   EventEntity(
     id: '1',
-    title: 'Весенний кубок по Го',
-    description:
-        'Открытый городской турнир для всех уровней подготовки. Приглашаем игроков от 15 кю до 3 дана включительно. Призовой фонд — сертификаты и памятные призы.',
+    title: EventTexts.mockEvent1Title,
+    description: EventTexts.mockEvent1Description,
     imageUrl: '',
     startTime: DateTime(2026, 4, 12, 10),
-    location: 'Санкт-Петербург',
-    category: 'Турнир',
+    location: EventTexts.mockEvent1Location,
+    category: EventTexts.mockEvent1Category,
     price: 0,
     maxUsers: 64,
     participants: 32,
-    organizer: 'Клуб СПбГУ',
-    status: 'open',
+    organizer: EventTexts.mockEvent1Organizer,
+    status: EventConstants.statusOpen,
     createdAt: DateTime(2026, 3),
     updatedAt: DateTime(2026, 3),
   ),
   EventEntity(
     id: '2',
-    title: 'Клубный чемпионат',
-    description:
-        'Внутренний чемпионат клуба «Камень» по системе Mac-Mahon. Участие только для членов клуба.',
+    title: EventTexts.mockEvent2Title,
+    description: EventTexts.mockEvent2Description,
     imageUrl: '',
     startTime: DateTime(2026, 4, 15, 12),
-    location: 'Москва',
-    category: 'Чемпионат',
+    location: EventTexts.mockEvent2Location,
+    category: EventTexts.mockEvent2Category,
     price: 500,
     maxUsers: 16,
     participants: 14,
-    organizer: 'Клуб «Камень»',
-    status: 'open',
+    organizer: EventTexts.mockEvent2Organizer,
+    status: EventConstants.statusOpen,
     createdAt: DateTime(2026, 3, 5),
     updatedAt: DateTime(2026, 3, 5),
   ),
   EventEntity(
     id: '3',
-    title: 'Открытый турнир СПб',
-    description:
-        'Ежегодный открытый турнир Санкт-Петербурга. Участники со всей России и ближнего зарубежья. Формат — 7 туров Swiss.',
+    title: EventTexts.mockEvent3Title,
+    description: EventTexts.mockEvent3Description,
     imageUrl: '',
     startTime: DateTime(2026, 4, 20, 9, 30),
-    location: 'Санкт-Петербург',
-    category: 'Турнир',
+    location: EventTexts.mockEvent3Location,
+    category: EventTexts.mockEvent3Category,
     price: 300,
     maxUsers: 128,
     participants: 64,
-    organizer: 'Федерация Го России',
-    status: 'open',
+    organizer: EventTexts.mockEvent3Organizer,
+    status: EventConstants.statusOpen,
     createdAt: DateTime(2026, 3, 10),
     updatedAt: DateTime(2026, 3, 10),
   ),
   EventEntity(
     id: '4',
-    title: 'Городской кубок',
-    description:
-        'Кубок города среди любителей. Принимают участие игроки без разряда.',
+    title: EventTexts.mockEvent4Title,
+    description: EventTexts.mockEvent4Description,
     imageUrl: '',
     startTime: DateTime(2026, 5, 5, 11),
-    location: 'Новосибирск',
-    category: 'Кубок',
+    location: EventTexts.mockEvent4Location,
+    category: EventTexts.mockEvent4Category,
     price: 200,
     maxUsers: 32,
     participants: 18,
-    organizer: 'Городской клуб',
-    status: 'open',
+    organizer: EventTexts.mockEvent4Organizer,
+    status: EventConstants.statusOpen,
     createdAt: DateTime(2026, 3, 15),
     updatedAt: DateTime(2026, 3, 15),
   ),
   EventEntity(
     id: '5',
-    title: 'Летний фестиваль Го',
-    description:
-        'Неформальный фестиваль с мастер-классами, лекциями и товарищескими партиями. Подходит для начинающих.',
+    title: EventTexts.mockEvent5Title,
+    description: EventTexts.mockEvent5Description,
     imageUrl: '',
     startTime: DateTime(2026, 6, 1, 10),
-    location: 'Екатеринбург',
-    category: 'Фестиваль',
+    location: EventTexts.mockEvent5Location,
+    category: EventTexts.mockEvent5Category,
     price: 0,
     maxUsers: 200,
     participants: 87,
-    organizer: 'Уральский клуб Го',
-    status: 'upcoming',
+    organizer: EventTexts.mockEvent5Organizer,
+    status: EventConstants.statusUpcoming,
     createdAt: DateTime(2026, 3, 20),
     updatedAt: DateTime(2026, 3, 20),
   ),
@@ -145,6 +143,9 @@ class _SearchEventsSheetState extends State<SearchEventsSheet> {
     return true;
   }).toList();
 
+  EventViewerRole _viewerRoleFor(EventEntity event) =>
+      EventPresentationUtils.viewerRoleByEventId(event.id);
+
   void _resetFilters() => setState(() {
     _selectedLocations.clear();
     _selectedCategories.clear();
@@ -175,111 +176,89 @@ class _SearchEventsSheetState extends State<SearchEventsSheet> {
           ),
         ],
       ),
-      // Stack нужен чтобы заголовок рисовался поверх карточек при скролле.
-      child: Stack(
+      child: Column(
         children: [
-          Column(
-            children: [
-              // Невидимый спейсер — резервирует место под заголовок.
-              Opacity(
-                opacity: 0,
-                child: IgnorePointer(
-                  child: _SheetHeader(
-                    activeFilterCount: _activeFilterCount,
-                    onFiltersTap: () {},
-                    onClose: () {},
-                  ),
-                ),
-              ),
-              // Панель фильтров — выезжает/скрывается плавно.
-              AnimatedSize(
-                duration: const Duration(milliseconds: 280),
-                curve: Curves.easeInOutCubic,
-                alignment: Alignment.topCenter,
-                child: _showFilters
-                    ? _FilterPanel(
-                        allLocations: _allLocations,
-                        allCategories: _allCategories,
-                        selectedLocations: _selectedLocations,
-                        selectedCategories: _selectedCategories,
-                        priceFilter: _priceFilter,
-                        spotsFilter: _spotsFilter,
-                        activeCount: _activeFilterCount,
-                        onLocationTap: (loc) => setState(() {
-                          if (!_selectedLocations.remove(loc)) {
-                            _selectedLocations.add(loc);
-                          }
-                          _expandedId = null;
-                        }),
-                        onCategoryTap: (cat) => setState(() {
-                          if (!_selectedCategories.remove(cat)) {
-                            _selectedCategories.add(cat);
-                          }
-                          _expandedId = null;
-                        }),
-                        onPriceTap: (val) => setState(() {
-                          _priceFilter = val;
-                          _expandedId = null;
-                        }),
-                        onSpotsTap: () => setState(() {
-                          _spotsFilter = !_spotsFilter;
-                          _expandedId = null;
-                        }),
-                        onReset: _resetFilters,
-                        onApply: () => setState(() => _showFilters = false),
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              Expanded(
-                child: filtered.isEmpty
-                    ? const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(UiConstants.boxUnit * 3),
-                          child: Text(
-                            'Нет ивентов по выбранным фильтрам',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Clash',
-                              fontFamilyFallback: ['Roboto', 'sans-serif'],
-                              fontSize: UiConstants.textSize * 0.875,
-                              color: Color(0xFF62697B),
-                            ),
-                          ),
-                        ),
-                      )
-                    : ListView.separated(
-                        clipBehavior: Clip.none,
-                        padding: const EdgeInsets.all(UiConstants.boxUnit * 2),
-                        itemCount: filtered.length,
-                        separatorBuilder: (_, _) =>
-                            const SizedBox(height: UiConstants.boxUnit * 1.5),
-                        itemBuilder: (_, i) {
-                          final event = filtered[i];
-                          return EventSearchCard(
-                            key: ValueKey(event.id),
-                            event: event,
-                            isExpanded: _expandedId == event.id,
-                            onToggle: () => setState(() {
-                              _expandedId = _expandedId == event.id
-                                  ? null
-                                  : event.id;
-                            }),
-                          );
-                        },
-                      ),
-              ),
-            ],
+          _SheetHeader(
+            activeFilterCount: _activeFilterCount,
+            onFiltersTap: () => setState(() => _showFilters = !_showFilters),
+            onClose: () => Navigator.of(context).pop(),
           ),
-          // Заголовок поверх всего — рисуется последним, перекрывает карточки.
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: _SheetHeader(
-              activeFilterCount: _activeFilterCount,
-              onFiltersTap: () => setState(() => _showFilters = !_showFilters),
-              onClose: () => Navigator.of(context).pop(),
-            ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 280),
+            curve: Curves.easeInOutCubic,
+            alignment: Alignment.topCenter,
+            clipBehavior: Clip.none,
+            child: _showFilters
+                ? _FilterPanel(
+                    allLocations: _allLocations,
+                    allCategories: _allCategories,
+                    selectedLocations: _selectedLocations,
+                    selectedCategories: _selectedCategories,
+                    priceFilter: _priceFilter,
+                    spotsFilter: _spotsFilter,
+                    activeCount: _activeFilterCount,
+                    onLocationTap: (loc) => setState(() {
+                      if (!_selectedLocations.remove(loc)) {
+                        _selectedLocations.add(loc);
+                      }
+                      _expandedId = null;
+                    }),
+                    onCategoryTap: (cat) => setState(() {
+                      if (!_selectedCategories.remove(cat)) {
+                        _selectedCategories.add(cat);
+                      }
+                      _expandedId = null;
+                    }),
+                    onPriceTap: (val) => setState(() {
+                      _priceFilter = val;
+                      _expandedId = null;
+                    }),
+                    onSpotsTap: () => setState(() {
+                      _spotsFilter = !_spotsFilter;
+                      _expandedId = null;
+                    }),
+                    onReset: _resetFilters,
+                    onApply: () => setState(() => _showFilters = false),
+                  )
+                : const SizedBox.shrink(),
+          ),
+          Expanded(
+            child: filtered.isEmpty
+                ? const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(UiConstants.boxUnit * 3),
+                      child: Text(
+                        EventTexts.emptyEventsByFilters,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: EventTexts.fontClash,
+                          fontFamilyFallback: EventTexts.fontFallback,
+                          fontSize: UiConstants.textSize * 0.875,
+                          color: Color(0xFF62697B),
+                        ),
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.all(UiConstants.boxUnit * 2),
+                    itemCount: filtered.length,
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(height: UiConstants.boxUnit * 1.5),
+                    itemBuilder: (_, i) {
+                      final event = filtered[i];
+                      return EventSearchCard(
+                        key: ValueKey(event.id),
+                        event: event,
+                        viewerRole: _viewerRoleFor(event),
+                        isExpanded: _expandedId == event.id,
+                        onToggle: () => setState(() {
+                          _expandedId = _expandedId == event.id
+                              ? null
+                              : event.id;
+                        }),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -326,7 +305,9 @@ class _SheetHeader extends StatelessWidget {
           children: [
             _FiltersButton(count: activeFilterCount, onTap: onFiltersTap),
             const Expanded(
-              child: Center(child: _StrokeTitle(text: 'Поиск ивента')),
+              child: Center(
+                child: _StrokeTitle(text: EventTexts.searchHeaderTitle),
+              ),
             ),
             GqCloseButton(onTap: onClose),
           ],
@@ -379,8 +360,8 @@ class _FiltersButton extends StatelessWidget {
               Text(
                 '$count',
                 style: const TextStyle(
-                  fontFamily: 'Clash',
-                  fontFamilyFallback: ['Roboto', 'sans-serif'],
+                  fontFamily: EventTexts.fontClash,
+                  fontFamilyFallback: EventTexts.fontFallback,
                   fontSize: UiConstants.textSize * 0.75,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -448,24 +429,24 @@ class _FilterPanel extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // ── Строка 1: Бесплатно / Платно / Есть места ─────────────────
-            const _FilterSectionLabel(text: 'Стоимость и места'),
+            const _FilterSectionLabel(text: EventTexts.sectionPriceAndSlots),
             const SizedBox(height: UiConstants.boxUnit * 0.75),
             Wrap(
               spacing: UiConstants.boxUnit,
               runSpacing: UiConstants.boxUnit * 0.75,
               children: [
                 _FilterChip(
-                  label: 'Бесплатно',
+                  label: EventTexts.filterFree,
                   active: priceFilter == true,
                   onTap: () => onPriceTap(priceFilter == true ? null : true),
                 ),
                 _FilterChip(
-                  label: 'Платно',
+                  label: EventTexts.filterPaid,
                   active: priceFilter == false,
                   onTap: () => onPriceTap(priceFilter == false ? null : false),
                 ),
                 _FilterChip(
-                  label: 'Есть места',
+                  label: EventTexts.filterHasSpots,
                   active: spotsFilter,
                   onTap: onSpotsTap,
                 ),
@@ -473,7 +454,7 @@ class _FilterPanel extends StatelessWidget {
             ),
             const SizedBox(height: UiConstants.boxUnit * 1.25),
             // ── Строка 2: Категории ────────────────────────────────────────
-            const _FilterSectionLabel(text: 'Категория'),
+            const _FilterSectionLabel(text: EventTexts.sectionCategory),
             const SizedBox(height: UiConstants.boxUnit * 0.75),
             Wrap(
               spacing: UiConstants.boxUnit,
@@ -489,7 +470,7 @@ class _FilterPanel extends StatelessWidget {
             ),
             const SizedBox(height: UiConstants.boxUnit * 1.25),
             // ── Строка 3: Города ───────────────────────────────────────────
-            const _FilterSectionLabel(text: 'Город'),
+            const _FilterSectionLabel(text: EventTexts.sectionCity),
             const SizedBox(height: UiConstants.boxUnit * 0.75),
             Wrap(
               spacing: UiConstants.boxUnit,
@@ -513,10 +494,10 @@ class _FilterPanel extends StatelessWidget {
                     child: GestureDetector(
                       onTap: onReset,
                       child: const Text(
-                        'Сбросить',
+                        EventTexts.buttonReset,
                         style: TextStyle(
-                          fontFamily: 'Clash',
-                          fontFamilyFallback: ['Roboto', 'sans-serif'],
+                          fontFamily: EventTexts.fontClash,
+                          fontFamilyFallback: EventTexts.fontFallback,
                           fontSize: UiConstants.textSize * 0.8,
                           color: Color(0xFF62697B),
                           decoration: TextDecoration.underline,
@@ -528,7 +509,7 @@ class _FilterPanel extends StatelessWidget {
                   child: LayoutBuilder(
                     builder: (_, c) => GQButton(
                       onPressed: onApply,
-                      text: 'Применить',
+                      text: EventTexts.buttonApply,
                       baseColor: const Color(0xFF1565C0),
                       mainGradient: const LinearGradient(
                         colors: [Color(0xFF1976D2), Color(0xFF1565C0)],
@@ -558,8 +539,8 @@ class _FilterSectionLabel extends StatelessWidget {
   Widget build(BuildContext context) => Text(
     text,
     style: const TextStyle(
-      fontFamily: 'Clash',
-      fontFamilyFallback: ['Roboto', 'sans-serif'],
+      fontFamily: EventTexts.fontClash,
+      fontFamilyFallback: EventTexts.fontFallback,
       fontSize: UiConstants.textSize * 0.75,
       color: Color(0xFF62697B),
       fontWeight: FontWeight.bold,
@@ -606,8 +587,8 @@ class _FilterChip extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(
-            fontFamily: 'Clash',
-            fontFamilyFallback: const ['Roboto', 'sans-serif'],
+            fontFamily: EventTexts.fontClash,
+            fontFamilyFallback: EventTexts.fontFallback,
             fontSize: UiConstants.textSize * 0.75,
             color: active ? Colors.white : const Color(0xFF3A4560),
           ),
@@ -632,8 +613,8 @@ class _StrokeTitle extends StatelessWidget {
     this.maxLines = 1,
   });
 
-  static const _family = 'Clash';
-  static const _fallback = ['Roboto', 'sans-serif'];
+  static const _family = EventTexts.fontClash;
+  static const _fallback = EventTexts.fontFallback;
 
   @override
   Widget build(BuildContext context) {
