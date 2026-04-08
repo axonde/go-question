@@ -6,12 +6,14 @@ part of '../search_events_page.dart';
 
 class EventSearchCard extends StatelessWidget {
   final EventEntity event;
+  final bool isOrganizer;
   final bool isExpanded;
   final VoidCallback onToggle;
 
   const EventSearchCard({
     super.key,
     required this.event,
+    required this.isOrganizer,
     required this.isExpanded,
     required this.onToggle,
   });
@@ -42,6 +44,7 @@ class EventSearchCard extends StatelessWidget {
         duration: const Duration(milliseconds: 320),
         curve: Curves.easeInOutCubic,
         alignment: Alignment.topCenter,
+        clipBehavior: Clip.none,
         child: DecoratedBox(
           decoration: _cardDecoration,
           child: Padding(
@@ -69,14 +72,14 @@ class EventSearchCard extends StatelessWidget {
                   ),
                 ),
                 // Плавное появление/скрытие расширенного контента.
-                AnimatedCrossFade(
+                AnimatedSize(
                   duration: const Duration(milliseconds: 260),
-                  sizeCurve: Curves.easeInOutCubic,
-                  crossFadeState: isExpanded
-                      ? CrossFadeState.showSecond
-                      : CrossFadeState.showFirst,
-                  firstChild: const SizedBox.shrink(),
-                  secondChild: _ExpandedContent(event: event),
+                  curve: Curves.easeInOutCubic,
+                  alignment: Alignment.topCenter,
+                  clipBehavior: Clip.none,
+                  child: isExpanded
+                      ? _ExpandedContent(event: event)
+                      : const SizedBox.shrink(),
                 ),
                 SizedBox(height: UiConstants.boxUnit * 1.25),
                 Row(
@@ -84,7 +87,7 @@ class EventSearchCard extends StatelessWidget {
                   children: [
                     Expanded(child: _MetaRow(event: event)),
                     SizedBox(width: UiConstants.boxUnit * 1.5),
-                    _CardJoinButton(event: event),
+                    _CardActions(event: event, isOrganizer: isOrganizer),
                   ],
                 ),
               ],
@@ -127,11 +130,8 @@ class _CardDivider extends StatelessWidget {
   const _CardDivider();
 
   @override
-  Widget build(BuildContext context) => const Divider(
-        height: 1,
-        thickness: 0.5,
-        color: Color(0xFF62697B),
-      );
+  Widget build(BuildContext context) =>
+      const Divider(height: 1, thickness: 0.5, color: Color(0xFF62697B));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -148,9 +148,18 @@ class _ExpandedDetails extends StatelessWidget {
     final m = t.minute.toString().padLeft(2, '0');
     const months = [
       '',
-      'января', 'февраля', 'марта', 'апреля',
-      'мая', 'июня', 'июля', 'августа',
-      'сентября', 'октября', 'ноября', 'декабря',
+      'января',
+      'февраля',
+      'марта',
+      'апреля',
+      'мая',
+      'июня',
+      'июля',
+      'августа',
+      'сентября',
+      'октября',
+      'ноября',
+      'декабря',
     ];
     return '${t.day} ${months[t.month]} ${t.year}, $h:$m';
   }
@@ -163,19 +172,27 @@ class _ExpandedDetails extends StatelessWidget {
 
   String get _statusLabel {
     switch (event.status) {
-      case 'open':     return 'Открыт';
-      case 'upcoming': return 'Скоро';
-      case 'closed':   return 'Закрыт';
-      default:         return event.status;
+      case 'open':
+        return 'Открыт';
+      case 'upcoming':
+        return 'Скоро';
+      case 'closed':
+        return 'Закрыт';
+      default:
+        return event.status;
     }
   }
 
   Color get _statusColor {
     switch (event.status) {
-      case 'open':     return const Color(0xFF1565C0);
-      case 'upcoming': return const Color(0xFFF57F17);
-      case 'closed':   return const Color(0xFFB71C1C);
-      default:         return const Color(0xFF62697B);
+      case 'open':
+        return const Color(0xFF1565C0);
+      case 'upcoming':
+        return const Color(0xFFF57F17);
+      case 'closed':
+        return const Color(0xFFB71C1C);
+      default:
+        return const Color(0xFF62697B);
     }
   }
 
@@ -246,7 +263,7 @@ class _DetailRow extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// _OrganizerRow — аватар, имя организатора, кнопка «Профиль».
+// _OrganizerRow — аватар и имя организатора.
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _OrganizerRow extends StatelessWidget {
@@ -311,15 +328,70 @@ class _OrganizerRow extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(width: UiConstants.boxUnit),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// _CardActions — набор кнопок в зависимости от роли пользователя.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _CardActions extends StatelessWidget {
+  final EventEntity event;
+  final bool isOrganizer;
+
+  const _CardActions({required this.event, required this.isOrganizer});
+
+  @override
+  Widget build(BuildContext context) =>
+      isOrganizer ? _OrganizerActions(event: event) : _JoinAction(event: event);
+}
+
+class _JoinAction extends StatelessWidget {
+  final EventEntity event;
+
+  const _JoinAction({required this.event});
+
+  @override
+  Widget build(BuildContext context) => GQButton(
+    onPressed: () {
+      // TODO: запрос на участие через Cubit/Bloc.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Запрос на участие отправлен')),
+      );
+    },
+    text: 'Записаться',
+    baseColor: const Color(0xFF2E7D32),
+    mainGradient: const LinearGradient(
+      colors: [Color(0xFF43A047), Color(0xFF388E3C)],
+    ),
+    outerGradient: const LinearGradient(
+      colors: [Color(0xFF1B5E20), Color(0xFF1B5E20)],
+    ),
+    width: UiConstants.boxUnit * 11,
+    height: UiConstants.boxUnit * 5,
+  );
+}
+
+class _OrganizerActions extends StatelessWidget {
+  final EventEntity event;
+
+  const _OrganizerActions({required this.event});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
         GQButton(
           onPressed: () {
-            // TODO: перейти в профиль организатора.
+            // TODO: открыть редактирование ивента.
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Профиль организатора')),
+              const SnackBar(content: Text('Редактирование ивента')),
             );
           },
-          text: 'Профиль',
+          text: 'Редактировать',
           baseColor: const Color(0xFF1565C0),
           mainGradient: const LinearGradient(
             colors: [Color(0xFF1976D2), Color(0xFF1565C0)],
@@ -327,41 +399,29 @@ class _OrganizerRow extends StatelessWidget {
           outerGradient: const LinearGradient(
             colors: [Color(0xFF0D47A1), Color(0xFF0D47A1)],
           ),
-          width: UiConstants.boxUnit * 11,
-          height: UiConstants.boxUnit * 5,
+          width: UiConstants.boxUnit * 13,
+          height: UiConstants.boxUnit * 4.5,
+        ),
+        const SizedBox(height: UiConstants.boxUnit * 0.75),
+        GQButton(
+          onPressed: () {
+            // TODO: открыть список участников.
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Список участников')));
+          },
+          text: 'Участники',
+          baseColor: const Color(0xFF2E7D32),
+          mainGradient: const LinearGradient(
+            colors: [Color(0xFF43A047), Color(0xFF388E3C)],
+          ),
+          outerGradient: const LinearGradient(
+            colors: [Color(0xFF1B5E20), Color(0xFF1B5E20)],
+          ),
+          width: UiConstants.boxUnit * 13,
+          height: UiConstants.boxUnit * 4.5,
         ),
       ],
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// _CardJoinButton — зелёная кнопка «Записаться» через GQButton.
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _CardJoinButton extends StatelessWidget {
-  final EventEntity event;
-  const _CardJoinButton({required this.event});
-
-  @override
-  Widget build(BuildContext context) {
-    return GQButton(
-      onPressed: () {
-        // TODO: запрос на участие через Cubit/Bloc.
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Запрос на участие отправлен')),
-        );
-      },
-      text: 'Записаться',
-      baseColor: const Color(0xFF2E7D32),
-      mainGradient: const LinearGradient(
-        colors: [Color(0xFF43A047), Color(0xFF388E3C)],
-      ),
-      outerGradient: const LinearGradient(
-        colors: [Color(0xFF1B5E20), Color(0xFF1B5E20)],
-      ),
-      width: UiConstants.boxUnit * 11,
-      height: UiConstants.boxUnit * 5,
     );
   }
 }
@@ -379,9 +439,19 @@ class _MetaRow extends StatelessWidget {
     final h = t.hour.toString().padLeft(2, '0');
     final m = t.minute.toString().padLeft(2, '0');
     const months = [
-      '', 'янв', 'фев', 'мар', 'апр',
-      'май', 'июн', 'июл', 'авг',
-      'сен', 'окт', 'ноя', 'дек',
+      '',
+      'янв',
+      'фев',
+      'мар',
+      'апр',
+      'май',
+      'июн',
+      'июл',
+      'авг',
+      'сен',
+      'окт',
+      'ноя',
+      'дек',
     ];
     return '${t.day} ${months[t.month]}, $h:$m';
   }

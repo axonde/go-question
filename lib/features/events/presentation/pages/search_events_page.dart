@@ -112,6 +112,7 @@ class SearchEventsSheet extends StatefulWidget {
 class _SearchEventsSheetState extends State<SearchEventsSheet> {
   String? _expandedId;
   bool _showFilters = false;
+  static const _organizerEventIds = {'2', '4'};
 
   // ── Состояние фильтров ─────────────────────────────────────────────────────
   final Set<String> _selectedLocations = {};
@@ -142,6 +143,9 @@ class _SearchEventsSheetState extends State<SearchEventsSheet> {
     if (_spotsFilter && e.participants >= e.maxUsers) return false;
     return true;
   }).toList();
+
+  bool _isOrganizerFor(EventEntity event) =>
+      _organizerEventIds.contains(event.id);
 
   void _resetFilters() => setState(() {
     _selectedLocations.clear();
@@ -183,114 +187,89 @@ class _SearchEventsSheetState extends State<SearchEventsSheet> {
           ),
         ],
       ),
-      // Stack нужен чтобы заголовок рисовался поверх карточек при скролле.
-      child: Stack(
+      child: Column(
         children: [
-          Column(
-            children: [
-              // Невидимый спейсер — резервирует место под заголовок.
-              Opacity(
-                opacity: 0,
-                child: IgnorePointer(
-                  child: _SheetHeader(
-                    activeFilterCount: _activeFilterCount,
-                    onFiltersTap: () {},
-                    onClose: () {},
-                  ),
-                ),
-              ),
-              // Панель фильтров — выезжает/скрывается плавно.
-              AnimatedSize(
-                duration: const Duration(milliseconds: 280),
-                curve: Curves.easeInOutCubic,
-                alignment: Alignment.topCenter,
-                child: _showFilters
-                    ? _FilterPanel(
-                        allLocations: _allLocations,
-                        allCategories: _allCategories,
-                        selectedLocations: _selectedLocations,
-                        selectedCategories: _selectedCategories,
-                        priceFilter: _priceFilter,
-                        spotsFilter: _spotsFilter,
-                        activeCount: _activeFilterCount,
-                        onLocationTap: (loc) => setState(() {
-                          if (!_selectedLocations.remove(loc)) {
-                            _selectedLocations.add(loc);
-                          }
-                          _expandedId = null;
-                        }),
-                        onCategoryTap: (cat) => setState(() {
-                          if (!_selectedCategories.remove(cat)) {
-                            _selectedCategories.add(cat);
-                          }
-                          _expandedId = null;
-                        }),
-                        onPriceTap: (val) => setState(() {
-                          _priceFilter = val;
-                          _expandedId = null;
-                        }),
-                        onSpotsTap: () => setState(() {
-                          _spotsFilter = !_spotsFilter;
-                          _expandedId = null;
-                        }),
-                        onReset: _resetFilters,
-                        onApply: () => setState(() => _showFilters = false),
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              Expanded(
-                child: filtered.isEmpty
-                    ? Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(UiConstants.boxUnit * 3),
-                          child: Text(
-                            'Нет ивентов по выбранным фильтрам',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Clash',
-                              fontFamilyFallback: const [
-                                'Roboto',
-                                'sans-serif',
-                              ],
-                              fontSize: UiConstants.textSize * 0.875,
-                              color: const Color(0xFF62697B),
-                            ),
-                          ),
-                        ),
-                      )
-                    : ListView.separated(
-                        clipBehavior: Clip.none,
-                        padding: EdgeInsets.all(UiConstants.boxUnit * 2),
-                        itemCount: filtered.length,
-                        separatorBuilder: (_, __) =>
-                            SizedBox(height: UiConstants.boxUnit * 1.5),
-                        itemBuilder: (_, i) {
-                          final event = filtered[i];
-                          return EventSearchCard(
-                            key: ValueKey(event.id),
-                            event: event,
-                            isExpanded: _expandedId == event.id,
-                            onToggle: () => setState(() {
-                              _expandedId = _expandedId == event.id
-                                  ? null
-                                  : event.id;
-                            }),
-                          );
-                        },
-                      ),
-              ),
-            ],
+          _SheetHeader(
+            activeFilterCount: _activeFilterCount,
+            onFiltersTap: () => setState(() => _showFilters = !_showFilters),
+            onClose: () => Navigator.of(context).pop(),
           ),
-          // Заголовок поверх всего — рисуется последним, перекрывает карточки.
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: _SheetHeader(
-              activeFilterCount: _activeFilterCount,
-              onFiltersTap: () => setState(() => _showFilters = !_showFilters),
-              onClose: () => Navigator.of(context).pop(),
-            ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 280),
+            curve: Curves.easeInOutCubic,
+            alignment: Alignment.topCenter,
+            clipBehavior: Clip.none,
+            child: _showFilters
+                ? _FilterPanel(
+                    allLocations: _allLocations,
+                    allCategories: _allCategories,
+                    selectedLocations: _selectedLocations,
+                    selectedCategories: _selectedCategories,
+                    priceFilter: _priceFilter,
+                    spotsFilter: _spotsFilter,
+                    activeCount: _activeFilterCount,
+                    onLocationTap: (loc) => setState(() {
+                      if (!_selectedLocations.remove(loc)) {
+                        _selectedLocations.add(loc);
+                      }
+                      _expandedId = null;
+                    }),
+                    onCategoryTap: (cat) => setState(() {
+                      if (!_selectedCategories.remove(cat)) {
+                        _selectedCategories.add(cat);
+                      }
+                      _expandedId = null;
+                    }),
+                    onPriceTap: (val) => setState(() {
+                      _priceFilter = val;
+                      _expandedId = null;
+                    }),
+                    onSpotsTap: () => setState(() {
+                      _spotsFilter = !_spotsFilter;
+                      _expandedId = null;
+                    }),
+                    onReset: _resetFilters,
+                    onApply: () => setState(() => _showFilters = false),
+                  )
+                : const SizedBox.shrink(),
+          ),
+          Expanded(
+            child: filtered.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(UiConstants.boxUnit * 3),
+                      child: Text(
+                        'Нет ивентов по выбранным фильтрам',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Clash',
+                          fontFamilyFallback: const ['Roboto', 'sans-serif'],
+                          fontSize: UiConstants.textSize * 0.875,
+                          color: const Color(0xFF62697B),
+                        ),
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    padding: EdgeInsets.all(UiConstants.boxUnit * 2),
+                    itemCount: filtered.length,
+                    separatorBuilder: (_, __) =>
+                        SizedBox(height: UiConstants.boxUnit * 1.5),
+                    itemBuilder: (_, i) {
+                      final event = filtered[i];
+                      return EventSearchCard(
+                        key: ValueKey(event.id),
+                        event: event,
+                        isOrganizer: _isOrganizerFor(event),
+                        isExpanded: _expandedId == event.id,
+                        onToggle: () => setState(() {
+                          _expandedId = _expandedId == event.id
+                              ? null
+                              : event.id;
+                        }),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
