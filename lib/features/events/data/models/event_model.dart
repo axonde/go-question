@@ -1,20 +1,34 @@
-import 'package:go_question/features/events/domain/event_entity.dart';
+import 'package:go_question/features/events/domain/entities/event_entity.dart';
 
-class EventModel extends EventEntity {
+class EventModel {
+  final String id;
+  final String title;
+  final String description;
+  final String imageUrl;
+  final DateTime date;
+  final String location;
+  final String category;
+  final double price;
+  final int participants;
+  final String organizer;
+  final String status;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
   EventModel({
-    required super.id,
-    required super.title,
-    required super.description,
-    required super.imageUrl,
-    required super.date,
-    required super.location,
-    required super.category,
-    required super.price,
-    required super.participants,
-    required super.organizer,
-    required super.status,
-    required super.createdAt,
-    required super.updatedAt,
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.imageUrl,
+    required this.date,
+    required this.location,
+    required this.category,
+    required this.price,
+    required this.participants,
+    required this.organizer,
+    required this.status,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   factory EventModel.fromEntity(EventEntity entity) {
@@ -32,6 +46,24 @@ class EventModel extends EventEntity {
       status: entity.status,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
+    );
+  }
+
+  EventEntity toEntity() {
+    return EventEntity(
+      id: id,
+      title: title,
+      description: description,
+      imageUrl: imageUrl,
+      date: date,
+      location: location,
+      category: category,
+      price: price,
+      participants: participants,
+      organizer: organizer,
+      status: status,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 

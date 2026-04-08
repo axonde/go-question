@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/main_nav_page.dart';
@@ -9,6 +10,7 @@ import 'login_page.dart';
 import 'sign_up_page.dart';
 import 'verify_mail_page.dart';
 
+@RoutePage()
 class AuthFlowPage extends StatelessWidget {
   const AuthFlowPage({super.key});
 
