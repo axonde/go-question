@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/widgets/pressable.dart';
-import 'package:go_question/features/score/presentation/cubit/score_cubit.dart';
+import 'package:go_question/features/score/presentation/bloc/score_bloc.dart';
 
 part 'profile_button/profile_avatar.dart';
 part 'profile_button/profile_score_badge.dart';
@@ -11,7 +11,7 @@ part 'profile_button/profile_user_info.dart';
 // ProfileButton — карточка профиля на главном экране.
 //
 // Ответственность: считать размер слота (LayoutBuilder) и скомпоновать части.
-// Данные: user из AuthCubit, score из ScoreCubit.
+// Данные: user из AuthBloc, score из ScoreBloc.
 // ─────────────────────────────────────────────────────────────────────────────
 
 class ProfileButton extends StatelessWidget {

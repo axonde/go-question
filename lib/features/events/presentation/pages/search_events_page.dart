@@ -10,7 +10,7 @@ import 'package:go_question/features/events/presentation/utils/event_presentatio
 part 'search_events_page/event_search_card.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Мок-данные. TODO: заменить на загрузку из Firestore через Cubit/Bloc.
+// Мок-данные. TODO: заменить на загрузку из Firestore через BLoC.
 // ─────────────────────────────────────────────────────────────────────────────
 
 final _kMockEvents = [
