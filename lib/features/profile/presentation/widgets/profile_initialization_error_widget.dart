@@ -12,7 +12,6 @@ import 'package:go_question/injection_container/injection_container.dart';
 class ProfileInitializationErrorWidget extends StatelessWidget {
   final String? errorMessage;
   final String? failureDetails;
-  static const String _defaultProfileName = 'User';
 
   const ProfileInitializationErrorWidget({
     super.key,
@@ -95,7 +94,9 @@ class ProfileInitializationErrorWidget extends StatelessWidget {
                           ProfileRetryRequested(
                             uid: user.uid,
                             initialEmail: user.email,
-                            initialName: _defaultProfileName,
+                            initialName: user.nickname.isEmpty
+                                ? profileDefaultInitialName
+                                : user.nickname,
                             initialNickname: user.nickname,
                           ),
                         );

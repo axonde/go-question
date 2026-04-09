@@ -40,6 +40,8 @@ class NotificationEntity with _$NotificationEntity {
 enum NotificationType {
   @JsonValue('join_request')
   joinRequest,
+  @JsonValue('friend_request')
+  friendRequest,
   @JsonValue('event_reminder')
   eventReminder,
   @JsonValue('message')

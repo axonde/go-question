@@ -71,3 +71,10 @@ final class ProfileUpdateRequested extends ProfileEvent {
 
   const ProfileUpdateRequested(this.profile);
 }
+
+/// Refreshes profile from repository without changing local edits.
+final class ProfileRefreshRequested extends ProfileEvent {
+  final String uid;
+
+  const ProfileRefreshRequested(this.uid);
+}

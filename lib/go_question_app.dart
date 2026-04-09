@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_theme.dart';
+import 'package:go_question/core/constants/profile_messages.dart';
 import 'package:go_question/core/widgets/app_background.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
@@ -11,7 +12,6 @@ import 'package:go_question/injection_container/injection_container.dart';
 
 class GoQuestionApp extends StatelessWidget {
   const GoQuestionApp({super.key});
-  static const String _defaultProfileName = 'User';
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,9 @@ class GoQuestionApp extends StatelessWidget {
                 EnsureProfileExistsRequested(
                   uid: user.uid,
                   initialEmail: user.email,
-                  initialName: _defaultProfileName,
+                  initialName: user.nickname.isEmpty
+                      ? profileDefaultInitialName
+                      : user.nickname,
                   initialNickname: user.nickname,
                 ),
               );

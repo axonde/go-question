@@ -64,6 +64,7 @@ Map<String, dynamic> _$$NotificationEntityImplToJson(
 
 const _$NotificationTypeEnumMap = {
   NotificationType.joinRequest: 'join_request',
+  NotificationType.friendRequest: 'friend_request',
   NotificationType.eventReminder: 'event_reminder',
   NotificationType.message: 'message',
   NotificationType.system: 'system',

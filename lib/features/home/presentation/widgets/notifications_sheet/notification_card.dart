@@ -197,7 +197,9 @@ class _UserInfo extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ClashStrokeText(
-                    data.userName ?? 'User',
+                    data.userName?.trim().isNotEmpty == true
+                        ? data.userName!.trim()
+                        : ProfilePresentationConstants.displayNameFallback,
                     fontSize: UiConstants.textSize * 0.875,
                     strokeWidth: 2,
                   ),

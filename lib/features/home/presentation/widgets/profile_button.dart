@@ -5,6 +5,7 @@ import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/home_ui_constants.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:go_question/features/profile/constants/profile_presentation.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/score/presentation/bloc/score_bloc.dart';
 
@@ -60,16 +61,20 @@ class _ProfileCard extends StatelessWidget {
     final profile = context.watch<ProfileBloc>().state.profile;
     final authUser = context.watch<AuthBloc>().state.user;
     final profileName = profile?.name.trim();
+    final authNickname = authUser?.nickname.trim() ?? '';
+    final registrationId = profile?.registrationId;
     final safeName = authUser == null
         ? 'Войти'
-        : ((profileName == null || profileName.isEmpty) ? 'User' : profileName);
-    final profileNickname = profile?.nickname.trim() ?? '';
-    final authNickname = authUser?.nickname.trim() ?? '';
-    final nickname = authUser == null
+        : ((profileName == null || profileName.isEmpty)
+              ? (authNickname.isNotEmpty
+                    ? authNickname
+                    : ProfilePresentationConstants.displayNameFallback)
+              : profileName);
+    final idLabel = authUser == null
         ? 'Для доступа к профилю'
-        : (profileNickname.isNotEmpty
-              ? profileNickname
-              : (authNickname.isNotEmpty ? authNickname : 'user'));
+        : registrationId == null
+        ? 'ID: —'
+        : 'ID: $registrationId';
     final profileScore = profile?.trophies ?? 0;
 
     return DecoratedBox(
@@ -95,7 +100,7 @@ class _ProfileCard extends StatelessWidget {
             Expanded(
               child: _ProfileUserInfo(
                 name: safeName,
-                nickname: nickname,
+                idLabel: idLabel,
                 slotHeight: slotHeight,
               ),
             ),

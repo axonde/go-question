@@ -10,6 +10,7 @@ import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/icons/gq_edit_icon.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:go_question/features/home/presentation/widgets/city_selector_sheet.dart';
 import 'package:go_question/features/profile/constants/profile_presentation.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/injection_container/injection_container.dart';
@@ -51,7 +52,14 @@ class _ProfileContent extends StatelessWidget {
       );
     }
 
-    final profileName = profile.name.trim().isEmpty ? 'User' : profile.name;
+    final authNickname = authUser.nickname.trim();
+    final profileName = profile.name.trim().isEmpty
+        ? (profile.nickname.trim().isNotEmpty
+              ? profile.nickname.trim()
+              : (authNickname.isNotEmpty
+                    ? authNickname
+                    : ProfilePresentationConstants.displayNameFallback))
+        : profile.name;
     final registrationId = profile.registrationId;
     final birthDate = profile.birthDate;
     final isBirthDatePlaceholder = birthDate == null;
@@ -61,7 +69,10 @@ class _ProfileContent extends StatelessWidget {
     final cityValue = profile.city?.trim() ?? '';
     final isCityPlaceholder = cityValue.isEmpty;
     final city = isCityPlaceholder ? 'Город не указан' : cityValue;
-    final isNamePlaceholder = profileName.trim().isEmpty;
+    final isNamePlaceholder =
+        profile.name.trim().isEmpty &&
+        profile.nickname.trim().isEmpty &&
+        authNickname.isEmpty;
 
     return DecoratedBox(
       decoration: const BoxDecoration(color: AppColors.popupOutBackground),
@@ -111,6 +122,13 @@ class _ProfileContent extends StatelessWidget {
                   isCityPlaceholder: isCityPlaceholder,
                   name: profileName,
                   isNamePlaceholder: isNamePlaceholder,
+                  onCityChanged: (selectedCity) {
+                    context.read<ProfileBloc>().add(
+                      ProfileUpdateRequested(
+                        profile.copyWith(city: selectedCity),
+                      ),
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 24),

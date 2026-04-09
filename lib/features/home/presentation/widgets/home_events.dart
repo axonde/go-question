@@ -5,13 +5,14 @@ import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/constants/home_ui_constants.dart';
 import 'package:go_question/core/types/result.dart';
+import 'package:go_question/core/utils/city_utils.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
 import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
-import 'package:go_question/features/events/presentation/pages/create_event_dialog.dart';
 import 'package:go_question/features/events/presentation/pages/event_participants_dialog.dart';
+import 'package:go_question/features/events/presentation/utils/event_editor_utils.dart';
 import 'package:go_question/features/events/presentation/utils/event_presentation_utils.dart';
 import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
@@ -71,14 +72,18 @@ class HomeEvents extends StatelessWidget {
     }
 
     final eventsRepository = sl<IEventsRepository>();
+    final currentCity = await _loadCurrentCity(sl<IProfileRepository>());
     final eventsResult = await eventsRepository.getEvents();
 
     return eventsResult.fold(
       onSuccess: (events) {
         final createdSet = createdIds.toSet();
-        final filtered =
-            events.where((event) => allMyIds.contains(event.id)).toList()
-              ..sort((a, b) => a.startTime.compareTo(b.startTime));
+        final filtered = CityUtils.sortEventsByCityPriority(
+          items: events.where((event) => allMyIds.contains(event.id)).toList(),
+          city: currentCity,
+          locationOf: (event) => event.location,
+          startTimeOf: (event) => event.startTime,
+        );
 
         return filtered
             .map(
@@ -92,6 +97,22 @@ class HomeEvents extends StatelessWidget {
             .toList();
       },
       onFailure: (_) => const <_EventCardData>[],
+    );
+  }
+
+  Future<String?> _loadCurrentCity(IProfileRepository repository) async {
+    final profile = sl<ProfileBloc>().state.profile;
+    if (profile != null && profile.city?.trim().isNotEmpty == true) {
+      return profile.city;
+    }
+    if (profile == null) {
+      return null;
+    }
+
+    final result = await repository.getProfile(profile.uid);
+    return result.fold(
+      onSuccess: (profile) => profile.city,
+      onFailure: (_) => null,
     );
   }
 }

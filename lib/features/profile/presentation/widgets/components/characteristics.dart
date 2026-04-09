@@ -7,6 +7,7 @@ class _Characteristics extends StatelessWidget {
   final bool isCityPlaceholder;
   final String name;
   final bool isNamePlaceholder;
+  final ValueChanged<String> onCityChanged;
 
   const _Characteristics({
     required this.birthDate,
@@ -15,6 +16,7 @@ class _Characteristics extends StatelessWidget {
     required this.isCityPlaceholder,
     required this.name,
     required this.isNamePlaceholder,
+    required this.onCityChanged,
   });
 
   @override
@@ -36,9 +38,10 @@ class _Characteristics extends StatelessWidget {
             ),
             Expanded(
               flex: 2,
-              child: _Field(
+              child: _CityField(
                 defaultValue: city,
                 isPlaceholder: isCityPlaceholder,
+                onChanged: onCityChanged,
               ),
             ),
           ],
@@ -267,6 +270,75 @@ class _FieldState extends State<_Field> {
   Widget build(BuildContext context) {
     return Pressable(
       onTap: () => _showEditDialog(context),
+      child: SizedBox(
+        height: UiConstants.minInputHeight,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.inputBackground,
+            border: BoxBorder.all(color: AppColors.inputBorder),
+            borderRadius: const BorderRadius.all(Radius.circular(5)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: UiConstants.topPadding * 2,
+              right: UiConstants.rightPadding * 2,
+              bottom: UiConstants.bottomPadding * 2,
+              left: UiConstants.leftPadding * 2,
+            ),
+            child: FittedBox(fit: BoxFit.scaleDown, child: Text(value)),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CityField extends StatefulWidget {
+  final String defaultValue;
+  final bool isPlaceholder;
+  final ValueChanged<String> onChanged;
+
+  const _CityField({
+    required this.defaultValue,
+    required this.isPlaceholder,
+    required this.onChanged,
+  });
+
+  @override
+  State<_CityField> createState() => _CityFieldState();
+}
+
+class _CityFieldState extends State<_CityField> {
+  late String value;
+
+  @override
+  void initState() {
+    value = widget.defaultValue;
+    super.initState();
+  }
+
+  Future<void> _showCitySelector() async {
+    final result = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) =>
+          CitySelectorSheet(selectedCity: widget.isPlaceholder ? null : value),
+    );
+
+    if (!mounted || result == null || result.trim().isEmpty) {
+      return;
+    }
+
+    final normalized = result.trim();
+    setState(() => value = normalized);
+    widget.onChanged(normalized);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Pressable(
+      onTap: _showCitySelector,
       child: SizedBox(
         height: UiConstants.minInputHeight,
         child: DecoratedBox(

@@ -29,9 +29,9 @@ class EventParticipantsDialog extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 560, maxHeight: 720),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: const Color(0xFFEBF0FA),
+            color: const Color(0xFF10243D),
             borderRadius: BorderRadius.circular(UiConstants.borderRadius * 6),
-            border: Border.all(color: AppColors.inputBorder),
+            border: Border.all(color: const Color(0xFF5D7BA6)),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x99000000),
@@ -54,7 +54,7 @@ class EventParticipantsDialog extends StatelessWidget {
                           fontFamily: EventTexts.fontClash,
                           fontFamilyFallback: EventTexts.fontFallback,
                           fontSize: UiConstants.textSize * 1.1,
-                          color: AppColors.textPrimary,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -245,16 +245,13 @@ class _ParticipantsSection extends StatelessWidget {
             fontFamily: EventTexts.fontClash,
             fontFamilyFallback: EventTexts.fontFallback,
             fontSize: UiConstants.textSize * 0.9,
-            color: AppColors.textPrimary,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: UiConstants.boxUnit),
         if (users.isEmpty)
-          Text(
-            emptyText,
-            style: const TextStyle(color: AppColors.textSecondary),
-          )
+          Text(emptyText, style: const TextStyle(color: Color(0xFFB7C9E5)))
         else
           ...users.map(
             (profile) => Padding(
@@ -295,9 +292,15 @@ class _ParticipantTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: AppColors.inputBorder),
+        color: const Color(0xFF17365B),
+        border: Border.all(color: const Color(0xFF5D7BA6)),
         borderRadius: BorderRadius.circular(UiConstants.borderRadius * 3),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x66000000),
+            offset: Offset(0, UiConstants.shadowOffsetY * 0.7),
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(UiConstants.boxUnit * 1.25),
@@ -314,11 +317,14 @@ class _ParticipantTile extends StatelessWidget {
                 children: [
                   Text(
                     profile.name,
-                    style: const TextStyle(fontWeight: FontWeight.w700),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
                   ),
                   Text(
                     'ID: ${profile.registrationId}',
-                    style: const TextStyle(color: AppColors.textSecondary),
+                    style: const TextStyle(color: Color(0xFFB7C9E5)),
                   ),
                 ],
               ),

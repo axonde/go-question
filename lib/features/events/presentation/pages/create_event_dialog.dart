@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/constants/city_constants.dart';
 import 'package:go_question/core/constants/event_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
@@ -32,15 +33,16 @@ class CreateEventDialog extends StatefulWidget {
 class _CreateEventDialogState extends State<CreateEventDialog> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
-  final _locationController = TextEditingController();
   final _categoryController = TextEditingController();
   final _priceController = TextEditingController();
   final _maxUsersController = TextEditingController();
   final _descriptionController = TextEditingController();
+  late final List<String> _locationOptions;
   late final List<String> _categoryOptions;
 
   DateTime _startTime = DateTime.now();
   String _status = EventConstants.statusOpen;
+  String? _selectedLocation;
 
   @override
   void initState() {
@@ -48,14 +50,18 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
     final event = widget.initialEvent;
     if (event != null) {
       _titleController.text = event.title;
-      _locationController.text = event.location;
       _categoryController.text = event.category;
       _priceController.text = event.price.toString();
       _maxUsersController.text = event.maxUsers.toString();
       _descriptionController.text = event.description;
       _startTime = event.startTime;
       _status = event.status;
+      _selectedLocation = event.location;
     }
+    _locationOptions = _buildOptions(
+      CityConstants.cityOptions,
+      _selectedLocation,
+    );
     _categoryOptions = _buildOptions(
       EventTexts.eventCategoryOptions,
       _categoryController.text,
@@ -65,7 +71,6 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
   @override
   void dispose() {
     _titleController.dispose();
-    _locationController.dispose();
     _categoryController.dispose();
     _priceController.dispose();
     _maxUsersController.dispose();
@@ -107,7 +112,7 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim(),
       startTime: _startTime,
-      location: _locationController.text.trim(),
+      location: _selectedLocation?.trim() ?? '',
       category: _categoryController.text.trim(),
       price: double.tryParse(_priceController.text.replaceAll(',', '.')) ?? 0,
       maxUsers: int.tryParse(_maxUsersController.text) ?? 0,
@@ -215,10 +220,13 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
                                       ),
                                   onTap: _pickStartTime,
                                 ),
-                                _FormInput(
+                                _FormDropdownInput<String>(
                                   label: EventTexts.createFieldLocation,
                                   hint: EventTexts.createHintLocation,
-                                  controller: _locationController,
+                                  value: _selectedLocation,
+                                  items: _locationOptions,
+                                  onChanged: (value) =>
+                                      setState(() => _selectedLocation = value),
                                 ),
                                 _FormDropdownInput<String>(
                                   label: EventTexts.createFieldCategory,

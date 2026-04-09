@@ -10,6 +10,8 @@ import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
 import 'package:go_question/features/notifications/domain/entities/notification_entity.dart';
 import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
+import 'package:go_question/features/profile/constants/profile_presentation.dart';
+import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/injection_container/injection_container.dart';
 
@@ -18,6 +20,8 @@ part 'notifications_sheet/notifications_list.dart';
 
 class NotificationData {
   final String id;
+  final NotificationType type;
+  final bool isRead;
   final String title;
   final String body;
   final bool showAccept;
@@ -38,6 +42,8 @@ class NotificationData {
 
   const NotificationData({
     required this.id,
+    required this.type,
+    required this.isRead,
     required this.title,
     required this.body,
     this.showAccept = false,
@@ -60,10 +66,18 @@ class NotificationData {
   factory NotificationData.fromEntity(NotificationEntity entity) {
     return NotificationData(
       id: entity.id,
+      type: entity.type,
+      isRead: entity.isRead,
       title: entity.title,
       body: entity.body,
-      showAccept: entity.type == NotificationType.joinRequest,
-      showReject: entity.type == NotificationType.joinRequest,
+      showAccept:
+          (entity.type == NotificationType.joinRequest ||
+              entity.type == NotificationType.friendRequest) &&
+          !entity.isRead,
+      showReject:
+          (entity.type == NotificationType.joinRequest ||
+              entity.type == NotificationType.friendRequest) &&
+          !entity.isRead,
       userName: entity.requestUserName,
       userRegistrationId: entity.requestUserRegistrationId,
       userRating: entity.requestUserRating,
@@ -131,20 +145,34 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
   Future<void> _acceptRequest(NotificationData data) async {
     final profile = context.read<ProfileBloc>().state.profile;
     if (profile == null) return;
-    await sl<IEventsRepository>().approveJoinRequest(
-      requestId: data.id,
-      organizerId: profile.uid,
-    );
+    if (data.type == NotificationType.friendRequest) {
+      await sl<IProfileRepository>().acceptFriendRequest(data.id);
+    } else {
+      await sl<IEventsRepository>().approveJoinRequest(
+        requestId: data.id,
+        organizerId: profile.uid,
+      );
+    }
+    await sl<INotificationsRepository>().markAsRead(data.id);
+    if (!mounted) return;
+    context.read<ProfileBloc>().add(ProfileRefreshRequested(profile.uid));
     await _loadNotifications();
   }
 
   Future<void> _rejectRequest(NotificationData data) async {
     final profile = context.read<ProfileBloc>().state.profile;
     if (profile == null) return;
-    await sl<IEventsRepository>().rejectJoinRequest(
-      requestId: data.id,
-      organizerId: profile.uid,
-    );
+    if (data.type == NotificationType.friendRequest) {
+      await sl<IProfileRepository>().declineFriendRequest(data.id);
+    } else {
+      await sl<IEventsRepository>().rejectJoinRequest(
+        requestId: data.id,
+        organizerId: profile.uid,
+      );
+    }
+    await sl<INotificationsRepository>().markAsRead(data.id);
+    if (!mounted) return;
+    context.read<ProfileBloc>().add(ProfileRefreshRequested(profile.uid));
     await _loadNotifications();
   }
 

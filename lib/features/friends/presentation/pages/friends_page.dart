@@ -9,6 +9,7 @@ import 'package:go_question/core/constants/friends_ui_constants.dart';
 import 'package:go_question/core/types/result.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/pressable.dart';
+import 'package:go_question/features/friends/presentation/utils/friend_relation_utils.dart';
 import 'package:go_question/features/profile/domain/entities/profile.dart';
 import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
@@ -63,7 +64,6 @@ class _FriendsPageState extends State<FriendsPage> {
     }
 
     _currentUserId = profile.uid;
-
     final result = await _profileRepository.getFriends(profile.uid);
     if (!mounted) return;
 
@@ -125,9 +125,7 @@ class _FriendsPageState extends State<FriendsPage> {
 
     result.fold(
       onSuccess: (_) {
-        setState(() {
-          _friends.insert(0, user);
-        });
+        context.read<ProfileBloc>().add(ProfileRefreshRequested(currentUserId));
       },
       onFailure: (_) {},
     );
@@ -150,6 +148,7 @@ class _FriendsPageState extends State<FriendsPage> {
         setState(() {
           _friends.removeWhere((friend) => friend.id == userId);
         });
+        context.read<ProfileBloc>().add(ProfileRefreshRequested(currentUserId));
       },
       onFailure: (_) {},
     );
@@ -170,6 +169,8 @@ class _FriendsPageState extends State<FriendsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final currentProfile = context.watch<ProfileBloc>().state.profile;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
@@ -180,8 +181,7 @@ class _FriendsPageState extends State<FriendsPage> {
           searchController: _searchController,
           searchResult: _searchResult,
           hasQuery: _query.isNotEmpty,
-          isAlreadyFriend:
-              _searchResult != null && _isFriend(_searchResult!.id),
+          currentProfile: currentProfile,
           friends: _friends,
           isLoadingFriends: _isLoadingFriends,
           onSearchChanged: (value) {

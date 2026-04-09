@@ -6,6 +6,8 @@ class FriendsTexts {
   static const searchNotFound = 'Пользователь с таким ID не найден.';
   static const alreadyFriend = 'Этот пользователь уже у вас в друзьях.';
   static const addFriend = 'Добавить';
+  static const friendRequestPending = 'Ожидает подтверждения';
+  static const friendRequestIncoming = 'Входящая заявка';
   static const friendsSectionTitle = 'Мои друзья';
   static const noFriends = 'Список друзей пока пуст.';
   static const noFriendsHint =

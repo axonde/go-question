@@ -17,7 +17,7 @@ part 'profile_state.dart';
 /// * Support explicit retry via ProfileRetryRequested event
 /// * Preserve user intent: no logout on partial failure
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  static const String _defaultInitialName = 'User';
+  static const String _defaultInitialName = profileDefaultInitialName;
   static const String _defaultInitialEmail = 'unknown@goquestion.local';
   final IProfileRepository _repository;
 
@@ -25,6 +25,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<EnsureProfileExistsRequested>(_onEnsureProfileExistsRequested);
     on<ProfileRetryRequested>(_onRetryRequested);
     on<ProfileUpdateRequested>(_onUpdateRequested);
+    on<ProfileRefreshRequested>(_onRefreshRequested);
   }
 
   /// Ensures profile exists. Called once after auth success.
@@ -113,6 +114,21 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     );
   }
 
+  Future<void> _onRefreshRequested(
+    ProfileRefreshRequested event,
+    Emitter<ProfileState> emit,
+  ) async {
+    if (event.uid.trim().isEmpty) {
+      return;
+    }
+
+    final result = await _repository.getProfile(event.uid);
+    result.fold(
+      onSuccess: (profile) => emit(ProfileState.success(profile)),
+      onFailure: (_) {},
+    );
+  }
+
   Future<Result<Profile, ProfileFailure>> _ensureProfileExists({
     required String uid,
     required String initialEmail,
@@ -126,7 +142,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       onFailure: (failure) async {
         if (failure.type == ProfileFailureType.profileNotFound) {
           final normalizedInitialName = initialName.trim().isEmpty
-              ? _defaultInitialName
+              ? (initialNickname.trim().isNotEmpty
+                    ? initialNickname.trim()
+                    : _defaultInitialName)
               : initialName;
           final normalizedInitialEmail = initialEmail.trim().isEmpty
               ? _defaultInitialEmail

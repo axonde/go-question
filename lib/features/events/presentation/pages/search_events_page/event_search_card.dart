@@ -377,10 +377,21 @@ class _OrganizerActions extends StatelessWidget {
       children: [
         GQButton(
           onPressed: () {
-            // TODO: открыть редактирование ивента.
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text(EventTexts.snackBarEditEvent)),
-            );
+            final currentProfile = context.read<ProfileBloc>().state.profile;
+            final organizerId = currentProfile?.uid ?? event.organizer;
+            EventEditorUtils.openEventEditorDialog(
+              context,
+              organizerAccountId: organizerId,
+              initialEvent: event,
+            ).then((updated) {
+              if (updated == null || !context.mounted) {
+                return;
+              }
+              context.read<EventsBloc>().add(EventsUpdateSubmitted(updated));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text(EventTexts.snackBarEventUpdated)),
+              );
+            });
           },
           text: EventTexts.buttonEdit,
           baseColor: const Color(0xFF1565C0),

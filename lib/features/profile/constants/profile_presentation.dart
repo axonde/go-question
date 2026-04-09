@@ -19,6 +19,7 @@ class ProfilePresentationConstants {
   // UI text
   static const String editHintText =
       'Для редактирования нажмите на выбранное поле';
+  static const String displayNameFallback = 'Имя не указано';
   static const String dialogTitle = 'Редактировать';
   static const String dialogInputHint = 'Введите значение';
   static const String dialogCancelButton = 'Отмена';

@@ -6,7 +6,7 @@ class _FriendsPageContent extends StatelessWidget {
   final TextEditingController searchController;
   final _FriendUserData? searchResult;
   final bool hasQuery;
-  final bool isAlreadyFriend;
+  final Profile? currentProfile;
   final bool isLoadingFriends;
   final List<_FriendUserData> friends;
   final ValueChanged<String> onSearchChanged;
@@ -20,7 +20,7 @@ class _FriendsPageContent extends StatelessWidget {
     required this.searchController,
     required this.searchResult,
     required this.hasQuery,
-    required this.isAlreadyFriend,
+    required this.currentProfile,
     required this.isLoadingFriends,
     required this.friends,
     required this.onSearchChanged,
@@ -68,7 +68,7 @@ class _FriendsPageContent extends StatelessWidget {
             controller: searchController,
             searchResult: searchResult,
             hasQuery: hasQuery,
-            isAlreadyFriend: isAlreadyFriend,
+            currentProfile: currentProfile,
             onChanged: onSearchChanged,
             onAddFriend: onAddFriend,
             onOpenProfile: onOpenProfile,

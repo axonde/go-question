@@ -127,19 +127,21 @@ class _EventDetailsDialog extends StatelessWidget {
                               .profile;
                           final updatedOrganizerId =
                               currentProfile?.uid ?? event.organizer;
-                          showDialog<EventEntity>(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (_) => CreateEventDialog(
-                              organizerAccountId: updatedOrganizerId,
-                              initialEvent: event,
-                            ),
+                          EventEditorUtils.openEventEditorDialog(
+                            context,
+                            organizerAccountId: updatedOrganizerId,
+                            initialEvent: event,
                           ).then((updated) {
                             if (updated == null || !context.mounted) {
                               return;
                             }
                             context.read<EventsBloc>().add(
                               EventsUpdateSubmitted(updated),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(EventTexts.snackBarEventUpdated),
+                              ),
                             );
                           });
                         },

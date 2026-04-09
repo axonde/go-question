@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../../notifications/data/constants/notifications_constants.dart';
 import '../../constants/profile_firestore.dart';
 import '../../domain/errors/profile_exception.dart';
 import '../models/profile_model.dart';
@@ -407,6 +408,29 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
           throw ProfileNotFoundException(uid: requesterUid);
         }
 
+        final requesterData = requesterSnapshot.data() ?? <String, dynamic>{};
+        final recipientData = recipientSnapshot.data() ?? <String, dynamic>{};
+        final requesterFriends = List<String>.from(
+          requesterData[ProfileFirestoreConstants.fieldFriendIds] ??
+              const <String>[],
+        );
+        final requesterOutgoing = List<String>.from(
+          requesterData[ProfileFirestoreConstants
+                  .fieldOutgoingFriendRequestIds] ??
+              const <String>[],
+        );
+        final recipientIncoming = List<String>.from(
+          recipientData[ProfileFirestoreConstants
+                  .fieldIncomingFriendRequestIds] ??
+              const <String>[],
+        );
+
+        if (requesterFriends.contains(recipientUid) ||
+            requesterOutgoing.contains(requestId) ||
+            recipientIncoming.contains(requestId)) {
+          return;
+        }
+
         tx.set(requestRef, {
           ProfileFirestoreConstants.friendRequestFieldId: requestId,
           ProfileFirestoreConstants.friendRequestFieldRequesterId: requesterUid,
@@ -433,6 +457,48 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
           ProfileFirestoreConstants.fieldUpdatedAt:
               FieldValue.serverTimestamp(),
         });
+
+        tx.set(
+          _firestore
+              .collection(NotificationsConstants.notificationsCollection)
+              .doc(requestId),
+          {
+            NotificationsConstants.fieldId: requestId,
+            NotificationsConstants.fieldUserId: recipientUid,
+            NotificationsConstants.fieldTitle: 'Новая заявка в друзья',
+            NotificationsConstants.fieldBody:
+                'Пользователь ${requesterData[ProfileFirestoreConstants.fieldName] ?? requesterData[ProfileFirestoreConstants.fieldNickname] ?? requesterUid}'
+                ' (ID: ${requesterData[ProfileFirestoreConstants.fieldRegistrationId] ?? requesterUid})'
+                ' хочет добавить вас в друзья',
+            NotificationsConstants.fieldType: 'friend_request',
+            NotificationsConstants.fieldIsRead: false,
+            NotificationsConstants.fieldCreatedAt: FieldValue.serverTimestamp(),
+            NotificationsConstants.fieldRequestUserId: requesterUid,
+            NotificationsConstants.fieldRequestUserName:
+                requesterData[ProfileFirestoreConstants.fieldName],
+            NotificationsConstants.fieldRequestUserRegistrationId:
+                requesterData[ProfileFirestoreConstants.fieldRegistrationId]
+                    ?.toString(),
+            NotificationsConstants.fieldRequestUserRating:
+                requesterData[ProfileFirestoreConstants.fieldRating]
+                    ?.toString(),
+            NotificationsConstants.fieldRequestUserAge:
+                requesterData[ProfileFirestoreConstants.fieldAge]?.toString(),
+            NotificationsConstants.fieldRequestUserGender:
+                requesterData[ProfileFirestoreConstants.fieldGender],
+            NotificationsConstants.fieldRequestUserCity:
+                requesterData[ProfileFirestoreConstants.fieldCity],
+            NotificationsConstants.fieldRequestUserBio:
+                requesterData[ProfileFirestoreConstants.fieldBio],
+            NotificationsConstants.fieldRequestUserEventsAttended:
+                requesterData[ProfileFirestoreConstants
+                    .fieldVisitedEventsCount],
+            NotificationsConstants.fieldRequestUserEventsOrganized:
+                requesterData[ProfileFirestoreConstants
+                    .fieldCreatedEventsCount],
+          },
+          SetOptions(merge: true),
+        );
       });
     } catch (e) {
       rethrow;

@@ -6,12 +6,12 @@ part of '../profile_button.dart';
 
 class _ProfileUserInfo extends StatelessWidget {
   final String name;
-  final String nickname;
+  final String idLabel;
   final double slotHeight;
 
   const _ProfileUserInfo({
     required this.name,
-    required this.nickname,
+    required this.idLabel,
     required this.slotHeight,
   });
 
@@ -26,7 +26,7 @@ class _ProfileUserInfo extends StatelessWidget {
           fontSize: slotHeight * 0.27,
           fontWeight: FontWeight.bold,
         ),
-        _GameText(text: nickname, fontSize: slotHeight * 0.19),
+        _GameText(text: idLabel, fontSize: slotHeight * 0.19),
       ],
     );
   }
