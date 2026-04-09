@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_question/config/router/router.dart';
 import 'package:go_question/core/network/network_info.dart';
+import 'package:go_question/core/services/background_music_service.dart';
+import 'package:go_question/core/services/sfx_service.dart';
 import 'package:go_question/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:go_question/features/auth/data/source/auth_page_memory.dart';
 import 'package:go_question/features/auth/data/source/datasource.dart';
@@ -17,6 +19,12 @@ import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 import 'package:go_question/features/notifications/data/repositories/notifications_repository_impl.dart';
 import 'package:go_question/features/notifications/data/source/notifications_remote_data_source.dart';
 import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
+import 'package:go_question/features/onboarding/data/repositories/onboarding_repository_impl.dart';
+import 'package:go_question/features/onboarding/data/source/onboarding_local_data_source.dart';
+import 'package:go_question/features/onboarding/domain/repositories/i_onboarding_repository.dart';
+import 'package:go_question/features/onboarding/domain/usecases/check_onboarding_status.dart';
+import 'package:go_question/features/onboarding/domain/usecases/complete_onboarding.dart';
+import 'package:go_question/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:go_question/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:go_question/features/profile/data/source/profile_remote_datasource.dart';
 import 'package:go_question/features/profile/domain/errors/profile_exception_to_failure_mapper.dart';
@@ -25,12 +33,28 @@ import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart
 import 'package:go_question/features/score/presentation/bloc/score_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
   final sharedPreferences = await SharedPreferences.getInstance();
+
+  //! Features - Onboarding
+
+  sl.registerFactory(() => OnboardingBloc(sl(), sl()));
+
+  sl.registerLazySingleton(() => CheckOnboardingStatus(sl()));
+  sl.registerLazySingleton(() => CompleteOnboarding(sl()));
+
+  sl.registerLazySingleton<IOnboardingRepository>(
+    () => OnboardingRepositoryImpl(sl()),
+  );
+
+  sl.registerLazySingleton<OnboardingLocalDataSource>(
+    () => OnboardingLocalDataSourceImpl(sl()),
+  );
 
   //! Features - Auth
 
@@ -79,10 +103,15 @@ Future<void> init() async {
 
   //! Router
 
-  sl.registerLazySingleton<AuthGuard>(() => const AuthGuard());
-  sl.registerLazySingleton<GuestGuard>(() => GuestGuard(sl()));
+  sl.registerLazySingleton<AuthGuard>(() => AuthGuard(sl(), sl()));
+  sl.registerLazySingleton<GuestGuard>(() => GuestGuard(sl(), sl()));
+  sl.registerLazySingleton<OnboardingGuard>(() => OnboardingGuard(sl()));
   sl.registerLazySingleton<AppRouter>(
-    () => AppRouter(authGuard: sl(), guestGuard: sl()),
+    () => AppRouter(
+      authGuard: sl(),
+      guestGuard: sl(),
+      onboardingGuard: sl(),
+    ),
   );
 
   //! Other features
@@ -98,7 +127,10 @@ Future<void> init() async {
   );
 
   //! Core
-
+  sl.registerLazySingleton<SfxService>(() => SfxService());
+  sl.registerLazySingleton<BackgroundMusicService>(
+    () => BackgroundMusicService(AudioPlayer()),
+  );
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
   //! External
