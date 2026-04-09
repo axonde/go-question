@@ -6,7 +6,8 @@ class StartupConstants {
   static const startupVideoVolume = 1.0;
   static const backgroundMusicVolume = 1.0;
   static const backgroundMusicStartOffsetMs = 0; // Настрой смещение фона (мс)
-  static const tapSoundStartOffsetMs = 0; // Настрой смещение звука кнопки (мс)
+  static const tapSoundStartOffsetMs =
+      250; // Настрой смещение звука кнопки (мс)
   static const loadingIndicatorStrokeWidth = 3.0;
 
   const StartupConstants._();

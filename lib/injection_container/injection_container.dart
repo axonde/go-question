@@ -122,7 +122,7 @@ Future<void> init() async {
 
   //! Core
   sl.registerLazySingleton<BackgroundMusicService>(
-    () => BackgroundMusicService(AudioPlayer()),
+    () => BackgroundMusicService(AudioPlayer(playerId: 'gq_bg_music_player')),
   );
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
