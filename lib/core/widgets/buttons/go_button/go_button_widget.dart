@@ -123,6 +123,11 @@ class GQButton extends StatelessWidget {
 
   void _handleTap() {
     _tapPlayer.play(AssetSource('audio/tap.mp3'), volume: 1.0);
+    if (StartupConstants.tapSoundStartOffsetMs > 0) {
+      _tapPlayer.seek(
+        Duration(milliseconds: StartupConstants.tapSoundStartOffsetMs),
+      );
+    }
     onPressed();
   }
 
