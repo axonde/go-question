@@ -10,6 +10,8 @@ import 'package:go_question/core/types/result.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/loading/firebase_action_shimmer.dart';
 import 'package:go_question/core/widgets/pressable.dart';
+import 'package:go_question/features/auth/domain/entities/auth_page.dart';
+import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/friends/presentation/utils/friend_relation_utils.dart';
 import 'package:go_question/features/profile/domain/entities/profile.dart';
 import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
@@ -48,7 +50,19 @@ class _FriendsPageState extends State<FriendsPage> {
 
   String get _query => _searchController.text.trim();
 
+  void _redirectToRegistration() {
+    context.read<AuthBloc>().add(const AuthPageChanged(AuthPage.login));
+    sl<AppRouter>().replace(const AuthFlowRoute());
+  }
+
   Future<void> _searchUser(String query) async {
+    if (_currentUserId == null) {
+      if (_searchResult != null) {
+        setState(() => _searchResult = null);
+      }
+      return;
+    }
+
     if (query.trim().isEmpty) {
       setState(() => _searchResult = null);
       return;
@@ -77,9 +91,11 @@ class _FriendsPageState extends State<FriendsPage> {
 
   Future<void> _addFriend(_FriendUserData user) async {
     final currentUserId = _currentUserId;
-    if (currentUserId == null || _pendingFriendRequestIds.contains(user.id)) {
+    if (currentUserId == null ||
+        user.id == currentUserId ||
+        _pendingFriendRequestIds.contains(user.id)) {
       if (currentUserId == null) {
-        sl<AppRouter>().push(const AuthFlowRoute());
+        sl<AppRouter>().replace(const AuthFlowRoute());
       }
       return;
     }
@@ -146,24 +162,38 @@ class _FriendsPageState extends State<FriendsPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
-      body: SafeArea(
-        child: _FriendsPageContent(
-          hintsEnabled: widget.hintsEnabled,
-          compactModeEnabled: widget.compactModeEnabled,
-          searchController: _searchController,
-          searchResult: _searchResult,
-          hasQuery: _query.isNotEmpty,
-          currentProfile: currentProfile,
-          profileRepository: _profileRepository,
-          pendingFriendRequestIds: _pendingFriendRequestIds,
-          pendingFriendRemovalIds: _pendingFriendRemovalIds,
-          onSearchChanged: (value) {
-            setState(() {});
-            _searchUser(value);
-          },
-          onAddFriend: _addFriend,
-          onRemoveFriend: _removeFriend,
-          onOpenProfile: _openProfilePreview,
+      body: BlocListener<AuthBloc, AuthState>(
+        listenWhen: (previous, current) => previous.status != current.status,
+        listener: (context, state) {
+          if (state.status == AuthStatus.unauthenticated) {
+            setState(() {
+              _searchController.clear();
+              _searchResult = null;
+              _pendingFriendRequestIds.clear();
+              _pendingFriendRemovalIds.clear();
+            });
+          }
+        },
+        child: SafeArea(
+          child: _FriendsPageContent(
+            hintsEnabled: widget.hintsEnabled,
+            compactModeEnabled: widget.compactModeEnabled,
+            searchController: _searchController,
+            searchResult: _searchResult,
+            hasQuery: _query.isNotEmpty,
+            currentProfile: currentProfile,
+            profileRepository: _profileRepository,
+            pendingFriendRequestIds: _pendingFriendRequestIds,
+            pendingFriendRemovalIds: _pendingFriendRemovalIds,
+            onSearchChanged: (value) {
+              setState(() {});
+              _searchUser(value);
+            },
+            onRequireRegistration: _redirectToRegistration,
+            onAddFriend: _addFriend,
+            onRemoveFriend: _removeFriend,
+            onOpenProfile: _openProfilePreview,
+          ),
         ),
       ),
     );

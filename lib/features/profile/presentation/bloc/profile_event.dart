@@ -84,3 +84,7 @@ final class ProfileRefreshRequested extends ProfileEvent {
 
   const ProfileRefreshRequested(this.uid);
 }
+
+final class ProfileSessionClearedRequested extends ProfileEvent {
+  const ProfileSessionClearedRequested();
+}

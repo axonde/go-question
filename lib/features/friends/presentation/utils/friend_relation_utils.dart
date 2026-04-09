@@ -55,6 +55,9 @@ abstract final class FriendRelationUtils {
     required String currentUserId,
     required String otherUid,
   }) {
+    if (currentUserId.isNotEmpty && currentUserId == otherUid) {
+      return FriendsTexts.selfAccount;
+    }
     if (isFriend(currentProfile: currentProfile, otherUid: otherUid)) {
       return FriendsTexts.alreadyFriend;
     }
@@ -81,6 +84,8 @@ abstract final class FriendRelationUtils {
     required String otherUid,
   }) {
     return currentProfile != null &&
+        currentUserId.isNotEmpty &&
+        currentUserId != otherUid &&
         !isFriend(currentProfile: currentProfile, otherUid: otherUid) &&
         !isOutgoingRequestPending(
           currentProfile: currentProfile,

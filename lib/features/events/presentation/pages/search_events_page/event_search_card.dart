@@ -256,7 +256,7 @@ class _JoinAction extends StatelessWidget {
           ? () {}
           : () {
               if (currentUserId == null) {
-                sl<AppRouter>().push(const AuthFlowRoute());
+                sl<AppRouter>().replace(const AuthFlowRoute());
                 return;
               }
 

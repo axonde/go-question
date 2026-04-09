@@ -28,6 +28,7 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     on<EventsParticipantRemoveRequested>(_onParticipantRemoveRequested);
     on<EventsPageChanged>(_onPageChanged);
     on<EventsTransientCleared>(_onTransientCleared);
+    on<EventsSessionClearedRequested>(_onSessionClearedRequested);
   }
 
   Future<void> _onSearchStarted(
@@ -376,6 +377,15 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
       clearError: true,
       clearHint: true,
     );
+  }
+
+  Future<void> _onSessionClearedRequested(
+    EventsSessionClearedRequested event,
+    Emitter<EventsState> emit,
+  ) async {
+    await _eventsSubscription?.cancel();
+    _eventsSubscription = null;
+    emit(const EventsState.initial());
   }
 
   Future<void> _refreshEvents(Emitter<EventsState> emit) async {

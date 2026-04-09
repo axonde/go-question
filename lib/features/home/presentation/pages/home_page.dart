@@ -42,7 +42,7 @@ class HomePage extends StatelessWidget {
     final authUser = context.read<AuthBloc>().state.user;
     final profile = context.read<ProfileBloc>().state.profile;
     if (authUser == null || profile == null) {
-      sl<AppRouter>().push(const AuthFlowRoute());
+      sl<AppRouter>().replace(const AuthFlowRoute());
       return;
     }
 
@@ -99,7 +99,7 @@ class HomePage extends StatelessWidget {
   Future<void> _showCreateEventDialog(BuildContext context) async {
     final authUser = context.read<AuthBloc>().state.user;
     if (authUser == null) {
-      sl<AppRouter>().push(const AuthFlowRoute());
+      sl<AppRouter>().replace(const AuthFlowRoute());
       return;
     }
 
@@ -135,7 +135,7 @@ class HomePage extends StatelessWidget {
   void _showProfileScreen(BuildContext context) {
     final authUser = context.read<AuthBloc>().state.user;
     if (authUser == null) {
-      sl<AppRouter>().push(const AuthFlowRoute());
+      sl<AppRouter>().replace(const AuthFlowRoute());
       return;
     }
 
@@ -147,7 +147,7 @@ class HomePage extends StatelessWidget {
     final profile = context.read<ProfileBloc>().state.profile;
 
     if (authUser == null || profile == null) {
-      sl<AppRouter>().push(const AuthFlowRoute());
+      sl<AppRouter>().replace(const AuthFlowRoute());
       return;
     }
 
