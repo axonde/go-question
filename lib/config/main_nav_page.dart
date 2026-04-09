@@ -9,6 +9,7 @@ import 'package:go_question/features/friends/presentation/pages/friends_page.dar
 import 'package:go_question/features/home/presentation/pages/home_page.dart';
 import 'package:go_question/features/settings/presentation/pages/settings_page.dart';
 import 'package:go_question/injection_container/injection_container.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @RoutePage(name: 'MainRoute')
 class MainNavPage extends StatefulWidget {
@@ -25,6 +26,28 @@ class _MainNavPageState extends State<MainNavPage> {
   bool _hintsEnabled = SettingsConstants.defaultHintsEnabled;
   bool _compactModeEnabled = SettingsConstants.defaultCompactModeEnabled;
   bool _soundEnabled = SettingsConstants.defaultSoundEnabled;
+
+  @override
+  void initState() {
+    super.initState();
+    _restoreSoundSetting();
+  }
+
+  Future<void> _restoreSoundSetting() async {
+    final prefs = sl<SharedPreferences>();
+    final savedValue = prefs.getBool(SettingsConstants.soundEnabledPrefKey);
+    final soundEnabled = savedValue ?? SettingsConstants.defaultSoundEnabled;
+
+    await sl<SfxService>().setEnabled(soundEnabled);
+    await sl<BackgroundMusicService>().setVolume(soundEnabled ? 1.0 : 0.0);
+
+    if (!mounted || _soundEnabled == soundEnabled) {
+      return;
+    }
+    setState(() {
+      _soundEnabled = soundEnabled;
+    });
+  }
 
   void _onNavTap(int index) {
     if (_currentIndex == index) {
@@ -83,6 +106,10 @@ class _MainNavPageState extends State<MainNavPage> {
               });
             },
             onSoundChanged: (value) async {
+              await sl<SharedPreferences>().setBool(
+                SettingsConstants.soundEnabledPrefKey,
+                value,
+              );
               setState(() {
                 _soundEnabled = value;
               });
