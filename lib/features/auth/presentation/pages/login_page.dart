@@ -31,7 +31,10 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future<void> closeLogin() async {
-      final popped = await context.router.maybePop();
+      final popped = await Navigator.of(
+        context,
+        rootNavigator: true,
+      ).maybePop();
       if (!popped && context.mounted) {
         context.router.replace(const MainRoute());
       }
@@ -39,48 +42,59 @@ class LoginPage extends StatelessWidget {
 
     return Scaffold(
       body: SafeArea(
-        minimum: const EdgeInsets.only(
-          left: UiConstants.leftPadding,
-          right: UiConstants.rightPadding,
-          top: UiConstants.topPadding,
-          bottom: UiConstants.bottomPadding,
-        ),
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  onPressed: closeLogin,
-                  icon: const Icon(Icons.close),
-                ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(
+              'assets/images/background/background.webp',
+              fit: BoxFit.cover,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: UiConstants.leftPadding,
+                right: UiConstants.rightPadding,
+                top: UiConstants.topPadding,
+                bottom: UiConstants.bottomPadding,
               ),
-              Expanded(
+              child: Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Header.login(),
-                    const SizedBox(height: 32),
-                    EmailField(onChanged: onEmailChanged),
-                    const SizedBox(height: 16),
-                    PasswordField(onChanged: onPasswordChanged),
-                    const SizedBox(height: 40),
-                    SubmitButton.login(
-                      isLoading: isLoading,
-                      onPressed: onSubmit,
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        onPressed: closeLogin,
+                        icon: const Icon(Icons.close),
+                      ),
                     ),
-                    const SizedBox(height: 12),
-                    GoogleButton(
-                      isLoading: isLoading,
-                      onPressed: onGoogleSignIn,
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Header.login(),
+                          const SizedBox(height: 32),
+                          EmailField(onChanged: onEmailChanged),
+                          const SizedBox(height: 16),
+                          PasswordField(onChanged: onPasswordChanged),
+                          const SizedBox(height: 40),
+                          SubmitButton.login(
+                            isLoading: isLoading,
+                            onPressed: onSubmit,
+                          ),
+                          const SizedBox(height: 12),
+                          GoogleButton(
+                            isLoading: isLoading,
+                            onPressed: onGoogleSignIn,
+                          ),
+                        ],
+                      ),
                     ),
+                    SwitchButton.login(onToggle: onMoveToSignIn),
                   ],
                 ),
               ),
-              SwitchButton.login(onToggle: onMoveToSignIn),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

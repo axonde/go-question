@@ -79,7 +79,7 @@ class _FriendsPageState extends State<FriendsPage> {
     final currentUserId = _currentUserId;
     if (currentUserId == null || _pendingFriendRequestIds.contains(user.id)) {
       if (currentUserId == null) {
-        sl<AppRouter>().push(const AuthFlowRoute());
+        sl<AppRouter>().replace(const AuthFlowRoute());
       }
       return;
     }
