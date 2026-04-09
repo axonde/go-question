@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 
 import '../widgets/email_field.dart';
 import '../widgets/google_button.dart';
@@ -61,10 +62,7 @@ class LoginPage extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.topRight,
-                      child: IconButton(
-                        onPressed: closeLogin,
-                        icon: const Icon(Icons.close),
-                      ),
+                      child: GqCloseButton(onTap: closeLogin),
                     ),
                     Expanded(
                       child: Column(

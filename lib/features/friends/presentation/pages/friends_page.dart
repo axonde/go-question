@@ -51,7 +51,7 @@ class _FriendsPageState extends State<FriendsPage> {
   String get _query => _searchController.text.trim();
 
   void _redirectToRegistration() {
-    context.read<AuthBloc>().add(const AuthPageChanged(AuthPage.signUp));
+    context.read<AuthBloc>().add(const AuthPageChanged(AuthPage.login));
     sl<AppRouter>().replace(const AuthFlowRoute());
   }
 
