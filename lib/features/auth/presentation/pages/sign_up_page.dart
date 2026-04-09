@@ -3,7 +3,7 @@ import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/features/auth/presentation/widgets/email_field.dart';
 import 'package:go_question/features/auth/presentation/widgets/google_button.dart';
 import 'package:go_question/features/auth/presentation/widgets/header.dart';
-import 'package:go_question/features/auth/presentation/widgets/name_field.dart';
+import 'package:go_question/features/auth/presentation/widgets/nickname_field.dart';
 import 'package:go_question/features/auth/presentation/widgets/password_field.dart';
 import 'package:go_question/features/auth/presentation/widgets/submit_button.dart';
 import 'package:go_question/features/auth/presentation/widgets/switch_button.dart';
@@ -11,7 +11,7 @@ import 'package:go_question/features/auth/presentation/widgets/switch_button.dar
 class SignUpPage extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onMoveToLogin;
-  final ValueChanged<String> onNameChanged;
+  final ValueChanged<String> onNicknameChanged;
   final ValueChanged<String> onEmailChanged;
   final ValueChanged<String> onPasswordChanged;
   final VoidCallback onSubmit;
@@ -21,7 +21,7 @@ class SignUpPage extends StatelessWidget {
     super.key,
     required this.isLoading,
     required this.onMoveToLogin,
-    required this.onNameChanged,
+    required this.onNicknameChanged,
     required this.onEmailChanged,
     required this.onPasswordChanged,
     required this.onSubmit,
@@ -48,7 +48,7 @@ class SignUpPage extends StatelessWidget {
                 children: [
                   const Header.signUp(),
                   const SizedBox(height: 32),
-                  NameField(onChanged: onNameChanged),
+                  NicknameField(onChanged: onNicknameChanged),
                   const SizedBox(height: 16),
                   EmailField(onChanged: onEmailChanged),
                   const SizedBox(height: 16),

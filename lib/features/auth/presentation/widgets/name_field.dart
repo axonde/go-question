@@ -11,11 +11,10 @@ class NameField extends StatelessWidget {
     return TextFormField(
       onChanged: onChanged,
       decoration: const InputDecoration(
-        labelText: 'Имя',
+        labelText: 'Никнейм',
         border: OutlineInputBorder(),
       ),
-      textCapitalization: TextCapitalization.words,
-      validator: AuthFieldValidators.name,
+      validator: AuthFieldValidators.nickname,
     );
   }
 }

@@ -26,10 +26,10 @@ final class AuthLoginPasswordChanged extends AuthEvent {
   const AuthLoginPasswordChanged(this.value);
 }
 
-final class AuthSignUpNameChanged extends AuthEvent {
+final class AuthSignUpNicknameChanged extends AuthEvent {
   final String value;
 
-  const AuthSignUpNameChanged(this.value);
+  const AuthSignUpNicknameChanged(this.value);
 }
 
 final class AuthSignUpEmailChanged extends AuthEvent {

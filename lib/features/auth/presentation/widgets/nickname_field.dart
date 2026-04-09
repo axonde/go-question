@@ -1,0 +1,20 @@
+import 'package:flutter/material.dart';
+import 'package:go_question/features/auth/presentation/validators/auth_field_validators.dart';
+
+class NicknameField extends StatelessWidget {
+  final ValueChanged<String> onChanged;
+
+  const NicknameField({super.key, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      onChanged: onChanged,
+      decoration: const InputDecoration(
+        labelText: 'Никнейм',
+        border: OutlineInputBorder(),
+      ),
+      validator: AuthFieldValidators.nickname,
+    );
+  }
+}

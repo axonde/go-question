@@ -4,6 +4,7 @@ import 'package:go_question/core/constants/home_texts.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
 import 'package:go_question/features/events/presentation/pages/create_event_dialog.dart';
 import 'package:go_question/features/events/presentation/pages/search_events_page.dart';
+import 'package:go_question/features/profile/presentation/widgets/profile_screen.dart';
 
 import '../widgets/city_selector_sheet.dart';
 import '../widgets/home_action_buttons.dart';
@@ -72,6 +73,9 @@ class HomePage extends StatelessWidget {
     ),
   );
 
+  void _showProfileScreen(BuildContext context) =>
+      showDialog(context: context, builder: (_) => const ProfileScreen());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,7 +92,12 @@ class HomePage extends StatelessWidget {
                   onNotificationsTap: () => _showNotifications(context),
                 ),
               ),
-              LayoutId(id: _HomeSlot.profile, child: const ProfileButton()),
+              LayoutId(
+                id: _HomeSlot.profile,
+                child: ProfileButton(
+                  onPressed: () => _showProfileScreen(context),
+                ),
+              ),
               LayoutId(
                 id: _HomeSlot.placeholder,
                 child: HomePlaceholder(

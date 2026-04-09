@@ -67,7 +67,7 @@ void main() {
         const tUser = RegistrationInput(
           uid: '123',
           email: 'test@example.com',
-          name: 'Test User',
+          nickname: 'test_user',
         );
         when(
           () => mockRemoteDataSource.signInWithEmailAndPassword(

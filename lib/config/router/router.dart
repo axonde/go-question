@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:go_question/config/main_nav_page.dart';
 import 'package:go_question/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:go_question/features/auth/presentation/pages/auth_flow_page.dart';
+import 'package:go_question/features/profile/presentation/pages/profile_initialization_page.dart';
 
 part 'router.gr.dart';
 
@@ -58,6 +59,11 @@ class AppRouter extends RootStackRouter {
       path: '/',
       page: MainRoute.page,
       initial: true,
+      guards: [authGuard],
+    ),
+    AutoRoute(
+      path: '/profile-init',
+      page: ProfileInitializationRoute.page,
       guards: [authGuard],
     ),
     AutoRoute(path: '/auth', page: AuthFlowRoute.page, guards: [guestGuard]),

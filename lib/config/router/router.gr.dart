@@ -41,3 +41,19 @@ class MainRoute extends PageRouteInfo<void> {
     },
   );
 }
+
+/// generated route for
+/// [ProfileInitializationPage]
+class ProfileInitializationRoute extends PageRouteInfo<void> {
+  const ProfileInitializationRoute({List<PageRouteInfo>? children})
+    : super(ProfileInitializationRoute.name, initialChildren: children);
+
+  static const String name = 'ProfileInitializationRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ProfileInitializationPage();
+    },
+  );
+}

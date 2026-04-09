@@ -56,11 +56,11 @@ class FakeAuthRepository implements IAuthRepository {
   Future<Result<String, AuthFailure>> signUpWithEmailAndPassword({
     required String email,
     required String password,
-    required String name,
+    required String nickname,
   }) async {
     _currentUser = RegistrationInput(
       uid: 'uid-1',
-      name: name,
+      nickname: nickname,
       email: email,
       password: password,
     );
@@ -103,7 +103,7 @@ void main() {
     final repo = FakeAuthRepository(
       currentUser: const RegistrationInput(
         uid: 'uid-1',
-        name: 'Alice',
+        nickname: 'alice_1',
         email: 'alice@example.com',
       ),
     );
@@ -116,7 +116,7 @@ void main() {
     await tester.pump();
     await tester.pump();
 
-    expect(bloc.state.status, AuthStatus.authenticated);
+    expect(bloc.state.status, AuthStatus.awaitingProfile);
 
     await tester.pumpWidget(
       MaterialApp(
@@ -135,6 +135,6 @@ void main() {
     expect(bloc.state.errorMessage, isNull);
     expect(bloc.state.currentPage, AuthPage.login);
     expect(bloc.state.loginEmail, isEmpty);
-    expect(bloc.state.signUpName, isEmpty);
+    expect(bloc.state.signUpNickname, isEmpty);
   });
 }

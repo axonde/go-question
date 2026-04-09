@@ -1,10 +1,9 @@
 part of '../profile_screen.dart';
 
 class _Profile extends StatelessWidget {
-  final String name;
   final String nick;
 
-  const _Profile({required this.name, required this.nick});
+  const _Profile({required this.nick});
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +14,7 @@ class _Profile extends StatelessWidget {
       ),
       child: Column(
         spacing: UiConstants.gap * 2,
-        children: [
-          Text(name, style: AppTextStyles.bodyLarge),
-          Text('@$nick', style: AppTextStyles.bodyMedium),
-        ],
+        children: [Text('@$nick', style: AppTextStyles.bodyMedium)],
       ),
     );
   }

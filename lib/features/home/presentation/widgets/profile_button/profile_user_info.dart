@@ -5,8 +5,8 @@ part of '../profile_button.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _ProfileUserInfo extends StatelessWidget {
-  final String? name;
-  final String? nickname;
+  final String name;
+  final String nickname;
   final double slotHeight;
 
   const _ProfileUserInfo({
@@ -22,11 +22,11 @@ class _ProfileUserInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _GameText(
-          text: name ?? 'null',
+          text: name,
           fontSize: slotHeight * 0.27,
           fontWeight: FontWeight.bold,
         ),
-        _GameText(text: nickname ?? 'null', fontSize: slotHeight * 0.19),
+        _GameText(text: nickname, fontSize: slotHeight * 0.19),
       ],
     );
   }
