@@ -33,6 +33,16 @@ _$ProfileModelImpl _$$ProfileModelImplFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const <String>[],
+      achievementIds:
+          (json['achievementIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
+      unseenAchievementIds:
+          (json['unseenAchievementIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
       friendIds:
           (json['friendIds'] as List<dynamic>?)
               ?.map((e) => e as String)
@@ -80,6 +90,8 @@ Map<String, dynamic> _$$ProfileModelImplToJson(_$ProfileModelImpl instance) =>
       'createdEventsCount': instance.createdEventsCount,
       'joinedEventIds': instance.joinedEventIds,
       'createdEventIds': instance.createdEventIds,
+      'achievementIds': instance.achievementIds,
+      'unseenAchievementIds': instance.unseenAchievementIds,
       'friendIds': instance.friendIds,
       'incomingFriendRequestIds': instance.incomingFriendRequestIds,
       'outgoingFriendRequestIds': instance.outgoingFriendRequestIds,

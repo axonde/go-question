@@ -3,6 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_question/config/router/router.dart';
 import 'package:go_question/core/network/network_info.dart';
+import 'package:go_question/features/achievements/data/repositories/achievements_repository_impl.dart';
+import 'package:go_question/features/achievements/data/source/achievements_remote_data_source.dart';
+import 'package:go_question/features/achievements/domain/repositories/i_achievements_repository.dart';
+import 'package:go_question/features/achievements/presentation/bloc/achievements_bloc.dart';
 import 'package:go_question/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:go_question/features/auth/data/source/auth_page_memory.dart';
 import 'package:go_question/features/auth/data/source/datasource.dart';
@@ -75,6 +79,16 @@ Future<void> init() async {
 
   sl.registerLazySingleton<IEventsRemoteDataSource>(
     () => EventsRemoteDataSourceImpl(sl()),
+  );
+
+  //! Features - Achievements
+
+  sl.registerFactory(() => AchievementsBloc(sl()));
+  sl.registerLazySingleton<IAchievementsRepository>(
+    () => AchievementsRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<IAchievementsRemoteDataSource>(
+    () => AchievementsRemoteDataSourceImpl(sl()),
   );
 
   //! Router

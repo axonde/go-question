@@ -5,6 +5,7 @@ class HomeUiConstants {
   static const panelShadow = Color(0x99000000);
   static const achievementBackground = Color(0xFF257FB4);
   static const achievementIcon = Color(0xFFFFD700);
+  static const achievementUnreadDot = Color(0xFFE53935);
   static const notificationButtonBackground = Color(0xFF43C521);
   static const createButtonMainStart = Color(0xFF0092F5);
   static const createButtonMainEnd = Color(0xFF008FF2);

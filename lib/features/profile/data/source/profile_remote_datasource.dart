@@ -288,6 +288,8 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
           'createdEventsCount': 0,
           'joinedEventIds': const <String>[],
           'createdEventIds': const <String>[],
+          'achievementIds': const <String>[],
+          'unseenAchievementIds': const <String>[],
           'friendIds': const <String>[],
           'incomingFriendRequestIds': const <String>[],
           'outgoingFriendRequestIds': const <String>[],

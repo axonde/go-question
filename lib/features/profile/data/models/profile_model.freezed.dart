@@ -39,6 +39,8 @@ mixin _$ProfileModel {
   int get createdEventsCount => throw _privateConstructorUsedError;
   List<String> get joinedEventIds => throw _privateConstructorUsedError;
   List<String> get createdEventIds => throw _privateConstructorUsedError;
+  List<String> get achievementIds => throw _privateConstructorUsedError;
+  List<String> get unseenAchievementIds => throw _privateConstructorUsedError;
   List<String> get friendIds => throw _privateConstructorUsedError;
   List<String> get incomingFriendRequestIds =>
       throw _privateConstructorUsedError;
@@ -87,6 +89,8 @@ abstract class $ProfileModelCopyWith<$Res> {
     int createdEventsCount,
     List<String> joinedEventIds,
     List<String> createdEventIds,
+    List<String> achievementIds,
+    List<String> unseenAchievementIds,
     List<String> friendIds,
     List<String> incomingFriendRequestIds,
     List<String> outgoingFriendRequestIds,
@@ -129,6 +133,8 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
     Object? createdEventsCount = null,
     Object? joinedEventIds = null,
     Object? createdEventIds = null,
+    Object? achievementIds = null,
+    Object? unseenAchievementIds = null,
     Object? friendIds = null,
     Object? incomingFriendRequestIds = null,
     Object? outgoingFriendRequestIds = null,
@@ -207,6 +213,14 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
                 ? _value.createdEventIds
                 : createdEventIds // ignore: cast_nullable_to_non_nullable
                       as List<String>,
+            achievementIds: null == achievementIds
+                ? _value.achievementIds
+                : achievementIds // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            unseenAchievementIds: null == unseenAchievementIds
+                ? _value.unseenAchievementIds
+                : unseenAchievementIds // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
             friendIds: null == friendIds
                 ? _value.friendIds
                 : friendIds // ignore: cast_nullable_to_non_nullable
@@ -268,6 +282,8 @@ abstract class _$$ProfileModelImplCopyWith<$Res>
     int createdEventsCount,
     List<String> joinedEventIds,
     List<String> createdEventIds,
+    List<String> achievementIds,
+    List<String> unseenAchievementIds,
     List<String> friendIds,
     List<String> incomingFriendRequestIds,
     List<String> outgoingFriendRequestIds,
@@ -309,6 +325,8 @@ class __$$ProfileModelImplCopyWithImpl<$Res>
     Object? createdEventsCount = null,
     Object? joinedEventIds = null,
     Object? createdEventIds = null,
+    Object? achievementIds = null,
+    Object? unseenAchievementIds = null,
     Object? friendIds = null,
     Object? incomingFriendRequestIds = null,
     Object? outgoingFriendRequestIds = null,
@@ -387,6 +405,14 @@ class __$$ProfileModelImplCopyWithImpl<$Res>
             ? _value._createdEventIds
             : createdEventIds // ignore: cast_nullable_to_non_nullable
                   as List<String>,
+        achievementIds: null == achievementIds
+            ? _value._achievementIds
+            : achievementIds // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        unseenAchievementIds: null == unseenAchievementIds
+            ? _value._unseenAchievementIds
+            : unseenAchievementIds // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
         friendIds: null == friendIds
             ? _value._friendIds
             : friendIds // ignore: cast_nullable_to_non_nullable
@@ -441,6 +467,8 @@ class _$ProfileModelImpl extends _ProfileModel {
     this.createdEventsCount = 0,
     final List<String> joinedEventIds = const <String>[],
     final List<String> createdEventIds = const <String>[],
+    final List<String> achievementIds = const <String>[],
+    final List<String> unseenAchievementIds = const <String>[],
     final List<String> friendIds = const <String>[],
     final List<String> incomingFriendRequestIds = const <String>[],
     final List<String> outgoingFriendRequestIds = const <String>[],
@@ -450,6 +478,8 @@ class _$ProfileModelImpl extends _ProfileModel {
     @TimestampConverter() required this.updatedAt,
   }) : _joinedEventIds = joinedEventIds,
        _createdEventIds = createdEventIds,
+       _achievementIds = achievementIds,
+       _unseenAchievementIds = unseenAchievementIds,
        _friendIds = friendIds,
        _incomingFriendRequestIds = incomingFriendRequestIds,
        _outgoingFriendRequestIds = outgoingFriendRequestIds,
@@ -512,6 +542,25 @@ class _$ProfileModelImpl extends _ProfileModel {
     return EqualUnmodifiableListView(_createdEventIds);
   }
 
+  final List<String> _achievementIds;
+  @override
+  @JsonKey()
+  List<String> get achievementIds {
+    if (_achievementIds is EqualUnmodifiableListView) return _achievementIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_achievementIds);
+  }
+
+  final List<String> _unseenAchievementIds;
+  @override
+  @JsonKey()
+  List<String> get unseenAchievementIds {
+    if (_unseenAchievementIds is EqualUnmodifiableListView)
+      return _unseenAchievementIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_unseenAchievementIds);
+  }
+
   final List<String> _friendIds;
   @override
   @JsonKey()
@@ -562,7 +611,7 @@ class _$ProfileModelImpl extends _ProfileModel {
 
   @override
   String toString() {
-    return 'ProfileModel(uid: $uid, registrationId: $registrationId, email: $email, name: $name, nickname: $nickname, birthDate: $birthDate, city: $city, bio: $bio, avatarUrl: $avatarUrl, gender: $gender, age: $age, rating: $rating, trophies: $trophies, visitedEventsCount: $visitedEventsCount, createdEventsCount: $createdEventsCount, joinedEventIds: $joinedEventIds, createdEventIds: $createdEventIds, friendIds: $friendIds, incomingFriendRequestIds: $incomingFriendRequestIds, outgoingFriendRequestIds: $outgoingFriendRequestIds, blockedUserIds: $blockedUserIds, lastSeenAt: $lastSeenAt, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ProfileModel(uid: $uid, registrationId: $registrationId, email: $email, name: $name, nickname: $nickname, birthDate: $birthDate, city: $city, bio: $bio, avatarUrl: $avatarUrl, gender: $gender, age: $age, rating: $rating, trophies: $trophies, visitedEventsCount: $visitedEventsCount, createdEventsCount: $createdEventsCount, joinedEventIds: $joinedEventIds, createdEventIds: $createdEventIds, achievementIds: $achievementIds, unseenAchievementIds: $unseenAchievementIds, friendIds: $friendIds, incomingFriendRequestIds: $incomingFriendRequestIds, outgoingFriendRequestIds: $outgoingFriendRequestIds, blockedUserIds: $blockedUserIds, lastSeenAt: $lastSeenAt, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -599,6 +648,14 @@ class _$ProfileModelImpl extends _ProfileModel {
             const DeepCollectionEquality().equals(
               other._createdEventIds,
               _createdEventIds,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._achievementIds,
+              _achievementIds,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._unseenAchievementIds,
+              _unseenAchievementIds,
             ) &&
             const DeepCollectionEquality().equals(
               other._friendIds,
@@ -645,6 +702,8 @@ class _$ProfileModelImpl extends _ProfileModel {
     createdEventsCount,
     const DeepCollectionEquality().hash(_joinedEventIds),
     const DeepCollectionEquality().hash(_createdEventIds),
+    const DeepCollectionEquality().hash(_achievementIds),
+    const DeepCollectionEquality().hash(_unseenAchievementIds),
     const DeepCollectionEquality().hash(_friendIds),
     const DeepCollectionEquality().hash(_incomingFriendRequestIds),
     const DeepCollectionEquality().hash(_outgoingFriendRequestIds),
@@ -687,6 +746,8 @@ abstract class _ProfileModel extends ProfileModel {
     final int createdEventsCount,
     final List<String> joinedEventIds,
     final List<String> createdEventIds,
+    final List<String> achievementIds,
+    final List<String> unseenAchievementIds,
     final List<String> friendIds,
     final List<String> incomingFriendRequestIds,
     final List<String> outgoingFriendRequestIds,
@@ -735,6 +796,10 @@ abstract class _ProfileModel extends ProfileModel {
   List<String> get joinedEventIds;
   @override
   List<String> get createdEventIds;
+  @override
+  List<String> get achievementIds;
+  @override
+  List<String> get unseenAchievementIds;
   @override
   List<String> get friendIds;
   @override

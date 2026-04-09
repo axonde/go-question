@@ -37,6 +37,8 @@ class Profile with _$Profile {
     @Default(0) int createdEventsCount,
     @Default(<String>[]) List<String> joinedEventIds,
     @Default(<String>[]) List<String> createdEventIds,
+    @Default(<String>[]) List<String> achievementIds,
+    @Default(<String>[]) List<String> unseenAchievementIds,
     @Default(<String>[]) List<String> friendIds,
     @Default(<String>[]) List<String> incomingFriendRequestIds,
     @Default(<String>[]) List<String> outgoingFriendRequestIds,
@@ -83,6 +85,12 @@ class Profile with _$Profile {
     }
     if (createdEventIds.any((id) => id.trim().isEmpty)) {
       throw ArgumentError(ProfileValidationMessages.eventIdCannotBeEmpty);
+    }
+    if (achievementIds.any((id) => id.trim().isEmpty)) {
+      throw ArgumentError(ProfileValidationMessages.achievementIdCannotBeEmpty);
+    }
+    if (unseenAchievementIds.any((id) => id.trim().isEmpty)) {
+      throw ArgumentError(ProfileValidationMessages.achievementIdCannotBeEmpty);
     }
     if (friendIds.any((id) => id.trim().isEmpty)) {
       throw ArgumentError(ProfileValidationMessages.eventIdCannotBeEmpty);

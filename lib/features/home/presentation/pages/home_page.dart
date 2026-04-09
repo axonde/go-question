@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/router/router.dart';
 import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/constants/home_texts.dart';
+import 'package:go_question/features/achievements/presentation/bloc/achievements_bloc.dart';
+import 'package:go_question/features/achievements/presentation/widgets/achievements_dialog.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
 import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
@@ -13,6 +15,7 @@ import 'package:go_question/features/profile/constants/profile_presentation.dart
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/profile/presentation/widgets/profile_screen.dart';
 import 'package:go_question/injection_container/injection_container.dart';
+
 import '../widgets/home_action_buttons.dart';
 import '../widgets/home_events.dart';
 import '../widgets/home_placeholder.dart';
@@ -139,9 +142,38 @@ class HomePage extends StatelessWidget {
     showDialog(context: context, builder: (_) => const ProfileScreen());
   }
 
+  Future<void> _showAchievementsDialog(BuildContext context) async {
+    final authUser = context.read<AuthBloc>().state.user;
+    final profile = context.read<ProfileBloc>().state.profile;
+
+    if (authUser == null || profile == null) {
+      sl<AppRouter>().push(const AuthFlowRoute());
+      return;
+    }
+
+    context.read<AchievementsBloc>().add(
+      AchievementsOpenedRequested(profile.uid),
+    );
+
+    await showDialog<void>(
+      context: context,
+      builder: (_) => const AchievementsDialog(),
+    );
+
+    if (!context.mounted) {
+      return;
+    }
+
+    context.read<AchievementsBloc>().add(
+      AchievementsViewedRequested(profile.uid),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final profile = context.watch<ProfileBloc>().state.profile;
+    final hasUnreadAchievements =
+        profile?.unseenAchievementIds.isNotEmpty == true;
     final currentCity = profile?.city?.trim().isNotEmpty == true
         ? profile!.city!.trim()
         : ProfilePresentationConstants.completionCityOptions.first;
@@ -156,9 +188,10 @@ class HomePage extends StatelessWidget {
               LayoutId(
                 id: _HomeSlot.topBar,
                 child: HomeTopBar(
-                  onAchievementsTap: () {}, // TODO: экран достижений
+                  onAchievementsTap: () => _showAchievementsDialog(context),
                   onCityTap: () => _showCitySelector(context),
                   onNotificationsTap: () => _showNotifications(context),
+                  hasUnreadAchievements: hasUnreadAchievements,
                   city: currentCity,
                 ),
               ),

@@ -4,6 +4,7 @@ import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_theme.dart';
 import 'package:go_question/core/constants/profile_messages.dart';
 import 'package:go_question/core/widgets/app_background.dart';
+import 'package:go_question/features/achievements/presentation/bloc/achievements_bloc.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
@@ -23,6 +24,7 @@ class GoQuestionApp extends StatelessWidget {
           create: (_) => sl<AuthBloc>()..add(const AuthStarted()),
         ),
         BlocProvider<ProfileBloc>(create: (_) => sl<ProfileBloc>()),
+        BlocProvider<AchievementsBloc>(create: (_) => sl<AchievementsBloc>()),
         BlocProvider<EventsBloc>(
           create: (_) => sl<EventsBloc>()..add(const EventsSearchStarted()),
         ),
