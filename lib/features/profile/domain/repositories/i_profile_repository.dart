@@ -32,4 +32,30 @@ abstract class IProfileRepository {
   Future<Result<Profile, ProfileFailure>> incrementCreatedEventsCount(
     String uid,
   );
+
+  /// Returns full friend profiles for a user.
+  Future<Result<List<Profile>, ProfileFailure>> getFriends(String uid);
+
+  /// Returns profile documents by id list.
+  Future<Result<List<Profile>, ProfileFailure>> getProfilesByIds(
+    List<String> uids,
+  );
+
+  /// Sends a friend request from one user to another.
+  Future<Result<void, ProfileFailure>> sendFriendRequest({
+    required String requesterUid,
+    required String recipientUid,
+  });
+
+  /// Accepts a friend request by id.
+  Future<Result<void, ProfileFailure>> acceptFriendRequest(String requestId);
+
+  /// Declines a friend request by id.
+  Future<Result<void, ProfileFailure>> declineFriendRequest(String requestId);
+
+  /// Removes a friend relation from both users.
+  Future<Result<void, ProfileFailure>> removeFriend({
+    required String userUid,
+    required String friendUid,
+  });
 }

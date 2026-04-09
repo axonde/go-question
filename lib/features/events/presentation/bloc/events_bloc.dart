@@ -15,6 +15,11 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     on<EventsSearchRefreshed>(_onSearchRefreshed);
     on<EventsDetailRequested>(_onDetailRequested);
     on<EventsCreateSubmitted>(_onCreateSubmitted);
+    on<EventsJoinRequested>(_onJoinRequested);
+    on<EventsJoinRequestApproved>(_onJoinRequestApproved);
+    on<EventsJoinRequestRejected>(_onJoinRequestRejected);
+    on<EventsLeaveRequested>(_onLeaveRequested);
+    on<EventsParticipantRemoveRequested>(_onParticipantRemoveRequested);
     on<EventsPageChanged>(_onPageChanged);
     on<EventsTransientCleared>(_onTransientCleared);
   }
@@ -120,6 +125,141 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
 
     final result = await _repository.createEvent(event.event);
 
+    await result.foldAsync(
+      onSuccess: (_) async {
+        await _refreshEvents(emit);
+      },
+      onFailure: (failure) async {
+        emit(
+          state.copyWith(
+            status: EventsStatus.failure,
+            errorMessage: failure.message,
+            clearHint: true,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onJoinRequested(
+    EventsJoinRequested event,
+    Emitter<EventsState> emit,
+  ) async {
+    emit(_loadingState());
+
+    final result = await _repository.requestJoinEvent(
+      eventId: event.eventId,
+      requesterId: event.requesterId,
+    );
+
+    await result.foldAsync(
+      onSuccess: (_) async {
+        await _refreshEvents(emit);
+      },
+      onFailure: (failure) async {
+        emit(
+          state.copyWith(
+            status: EventsStatus.failure,
+            errorMessage: failure.message,
+            clearHint: true,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onJoinRequestApproved(
+    EventsJoinRequestApproved event,
+    Emitter<EventsState> emit,
+  ) async {
+    emit(_loadingState());
+
+    final result = await _repository.approveJoinRequest(
+      requestId: event.requestId,
+      organizerId: event.organizerId,
+    );
+
+    await result.foldAsync(
+      onSuccess: (_) async {
+        await _refreshEvents(emit);
+      },
+      onFailure: (failure) async {
+        emit(
+          state.copyWith(
+            status: EventsStatus.failure,
+            errorMessage: failure.message,
+            clearHint: true,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onJoinRequestRejected(
+    EventsJoinRequestRejected event,
+    Emitter<EventsState> emit,
+  ) async {
+    emit(_loadingState());
+
+    final result = await _repository.rejectJoinRequest(
+      requestId: event.requestId,
+      organizerId: event.organizerId,
+    );
+
+    await result.foldAsync(
+      onSuccess: (_) async {
+        await _refreshEvents(emit);
+      },
+      onFailure: (failure) async {
+        emit(
+          state.copyWith(
+            status: EventsStatus.failure,
+            errorMessage: failure.message,
+            clearHint: true,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onLeaveRequested(
+    EventsLeaveRequested event,
+    Emitter<EventsState> emit,
+  ) async {
+    emit(_loadingState());
+
+    final result = await _repository.leaveEvent(
+      eventId: event.eventId,
+      userId: event.userId,
+    );
+
+    await result.foldAsync(
+      onSuccess: (_) async {
+        await _refreshEvents(emit);
+      },
+      onFailure: (failure) async {
+        emit(
+          state.copyWith(
+            status: EventsStatus.failure,
+            errorMessage: failure.message,
+            clearHint: true,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onParticipantRemoveRequested(
+    EventsParticipantRemoveRequested event,
+    Emitter<EventsState> emit,
+  ) async {
+    emit(_loadingState());
+
+    final result = await _repository.removeParticipant(
+      eventId: event.eventId,
+      userId: event.userId,
+    );
+
     result.fold(
       onSuccess: (_) {
         emit(
@@ -165,6 +305,31 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
       status: EventsStatus.loading,
       clearError: true,
       clearHint: true,
+    );
+  }
+
+  Future<void> _refreshEvents(Emitter<EventsState> emit) async {
+    final result = await _repository.getEvents();
+    result.fold(
+      onSuccess: (events) {
+        emit(
+          state.copyWith(
+            status: EventsStatus.success,
+            events: events,
+            clearError: true,
+            clearHint: true,
+          ),
+        );
+      },
+      onFailure: (failure) {
+        emit(
+          state.copyWith(
+            status: EventsStatus.failure,
+            errorMessage: failure.message,
+            clearHint: true,
+          ),
+        );
+      },
     );
   }
 }

@@ -17,6 +17,7 @@ class FriendsTexts {
   static const friendIdPrefix = 'ID';
   static const cityPrefix = 'Город';
   static const levelPrefix = 'Уровень';
+  static const friendCityFallback = 'Не указан';
 
   const FriendsTexts._();
 }

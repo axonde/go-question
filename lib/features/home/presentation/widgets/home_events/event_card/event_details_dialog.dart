@@ -126,11 +126,41 @@ class _EventDetailsDialog extends StatelessWidget {
                   text: EventTexts.buttonLeaveEvent,
                   baseColor: HomeUiConstants.eventLeaveButton,
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(EventTexts.snackBarLeftEvent),
+                    final currentUserId = context
+                        .read<ProfileBloc>()
+                        .state
+                        .profile
+                        ?.uid;
+                    if (currentUserId == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(EventTexts.snackBarLeftEvent),
+                        ),
+                      );
+                      return;
+                    }
+
+                    context.read<EventsBloc>().add(
+                      EventsLeaveRequested(
+                        eventId: event.id,
+                        userId: currentUserId,
                       ),
                     );
+                    final currentProfile = context
+                        .read<ProfileBloc>()
+                        .state
+                        .profile;
+                    if (currentProfile != null) {
+                      context.read<ProfileBloc>().add(
+                        EnsureProfileExistsRequested(
+                          uid: currentProfile.uid,
+                          initialEmail: currentProfile.email,
+                          initialName: currentProfile.name,
+                          initialNickname: currentProfile.nickname,
+                        ),
+                      );
+                    }
+                    Navigator.of(context).pop();
                   },
                 ),
               ],

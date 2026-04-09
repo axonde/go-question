@@ -243,10 +243,28 @@ class _JoinAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GQButton(
     onPressed: () {
-      // TODO: запрос на участие через Cubit/Bloc.
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(EventTexts.snackBarJoinRequestSent)),
+      final currentUserId = context.read<ProfileBloc>().state.profile?.uid;
+      if (currentUserId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(EventTexts.snackBarJoinRequestSent)),
+        );
+        return;
+      }
+
+      context.read<EventsBloc>().add(
+        EventsJoinRequested(eventId: event.id, requesterId: currentUserId),
       );
+      final currentProfile = context.read<ProfileBloc>().state.profile;
+      if (currentProfile != null) {
+        context.read<ProfileBloc>().add(
+          EnsureProfileExistsRequested(
+            uid: currentProfile.uid,
+            initialEmail: currentProfile.email,
+            initialName: currentProfile.name,
+            initialNickname: currentProfile.nickname,
+          ),
+        );
+      }
     },
     text: EventTexts.buttonJoin,
     baseColor: const Color(0xFF2E7D32),

@@ -26,11 +26,21 @@ class Profile with _$Profile {
     required String nickname,
     DateTime? birthDate,
     String? city,
+    String? bio,
+    String? avatarUrl,
+    String? gender,
+    int? age,
+    @Default(0.0) double rating,
     @Default(0) int trophies,
     @Default(0) int visitedEventsCount,
     @Default(0) int createdEventsCount,
     @Default(<String>[]) List<String> joinedEventIds,
     @Default(<String>[]) List<String> createdEventIds,
+    @Default(<String>[]) List<String> friendIds,
+    @Default(<String>[]) List<String> incomingFriendRequestIds,
+    @Default(<String>[]) List<String> outgoingFriendRequestIds,
+    @Default(<String>[]) List<String> blockedUserIds,
+    DateTime? lastSeenAt,
   }) = _Profile;
 
   const Profile._();
@@ -68,6 +78,18 @@ class Profile with _$Profile {
       throw ArgumentError(ProfileValidationMessages.eventIdCannotBeEmpty);
     }
     if (createdEventIds.any((id) => id.trim().isEmpty)) {
+      throw ArgumentError(ProfileValidationMessages.eventIdCannotBeEmpty);
+    }
+    if (friendIds.any((id) => id.trim().isEmpty)) {
+      throw ArgumentError(ProfileValidationMessages.eventIdCannotBeEmpty);
+    }
+    if (incomingFriendRequestIds.any((id) => id.trim().isEmpty)) {
+      throw ArgumentError(ProfileValidationMessages.eventIdCannotBeEmpty);
+    }
+    if (outgoingFriendRequestIds.any((id) => id.trim().isEmpty)) {
+      throw ArgumentError(ProfileValidationMessages.eventIdCannotBeEmpty);
+    }
+    if (blockedUserIds.any((id) => id.trim().isEmpty)) {
       throw ArgumentError(ProfileValidationMessages.eventIdCannotBeEmpty);
     }
   }

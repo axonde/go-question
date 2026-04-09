@@ -7,6 +7,7 @@ class _FriendsPageContent extends StatelessWidget {
   final _FriendUserData? searchResult;
   final bool hasQuery;
   final bool isAlreadyFriend;
+  final bool isLoadingFriends;
   final List<_FriendUserData> friends;
   final ValueChanged<String> onSearchChanged;
   final ValueChanged<_FriendUserData> onAddFriend;
@@ -20,6 +21,7 @@ class _FriendsPageContent extends StatelessWidget {
     required this.searchResult,
     required this.hasQuery,
     required this.isAlreadyFriend,
+    required this.isLoadingFriends,
     required this.friends,
     required this.onSearchChanged,
     required this.onAddFriend,
@@ -100,13 +102,15 @@ class _FriendsPageContent extends StatelessWidget {
                 : UiConstants.boxUnit * 1.5,
           ),
           Expanded(
-            child: _FriendsList(
-              hintsEnabled: hintsEnabled,
-              compactModeEnabled: compactModeEnabled,
-              friends: friends,
-              onRemoveFriend: onRemoveFriend,
-              onOpenProfile: onOpenProfile,
-            ),
+            child: isLoadingFriends && friends.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : _FriendsList(
+                    hintsEnabled: hintsEnabled,
+                    compactModeEnabled: compactModeEnabled,
+                    friends: friends,
+                    onRemoveFriend: onRemoveFriend,
+                    onOpenProfile: onOpenProfile,
+                  ),
           ),
         ],
       ),

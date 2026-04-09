@@ -10,6 +10,7 @@ _$NotificationEntityImpl _$$NotificationEntityImplFromJson(
   Map<String, dynamic> json,
 ) => _$NotificationEntityImpl(
   id: json['id'] as String,
+  userId: json['userId'] as String,
   title: json['title'] as String,
   body: json['body'] as String,
   type: $enumDecode(_$NotificationTypeEnumMap, json['type']),
@@ -37,6 +38,7 @@ Map<String, dynamic> _$$NotificationEntityImplToJson(
   _$NotificationEntityImpl instance,
 ) => <String, dynamic>{
   'id': instance.id,
+  'userId': instance.userId,
   'title': instance.title,
   'body': instance.body,
   'type': _$NotificationTypeEnumMap[instance.type]!,

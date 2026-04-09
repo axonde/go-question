@@ -8,6 +8,7 @@ part 'notification_entity.g.dart';
 class NotificationEntity with _$NotificationEntity {
   const factory NotificationEntity({
     required String id,
+    required String userId,
     required String title,
     required String body,
     required NotificationType type,

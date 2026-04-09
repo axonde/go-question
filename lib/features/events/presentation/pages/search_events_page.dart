@@ -1,95 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
-import 'package:go_question/core/constants/event_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
+import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 import 'package:go_question/features/events/presentation/utils/event_presentation_utils.dart';
+import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 
 part 'search_events_page/event_search_card.dart';
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Мок-данные. TODO: заменить на загрузку из Firestore через BLoC.
-// ─────────────────────────────────────────────────────────────────────────────
-
-final _kMockEvents = [
-  EventEntity(
-    id: '1',
-    title: EventTexts.mockEvent1Title,
-    description: EventTexts.mockEvent1Description,
-    startTime: DateTime(2026, 4, 12, 10),
-    location: EventTexts.mockEvent1Location,
-    category: EventTexts.mockEvent1Category,
-    price: 0,
-    maxUsers: 64,
-    participants: 32,
-    organizer: EventTexts.mockEvent1Organizer,
-    status: EventConstants.statusOpen,
-    createdAt: DateTime(2026, 3),
-    updatedAt: DateTime(2026, 3),
-  ),
-  EventEntity(
-    id: '2',
-    title: EventTexts.mockEvent2Title,
-    description: EventTexts.mockEvent2Description,
-    startTime: DateTime(2026, 4, 15, 12),
-    location: EventTexts.mockEvent2Location,
-    category: EventTexts.mockEvent2Category,
-    price: 500,
-    maxUsers: 16,
-    participants: 14,
-    organizer: EventTexts.mockEvent2Organizer,
-    status: EventConstants.statusOpen,
-    createdAt: DateTime(2026, 3, 5),
-    updatedAt: DateTime(2026, 3, 5),
-  ),
-  EventEntity(
-    id: '3',
-    title: EventTexts.mockEvent3Title,
-    description: EventTexts.mockEvent3Description,
-    startTime: DateTime(2026, 4, 20, 9, 30),
-    location: EventTexts.mockEvent3Location,
-    category: EventTexts.mockEvent3Category,
-    price: 300,
-    maxUsers: 128,
-    participants: 64,
-    organizer: EventTexts.mockEvent3Organizer,
-    status: EventConstants.statusOpen,
-    createdAt: DateTime(2026, 3, 10),
-    updatedAt: DateTime(2026, 3, 10),
-  ),
-  EventEntity(
-    id: '4',
-    title: EventTexts.mockEvent4Title,
-    description: EventTexts.mockEvent4Description,
-    startTime: DateTime(2026, 5, 5, 11),
-    location: EventTexts.mockEvent4Location,
-    category: EventTexts.mockEvent4Category,
-    price: 200,
-    maxUsers: 32,
-    participants: 18,
-    organizer: EventTexts.mockEvent4Organizer,
-    status: EventConstants.statusOpen,
-    createdAt: DateTime(2026, 3, 15),
-    updatedAt: DateTime(2026, 3, 15),
-  ),
-  EventEntity(
-    id: '5',
-    title: EventTexts.mockEvent5Title,
-    description: EventTexts.mockEvent5Description,
-    startTime: DateTime(2026, 6, 1, 10),
-    location: EventTexts.mockEvent5Location,
-    category: EventTexts.mockEvent5Category,
-    price: 0,
-    maxUsers: 200,
-    participants: 87,
-    organizer: EventTexts.mockEvent5Organizer,
-    status: EventConstants.statusUpcoming,
-    createdAt: DateTime(2026, 3, 20),
-    updatedAt: DateTime(2026, 3, 20),
-  ),
-];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SearchEventsSheet
@@ -384,19 +304,21 @@ class _FilterSectionLabel extends StatelessWidget {
 }
 
 class _SearchEventsSheetState extends State<SearchEventsSheet> {
-  static final _allLocations =
-      _kMockEvents.map((e) => e.location).toSet().toList()..sort();
-  static final _allCategories =
-      _kMockEvents.map((e) => e.category).toSet().toList()..sort();
-
   String? _expandedId;
   bool _showFilters = false;
-  // ── Состояние фильтров ─────────────────────────────────────────────────────
   final Set<String> _selectedLocations = {};
   final Set<String> _selectedCategories = {};
+  bool? _priceFilter;
+  bool _spotsFilter = false;
 
-  bool? _priceFilter; // null = все, true = бесплатно, false = платно
-  bool _spotsFilter = false; // только с свободными местами
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<EventsBloc>().add(const EventsSearchRefreshed());
+    });
+  }
 
   int get _activeFilterCount =>
       _selectedLocations.length +
@@ -404,130 +326,146 @@ class _SearchEventsSheetState extends State<SearchEventsSheet> {
       (_priceFilter != null ? 1 : 0) +
       (_spotsFilter ? 1 : 0);
 
-  List<EventEntity> get _filtered => _kMockEvents.where((e) {
-    if (_selectedLocations.isNotEmpty &&
-        !_selectedLocations.contains(e.location)) {
-      return false;
-    }
-    if (_selectedCategories.isNotEmpty &&
-        !_selectedCategories.contains(e.category)) {
-      return false;
-    }
-    if (_priceFilter == true && e.price != 0) return false;
-    if (_priceFilter == false && e.price == 0) return false;
-    if (_spotsFilter && e.participants >= e.maxUsers) return false;
-    return true;
-  }).toList();
-
   @override
   Widget build(BuildContext context) {
-    final filtered = _filtered;
+    final profile = context.watch<ProfileBloc>().state.profile;
 
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(UiConstants.borderRadius * 8),
-        ),
-        border: Border(
-          top: BorderSide(color: Color(0xFF62697B)),
-          left: BorderSide(color: Color(0xFF62697B)),
-          right: BorderSide(color: Color(0xFF62697B)),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0xCC000000),
-            offset: Offset(0, -UiConstants.shadowOffsetY),
+    return BlocBuilder<EventsBloc, EventsState>(
+      builder: (context, eventsState) {
+        final events = eventsState.events;
+        final allLocations = events.map((e) => e.location).toSet().toList()
+          ..sort();
+        final allCategories = events.map((e) => e.category).toSet().toList()
+          ..sort();
+        final filtered = _filteredEvents(events);
+
+        return DecoratedBox(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(UiConstants.borderRadius * 8),
+            ),
+            border: Border(
+              top: BorderSide(color: Color(0xFF62697B)),
+              left: BorderSide(color: Color(0xFF62697B)),
+              right: BorderSide(color: Color(0xFF62697B)),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xCC000000),
+                offset: Offset(0, -UiConstants.shadowOffsetY),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        children: [
-          _SheetHeader(
-            activeFilterCount: _activeFilterCount,
-            onFiltersTap: () => setState(() => _showFilters = !_showFilters),
-            onClose: () => Navigator.of(context).pop(),
-          ),
-          AnimatedSize(
-            duration: const Duration(milliseconds: 280),
-            curve: Curves.easeInOutCubic,
-            alignment: Alignment.topCenter,
-            clipBehavior: Clip.none,
-            child: _showFilters
-                ? _FilterPanel(
-                    allLocations: _allLocations,
-                    allCategories: _allCategories,
-                    selectedLocations: _selectedLocations,
-                    selectedCategories: _selectedCategories,
-                    priceFilter: _priceFilter,
-                    spotsFilter: _spotsFilter,
-                    activeCount: _activeFilterCount,
-                    onLocationTap: (loc) => setState(() {
-                      if (!_selectedLocations.remove(loc)) {
-                        _selectedLocations.add(loc);
-                      }
-                      _expandedId = null;
-                    }),
-                    onCategoryTap: (cat) => setState(() {
-                      if (!_selectedCategories.remove(cat)) {
-                        _selectedCategories.add(cat);
-                      }
-                      _expandedId = null;
-                    }),
-                    onPriceTap: (val) => setState(() {
-                      _priceFilter = val;
-                      _expandedId = null;
-                    }),
-                    onSpotsTap: () => setState(() {
-                      _spotsFilter = !_spotsFilter;
-                      _expandedId = null;
-                    }),
-                    onReset: _resetFilters,
-                    onApply: () => setState(() => _showFilters = false),
-                  )
-                : const SizedBox.shrink(),
-          ),
-          Expanded(
-            child: filtered.isEmpty
-                ? const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(UiConstants.boxUnit * 3),
-                      child: Text(
-                        EventTexts.emptyEventsByFilters,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: EventTexts.fontClash,
-                          fontFamilyFallback: EventTexts.fontFallback,
-                          fontSize: UiConstants.textSize * 0.875,
-                          color: Color(0xFF62697B),
-                        ),
-                      ),
-                    ),
-                  )
-                : ListView.separated(
-                    padding: const EdgeInsets.all(UiConstants.boxUnit * 2),
-                    itemCount: filtered.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: UiConstants.boxUnit * 1.5),
-                    itemBuilder: (_, i) {
-                      final event = filtered[i];
-                      return EventSearchCard(
-                        key: ValueKey(event.id),
-                        event: event,
-                        viewerRole: _viewerRoleFor(event),
-                        isExpanded: _expandedId == event.id,
-                        onToggle: () => setState(() {
-                          _expandedId = _expandedId == event.id
-                              ? null
-                              : event.id;
+          child: Column(
+            children: [
+              _SheetHeader(
+                activeFilterCount: _activeFilterCount,
+                onFiltersTap: () =>
+                    setState(() => _showFilters = !_showFilters),
+                onClose: () => Navigator.of(context).pop(),
+              ),
+              AnimatedSize(
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeInOutCubic,
+                alignment: Alignment.topCenter,
+                clipBehavior: Clip.none,
+                child: _showFilters
+                    ? _FilterPanel(
+                        allLocations: allLocations,
+                        allCategories: allCategories,
+                        selectedLocations: _selectedLocations,
+                        selectedCategories: _selectedCategories,
+                        priceFilter: _priceFilter,
+                        spotsFilter: _spotsFilter,
+                        activeCount: _activeFilterCount,
+                        onLocationTap: (loc) => setState(() {
+                          if (!_selectedLocations.remove(loc)) {
+                            _selectedLocations.add(loc);
+                          }
+                          _expandedId = null;
                         }),
-                      );
-                    },
-                  ),
+                        onCategoryTap: (cat) => setState(() {
+                          if (!_selectedCategories.remove(cat)) {
+                            _selectedCategories.add(cat);
+                          }
+                          _expandedId = null;
+                        }),
+                        onPriceTap: (val) => setState(() {
+                          _priceFilter = val;
+                          _expandedId = null;
+                        }),
+                        onSpotsTap: () => setState(() {
+                          _spotsFilter = !_spotsFilter;
+                          _expandedId = null;
+                        }),
+                        onReset: _resetFilters,
+                        onApply: () => setState(() => _showFilters = false),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+              Expanded(
+                child: eventsState.isLoading && events.isEmpty
+                    ? const Center(child: CircularProgressIndicator())
+                    : filtered.isEmpty
+                    ? const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(UiConstants.boxUnit * 3),
+                          child: Text(
+                            EventTexts.emptyEventsByFilters,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: EventTexts.fontClash,
+                              fontFamilyFallback: EventTexts.fontFallback,
+                              fontSize: UiConstants.textSize * 0.875,
+                              color: Color(0xFF62697B),
+                            ),
+                          ),
+                        ),
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.all(UiConstants.boxUnit * 2),
+                        itemCount: filtered.length,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: UiConstants.boxUnit * 1.5),
+                        itemBuilder: (_, i) {
+                          final event = filtered[i];
+                          return EventSearchCard(
+                            key: ValueKey(event.id),
+                            event: event,
+                            viewerRole: _viewerRoleFor(event, profile?.uid),
+                            isExpanded: _expandedId == event.id,
+                            onToggle: () => setState(() {
+                              _expandedId = _expandedId == event.id
+                                  ? null
+                                  : event.id;
+                            }),
+                          );
+                        },
+                      ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
+  }
+
+  List<EventEntity> _filteredEvents(List<EventEntity> events) {
+    return events.where((event) {
+      if (_selectedLocations.isNotEmpty &&
+          !_selectedLocations.contains(event.location)) {
+        return false;
+      }
+      if (_selectedCategories.isNotEmpty &&
+          !_selectedCategories.contains(event.category)) {
+        return false;
+      }
+      if (_priceFilter == true && event.price != 0) return false;
+      if (_priceFilter == false && event.price == 0) return false;
+      if (_spotsFilter && event.participants >= event.maxUsers) return false;
+      return true;
+    }).toList();
   }
 
   void _resetFilters() => setState(() {
@@ -538,8 +476,10 @@ class _SearchEventsSheetState extends State<SearchEventsSheet> {
     _expandedId = null;
   });
 
-  EventViewerRole _viewerRoleFor(EventEntity event) =>
-      EventPresentationUtils.viewerRoleByEventId(event.id);
+  EventViewerRole _viewerRoleFor(EventEntity event, String? currentUserId) =>
+      currentUserId != null && currentUserId == event.organizer
+      ? EventViewerRole.organizer
+      : EventViewerRole.participant;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

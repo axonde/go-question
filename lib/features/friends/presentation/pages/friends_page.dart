@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/friends_texts.dart';
 import 'package:go_question/core/constants/friends_ui_constants.dart';
+import 'package:go_question/core/types/result.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/pressable.dart';
+import 'package:go_question/features/profile/domain/entities/profile.dart';
+import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
+import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:go_question/injection_container/injection_container.dart';
 
 part '../widgets/friends_page/friends_page_content.dart';
 part '../widgets/friends_page/friends_search_panel.dart';
@@ -30,48 +36,110 @@ class FriendsPage extends StatefulWidget {
 
 class _FriendsPageState extends State<FriendsPage> {
   final TextEditingController _searchController = TextEditingController();
-  late final List<_FriendUserData> _allUsers = List<_FriendUserData>.of(
-    _mockUsers,
-  );
-  late final List<_FriendUserData> _friends = _allUsers
-      .where((user) => _initialFriendIds.contains(user.id))
-      .toList();
+  final IProfileRepository _profileRepository = sl<IProfileRepository>();
+  List<_FriendUserData> _friends = [];
+  _FriendUserData? _searchResult;
+  String? _currentUserId;
+  bool _isLoadingFriends = true;
 
   String get _query => _searchController.text.trim();
-
-  _FriendUserData? get _searchResult {
-    if (_query.isEmpty) {
-      return null;
-    }
-
-    final normalizedQuery = _query.toLowerCase();
-
-    for (final user in _allUsers) {
-      if (user.id.toLowerCase().contains(normalizedQuery)) {
-        return user;
-      }
-    }
-
-    return null;
-  }
 
   bool _isFriend(String userId) =>
       _friends.any((friend) => friend.id == userId);
 
-  void _addFriend(_FriendUserData user) {
-    if (_isFriend(user.id)) {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadFriends());
+  }
+
+  Future<void> _loadFriends() async {
+    final profile = context.read<ProfileBloc>().state.profile;
+    if (profile == null || !mounted) {
+      setState(() => _isLoadingFriends = false);
       return;
     }
 
-    setState(() {
-      _friends.insert(0, user);
-    });
+    _currentUserId = profile.uid;
+
+    final result = await _profileRepository.getFriends(profile.uid);
+    if (!mounted) return;
+
+    result.fold(
+      onSuccess: (friends) {
+        setState(() {
+          _friends = friends.map(_FriendUserData.fromProfile).toList();
+          _isLoadingFriends = false;
+        });
+      },
+      onFailure: (_) {
+        setState(() => _isLoadingFriends = false);
+      },
+    );
   }
 
-  void _removeFriend(String userId) {
-    setState(() {
-      _friends.removeWhere((friend) => friend.id == userId);
-    });
+  Future<void> _searchUser(String query) async {
+    if (query.trim().isEmpty) {
+      setState(() => _searchResult = null);
+      return;
+    }
+
+    final result = await _profileRepository.getProfile(query.trim());
+    if (!mounted) return;
+
+    result.fold(
+      onSuccess: (profile) {
+        setState(() => _searchResult = _FriendUserData.fromProfile(profile));
+      },
+      onFailure: (_) {
+        setState(() => _searchResult = null);
+      },
+    );
+  }
+
+  Future<void> _addFriend(_FriendUserData user) async {
+    final currentUserId = _currentUserId;
+    if (currentUserId == null || _isFriend(user.id)) {
+      return;
+    }
+
+    final result = await _profileRepository.sendFriendRequest(
+      requesterUid: currentUserId,
+      recipientUid: user.id,
+    );
+
+    if (!mounted) return;
+
+    result.fold(
+      onSuccess: (_) {
+        setState(() {
+          _friends.insert(0, user);
+        });
+      },
+      onFailure: (_) {},
+    );
+  }
+
+  Future<void> _removeFriend(String userId) async {
+    final currentUserId = _currentUserId;
+    if (currentUserId == null) {
+      return;
+    }
+
+    final result = await _profileRepository.removeFriend(
+      userUid: currentUserId,
+      friendUid: userId,
+    );
+    if (!mounted) return;
+
+    result.fold(
+      onSuccess: (_) {
+        setState(() {
+          _friends.removeWhere((friend) => friend.id == userId);
+        });
+      },
+      onFailure: (_) {},
+    );
   }
 
   void _openProfilePreview(_FriendUserData user) {
@@ -101,7 +169,11 @@ class _FriendsPageState extends State<FriendsPage> {
           isAlreadyFriend:
               _searchResult != null && _isFriend(_searchResult!.id),
           friends: _friends,
-          onSearchChanged: (_) => setState(() {}),
+          isLoadingFriends: _isLoadingFriends,
+          onSearchChanged: (value) {
+            setState(() {});
+            _searchUser(value);
+          },
           onAddFriend: _addFriend,
           onRemoveFriend: _removeFriend,
           onOpenProfile: _openProfilePreview,
@@ -125,44 +197,22 @@ class _FriendUserData {
     required this.level,
     required this.avatarColor,
   });
+
+  factory _FriendUserData.fromProfile(Profile profile) {
+    final palette = <Color>[
+      FriendsUiConstants.avatarBlue,
+      FriendsUiConstants.avatarYellow,
+      FriendsUiConstants.avatarGreen,
+      FriendsUiConstants.avatarOrange,
+      FriendsUiConstants.avatarPurple,
+    ];
+    final hash = profile.uid.codeUnits.fold<int>(0, (sum, unit) => sum + unit);
+    return _FriendUserData(
+      id: profile.uid,
+      name: profile.name,
+      city: profile.city ?? FriendsTexts.friendCityFallback,
+      level: profile.trophies,
+      avatarColor: palette[hash % palette.length],
+    );
+  }
 }
-
-const _initialFriendIds = <String>{'GO-1042', 'GO-2140', 'GO-7711'};
-
-const _mockUsers = <_FriendUserData>[
-  _FriendUserData(
-    id: 'GO-1042',
-    name: 'Максим Лебедев',
-    city: 'Санкт-Петербург',
-    level: 14,
-    avatarColor: FriendsUiConstants.avatarBlue,
-  ),
-  _FriendUserData(
-    id: 'GO-2140',
-    name: 'Арина Шульга',
-    city: 'Москва',
-    level: 11,
-    avatarColor: FriendsUiConstants.avatarYellow,
-  ),
-  _FriendUserData(
-    id: 'GO-7711',
-    name: 'Егор Савчук',
-    city: 'Казань',
-    level: 9,
-    avatarColor: FriendsUiConstants.avatarGreen,
-  ),
-  _FriendUserData(
-    id: 'GO-9910',
-    name: 'Дарья Ким',
-    city: 'Сочи',
-    level: 16,
-    avatarColor: FriendsUiConstants.avatarOrange,
-  ),
-  _FriendUserData(
-    id: 'GO-5521',
-    name: 'Никита Воронов',
-    city: 'Екатеринбург',
-    level: 7,
-    avatarColor: FriendsUiConstants.avatarPurple,
-  ),
-];
