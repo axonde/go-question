@@ -112,8 +112,10 @@ flutter_native_splash:
     color: "#000000" # фон – такой же, как и для старых версий
     image: assets/images/splash_logo.png
 
-flutter_icons:
+flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/icons/png/app_icon.png"
   min_sdk_android: 21 # Optional: defaults to 21 if not provided
+  adaptive_icon_background: "#000000"
+  adaptive_icon_foreground: "assets/icons/png/app_icon.png"
