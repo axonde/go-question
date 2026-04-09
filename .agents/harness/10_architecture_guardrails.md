@@ -27,6 +27,8 @@ Do not create reverse dependencies.
 - UI must not call Firebase SDK directly.
 - Bloc must not depend directly on other Bloc instances for business flows; share repositories/services instead.
 - Do not propagate raw exceptions into UI states; map exceptions to typed failures and return `Result`.
+- Widget classes should stay presentational; BLoC owns business state and transitions.
+- Do not compose reusable widget blocks via `_build*` widget methods; use widget classes.
 
 ## Multi-Developer Feature Rule
 
@@ -83,3 +85,12 @@ Parallel work is allowed only after domain contracts are agreed and stable.
 - Model loading/success/failure paths explicitly.
 - Avoid boolean-flag state soup when state variants are clearer.
 - Keep event handlers focused; extract logic when handlers become large.
+
+## Feature-Local UI Composition Pattern
+
+For a logically single feature component that has internal subparts:
+
+- Place the root component in `widgets/<component_name>.dart`.
+- Place internal subparts in `widgets/components/*.dart`.
+- Wire files through `part` in root and `part of` in subfiles.
+- Keep internal subpart classes private (`_ComponentPart`) when they are not reused outside that component.
