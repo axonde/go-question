@@ -38,6 +38,7 @@ class HomeTopBar extends StatelessWidget {
   final VoidCallback onCityTap;
   final VoidCallback onNotificationsTap;
   final bool showAchievements;
+  final bool hasUnreadAchievements;
   final String city;
 
   const HomeTopBar({
@@ -46,6 +47,7 @@ class HomeTopBar extends StatelessWidget {
     required this.onCityTap,
     required this.onNotificationsTap,
     this.showAchievements = true,
+    this.hasUnreadAchievements = false,
     this.city = 'Санкт-Петербург',
   });
 
@@ -68,6 +70,7 @@ class HomeTopBar extends StatelessWidget {
                 child: _AchievementButton(
                   onTap: onAchievementsTap,
                   visible: showAchievements,
+                  hasUnreadAchievements: hasUnreadAchievements,
                   height: buttonH,
                 ),
               ),

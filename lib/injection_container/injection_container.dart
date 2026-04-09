@@ -5,6 +5,10 @@ import 'package:go_question/config/router/router.dart';
 import 'package:go_question/core/network/network_info.dart';
 import 'package:go_question/core/services/background_music_service.dart';
 import 'package:go_question/core/services/sfx_service.dart';
+import 'package:go_question/features/achievements/data/repositories/achievements_repository_impl.dart';
+import 'package:go_question/features/achievements/data/source/achievements_remote_data_source.dart';
+import 'package:go_question/features/achievements/domain/repositories/i_achievements_repository.dart';
+import 'package:go_question/features/achievements/presentation/bloc/achievements_bloc.dart';
 import 'package:go_question/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:go_question/features/auth/data/source/auth_page_memory.dart';
 import 'package:go_question/features/auth/data/source/datasource.dart';
@@ -101,17 +105,23 @@ Future<void> init() async {
     () => EventsRemoteDataSourceImpl(sl()),
   );
 
+  //! Features - Achievements
+
+  sl.registerFactory(() => AchievementsBloc(sl()));
+  sl.registerLazySingleton<IAchievementsRepository>(
+    () => AchievementsRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<IAchievementsRemoteDataSource>(
+    () => AchievementsRemoteDataSourceImpl(sl()),
+  );
+
   //! Router
 
   sl.registerLazySingleton<AuthGuard>(() => AuthGuard(sl(), sl()));
   sl.registerLazySingleton<GuestGuard>(() => GuestGuard(sl(), sl()));
   sl.registerLazySingleton<OnboardingGuard>(() => OnboardingGuard(sl()));
   sl.registerLazySingleton<AppRouter>(
-    () => AppRouter(
-      authGuard: sl(),
-      guestGuard: sl(),
-      onboardingGuard: sl(),
-    ),
+    () => AppRouter(authGuard: sl(), guestGuard: sl(), onboardingGuard: sl()),
   );
 
   //! Other features

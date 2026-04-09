@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_question/core/constants/achievement_constants.dart';
 import 'package:go_question/features/events/data/constants/events_constants.dart';
 import 'package:go_question/features/events/data/models/event_model.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
@@ -106,6 +107,11 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
         ProfileFirestoreConstants.fieldCreatedEventsCount: FieldValue.increment(
           1,
         ),
+        ProfileFirestoreConstants.fieldAchievementIds: FieldValue.arrayUnion([
+          AchievementConstants.firstCreatedEvent,
+        ]),
+        ProfileFirestoreConstants.fieldUnseenAchievementIds:
+            FieldValue.arrayUnion([AchievementConstants.firstCreatedEvent]),
         ProfileFirestoreConstants.fieldUpdatedAt: FieldValue.serverTimestamp(),
       });
     } on FirebaseException catch (_) {
@@ -410,6 +416,11 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
           ]),
           ProfileFirestoreConstants.fieldVisitedEventsCount:
               FieldValue.increment(1),
+          ProfileFirestoreConstants.fieldAchievementIds: FieldValue.arrayUnion([
+            AchievementConstants.firstJoinedEvent,
+          ]),
+          ProfileFirestoreConstants.fieldUnseenAchievementIds:
+              FieldValue.arrayUnion([AchievementConstants.firstJoinedEvent]),
           ProfileFirestoreConstants.fieldUpdatedAt:
               FieldValue.serverTimestamp(),
         });

@@ -21,12 +21,14 @@ const _achievementDecoration = BoxDecoration(
 class _AchievementButton extends StatelessWidget {
   final VoidCallback onTap;
   final bool visible;
+  final bool hasUnreadAchievements;
   final double height;
 
   const _AchievementButton({
     required this.onTap,
     required this.height,
     this.visible = true,
+    this.hasUnreadAchievements = false,
   });
 
   @override
@@ -35,15 +37,37 @@ class _AchievementButton extends StatelessWidget {
 
     return Pressable(
       onTap: onTap,
-      child: Container(
-        width: height,
-        height: height,
-        decoration: _achievementDecoration,
-        child: Icon(
-          Icons.military_tech,
-          color: HomeUiConstants.achievementIcon,
-          size: height * 0.6,
-        ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: height,
+            height: height,
+            decoration: _achievementDecoration,
+            child: Image.asset(
+              'assets/icons/png/crown_icon.png',
+              fit: BoxFit.contain,
+            ),
+            //  Icon(
+            //   Icons.military_tech,
+            //   color: HomeUiConstants.achievementIcon,
+            //   size: height * 0.6,
+            // ),
+          ),
+          if (hasUnreadAchievements)
+            Positioned(
+              top: -2,
+              right: -2,
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: const BoxDecoration(
+                  color: HomeUiConstants.achievementUnreadDot,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

@@ -15,6 +15,8 @@ void main() {
         createdEventsCount: 2,
         joinedEventIds: ['event-1', 'event-2'],
         createdEventIds: ['created-1'],
+        achievementIds: ['first_created_event'],
+        unseenAchievementIds: ['first_created_event'],
       );
 
       profile.validate(); // Should not throw
@@ -27,6 +29,8 @@ void main() {
       expect(profile.createdEventsCount, equals(2));
       expect(profile.joinedEventIds, equals(['event-1', 'event-2']));
       expect(profile.createdEventIds, equals(['created-1']));
+      expect(profile.achievementIds, equals(['first_created_event']));
+      expect(profile.unseenAchievementIds, equals(['first_created_event']));
     });
 
     test('creates valid profile with nullable optional fields', () {
@@ -170,6 +174,8 @@ void main() {
       expect(profile.createdEventsCount, equals(0));
       expect(profile.joinedEventIds, isEmpty);
       expect(profile.createdEventIds, isEmpty);
+      expect(profile.achievementIds, isEmpty);
+      expect(profile.unseenAchievementIds, isEmpty);
     });
 
     test('fails validation when joinedEventIds contains empty value', () {
@@ -193,6 +199,32 @@ void main() {
         name: 'Test User',
         nickname: 'tester',
         createdEventIds: [''],
+      );
+
+      expect(() => profile.validate(), throwsA(isA<ArgumentError>()));
+    });
+
+    test('fails validation when achievementIds contains empty value', () {
+      const profile = Profile(
+        uid: 'test-uid',
+        registrationId: 1000,
+        email: 'user@test.dev',
+        name: 'Test User',
+        nickname: 'tester',
+        achievementIds: [''],
+      );
+
+      expect(() => profile.validate(), throwsA(isA<ArgumentError>()));
+    });
+
+    test('fails validation when unseenAchievementIds contains empty value', () {
+      const profile = Profile(
+        uid: 'test-uid',
+        registrationId: 1000,
+        email: 'user@test.dev',
+        name: 'Test User',
+        nickname: 'tester',
+        unseenAchievementIds: ['   '],
       );
 
       expect(() => profile.validate(), throwsA(isA<ArgumentError>()));

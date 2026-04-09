@@ -25,6 +25,8 @@ part 'profile_model.g.dart';
 /// - createdEventsCount: int
 /// - joinedEventIds: `List<String>`
 /// - createdEventIds: `List<String>`
+/// - achievementIds: `List<String>`
+/// - unseenAchievementIds: `List<String>`
 /// - friendIds: `List<String>`
 /// - incomingFriendRequestIds: `List<String>`
 /// - outgoingFriendRequestIds: `List<String>`
@@ -52,6 +54,8 @@ class ProfileModel with _$ProfileModel {
     @Default(0) int createdEventsCount,
     @Default(<String>[]) List<String> joinedEventIds,
     @Default(<String>[]) List<String> createdEventIds,
+    @Default(<String>[]) List<String> achievementIds,
+    @Default(<String>[]) List<String> unseenAchievementIds,
     @Default(<String>[]) List<String> friendIds,
     @Default(<String>[]) List<String> incomingFriendRequestIds,
     @Default(<String>[]) List<String> outgoingFriendRequestIds,
@@ -86,6 +90,8 @@ class ProfileModel with _$ProfileModel {
       createdEventsCount: createdEventsCount,
       joinedEventIds: joinedEventIds,
       createdEventIds: createdEventIds,
+      achievementIds: achievementIds,
+      unseenAchievementIds: unseenAchievementIds,
       friendIds: friendIds,
       incomingFriendRequestIds: incomingFriendRequestIds,
       outgoingFriendRequestIds: outgoingFriendRequestIds,
@@ -115,6 +121,8 @@ class ProfileModel with _$ProfileModel {
       createdEventsCount: profile.createdEventsCount,
       joinedEventIds: profile.joinedEventIds,
       createdEventIds: profile.createdEventIds,
+      achievementIds: profile.achievementIds,
+      unseenAchievementIds: profile.unseenAchievementIds,
       friendIds: profile.friendIds,
       incomingFriendRequestIds: profile.incomingFriendRequestIds,
       outgoingFriendRequestIds: profile.outgoingFriendRequestIds,
