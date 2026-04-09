@@ -245,9 +245,7 @@ class _JoinAction extends StatelessWidget {
     onPressed: () {
       final currentUserId = context.read<ProfileBloc>().state.profile?.uid;
       if (currentUserId == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text(EventTexts.snackBarJoinRequestSent)),
-        );
+        sl<AppRouter>().push(const AuthFlowRoute());
         return;
       }
 
@@ -398,11 +396,9 @@ class _OrganizerActions extends StatelessWidget {
         const SizedBox(height: UiConstants.boxUnit * 0.75),
         GQButton(
           onPressed: () {
-            // TODO: открыть список участников.
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(EventTexts.snackBarParticipantsList),
-              ),
+            showDialog<void>(
+              context: context,
+              builder: (_) => EventParticipantsDialog(event: event),
             );
           },
           text: EventTexts.buttonParticipants,
@@ -431,58 +427,78 @@ class _OrganizerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: UiConstants.boxUnit * 5,
-          height: UiConstants.boxUnit * 5,
-          decoration: BoxDecoration(
-            color: const Color(0xFFA5AEBB),
-            shape: BoxShape.circle,
-            border: Border.all(),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x44000000),
-                offset: Offset(0, UiConstants.shadowOffsetY),
+    return FutureBuilder<String?>(
+      future: _loadOrganizerName(),
+      builder: (context, snapshot) {
+        final organizerName = snapshot.data?.trim().isNotEmpty == true
+            ? snapshot.data!.trim()
+            : event.organizer;
+
+        return Row(
+          children: [
+            Container(
+              width: UiConstants.boxUnit * 5,
+              height: UiConstants.boxUnit * 5,
+              decoration: BoxDecoration(
+                color: const Color(0xFFA5AEBB),
+                shape: BoxShape.circle,
+                border: Border.all(),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x44000000),
+                    offset: Offset(0, UiConstants.shadowOffsetY),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: const Icon(
-            Icons.person,
-            color: Colors.white,
-            size: UiConstants.boxUnit * 3,
-          ),
-        ),
-        const SizedBox(width: UiConstants.boxUnit),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                event.organizer,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontFamily: EventTexts.fontClash,
-                  fontFamilyFallback: EventTexts.fontFallback,
-                  fontSize: UiConstants.textSize * 0.875,
-                  color: Color(0xFF3A4560),
-                ),
+              child: const Icon(
+                Icons.person,
+                color: Colors.white,
+                size: UiConstants.boxUnit * 3,
               ),
-              const Text(
-                EventTexts.organizerLabel,
-                style: TextStyle(
-                  fontFamily: EventTexts.fontRussoOne,
-                  fontFamilyFallback: EventTexts.fontFallback,
-                  fontSize: UiConstants.textSize * 0.62,
-                  color: Color(0xFF7187A8),
-                ),
+            ),
+            const SizedBox(width: UiConstants.boxUnit),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    organizerName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontFamily: EventTexts.fontClash,
+                      fontFamilyFallback: EventTexts.fontFallback,
+                      fontSize: UiConstants.textSize * 0.875,
+                      color: Color(0xFF3A4560),
+                    ),
+                  ),
+                  const Text(
+                    EventTexts.organizerLabel,
+                    style: TextStyle(
+                      fontFamily: EventTexts.fontRussoOne,
+                      fontFamilyFallback: EventTexts.fontFallback,
+                      fontSize: UiConstants.textSize * 0.62,
+                      color: Color(0xFF7187A8),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<String?> _loadOrganizerName() async {
+    final repository = sl<IProfileRepository>();
+    final result = await repository.getProfile(event.organizer);
+    return result.fold(
+      onSuccess: (profile) => profile.name.trim().isEmpty
+          ? (profile.nickname.trim().isEmpty ? null : profile.nickname)
+          : profile.name,
+      onFailure: (_) => null,
     );
   }
 }

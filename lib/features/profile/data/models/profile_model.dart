@@ -9,6 +9,7 @@ part 'profile_model.g.dart';
 /// ProfileModel - DTO for Firestore storage.
 ///
 /// Maps to users/{uid} document with fields:
+/// - registrationId: int
 /// - email: String
 /// - name: String
 /// - nickname: String
@@ -35,6 +36,7 @@ part 'profile_model.g.dart';
 class ProfileModel with _$ProfileModel {
   const factory ProfileModel({
     required String uid,
+    required int registrationId,
     required String email,
     required String name,
     required String nickname,
@@ -68,6 +70,7 @@ class ProfileModel with _$ProfileModel {
   Profile toEntity() {
     return Profile(
       uid: uid,
+      registrationId: registrationId,
       email: email,
       name: name,
       nickname: nickname,
@@ -96,6 +99,7 @@ class ProfileModel with _$ProfileModel {
     final now = DateTime.now();
     return ProfileModel(
       uid: profile.uid,
+      registrationId: profile.registrationId,
       email: profile.email,
       name: profile.name,
       nickname: profile.nickname,

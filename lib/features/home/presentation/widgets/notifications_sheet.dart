@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/constants/event_texts.dart';
+import 'package:go_question/core/types/result.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
+import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
+import 'package:go_question/features/notifications/domain/entities/notification_entity.dart';
+import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
+import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:go_question/injection_container/injection_container.dart';
 
 part 'notifications_sheet/notification_card.dart';
 part 'notifications_sheet/notifications_list.dart';
-
-// ─────────────────────────────────────────────────────────────────────────────
-// NotificationData — модель данных уведомления.
-// ─────────────────────────────────────────────────────────────────────────────
 
 class NotificationData {
   final String id;
@@ -19,6 +23,7 @@ class NotificationData {
   final bool showAccept;
   final bool showReject;
   final String? userName;
+  final String? userRegistrationId;
   final String? userRating;
   final String? userAge;
   final String? userGender;
@@ -38,6 +43,7 @@ class NotificationData {
     this.showAccept = false,
     this.showReject = false,
     this.userName,
+    this.userRegistrationId,
     this.userRating,
     this.userAge,
     this.userGender,
@@ -50,67 +56,30 @@ class NotificationData {
     this.eventLocation,
     this.eventCategory,
   });
+
+  factory NotificationData.fromEntity(NotificationEntity entity) {
+    return NotificationData(
+      id: entity.id,
+      title: entity.title,
+      body: entity.body,
+      showAccept: entity.type == NotificationType.joinRequest,
+      showReject: entity.type == NotificationType.joinRequest,
+      userName: entity.requestUserName,
+      userRegistrationId: entity.requestUserRegistrationId,
+      userRating: entity.requestUserRating,
+      userAge: entity.requestUserAge,
+      userGender: entity.requestUserGender,
+      userCity: entity.requestUserCity,
+      userBio: entity.requestUserBio,
+      userEventsAttended: entity.requestUserEventsAttended,
+      userEventsOrganized: entity.requestUserEventsOrganized,
+      eventTitle: entity.eventTitle,
+      eventDate: entity.eventDate,
+      eventLocation: entity.eventLocation,
+      eventCategory: entity.eventCategory,
+    );
+  }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Моки для быстрого отображения (как в поиске).
-// ─────────────────────────────────────────────────────────────────────────────
-
-const _kMockNotifications = [
-  NotificationData(
-    id: '1',
-    title: 'Запрос на участие',
-    body:
-        'Джиган хочет присоединиться к вашему ивенту: "Вечеринка на пляже", который состоится 04.04.2027 в 17:00.',
-    showAccept: true,
-    showReject: true,
-    userName: 'Джиган',
-    userRating: '158 🏆',
-    userAge: '28 лет',
-    userGender: 'Мужской',
-    userCity: 'Санкт-Петербург',
-    userBio:
-        'Люблю активный отдых, спорт и новые знакомства. Участвую в мероприятиях уже 2 года.',
-    userEventsAttended: 24,
-    userEventsOrganized: 3,
-    eventTitle: 'Вечеринка на пляже',
-    eventDate: '04.04.2027 в 17:00',
-    eventLocation: 'Пляж "Ласковый берег", Санкт-Петербург',
-    eventCategory: 'Отдых и развлечения',
-  ),
-  NotificationData(
-    id: '2',
-    title: 'Событие скоро начнется!',
-    body:
-        'Событие "Вечеринка на пляже", которое состоится 04.04.2027 в 17:00, начнется через 2 часа. Не забудьте подготовиться!',
-    eventTitle: 'Вечеринка на пляже',
-    eventDate: '04.04.2027 в 17:00',
-    eventLocation: 'Пляж "Ласковый берег", Санкт-Петербург',
-    eventCategory: 'Отдых и развлечения',
-  ),
-  NotificationData(
-    id: '3',
-    title: 'Новое сообщение',
-    body: 'У вас новое сообщение от организатора турнира.',
-    userName: 'Организатор Иван',
-    userRating: '245 🏆',
-    userAge: '35 лет',
-    userGender: 'Мужской',
-    userCity: 'Москва',
-    userBio:
-        'Профессиональный организатор спортивных мероприятий. Опыт работы 5 лет.',
-    userEventsAttended: 15,
-    userEventsOrganized: 42,
-    eventTitle: 'Турнир по настольному теннису',
-    eventDate: '15.04.2027 в 10:00',
-    eventLocation: 'Спортивный комплекс "Олимп"',
-    eventCategory: 'Спорт',
-  ),
-];
-
-// ─────────────────────────────────────────────────────────────────────────────
-// NotificationsSheet — основная панель уведомлений.
-// ─────────────────────────────────────────────────────────────────────────────
 
 class NotificationsSheet extends StatefulWidget {
   const NotificationsSheet({super.key});
@@ -121,6 +90,63 @@ class NotificationsSheet extends StatefulWidget {
 
 class _NotificationsSheetState extends State<NotificationsSheet> {
   int? _expandedIndex;
+  bool _isLoading = true;
+  List<NotificationData> _notifications = const <NotificationData>[];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadNotifications());
+  }
+
+  Future<void> _loadNotifications() async {
+    final profile = context.read<ProfileBloc>().state.profile;
+    if (profile == null || !mounted) {
+      setState(() => _isLoading = false);
+      return;
+    }
+
+    final repository = sl<INotificationsRepository>();
+    final result = await repository.getNotifications(profile.uid);
+    if (!mounted) return;
+
+    result.fold(
+      onSuccess: (notifications) {
+        setState(() {
+          _notifications = notifications
+              .map(NotificationData.fromEntity)
+              .toList(growable: false);
+          _isLoading = false;
+        });
+      },
+      onFailure: (_) {
+        setState(() {
+          _notifications = const <NotificationData>[];
+          _isLoading = false;
+        });
+      },
+    );
+  }
+
+  Future<void> _acceptRequest(NotificationData data) async {
+    final profile = context.read<ProfileBloc>().state.profile;
+    if (profile == null) return;
+    await sl<IEventsRepository>().approveJoinRequest(
+      requestId: data.id,
+      organizerId: profile.uid,
+    );
+    await _loadNotifications();
+  }
+
+  Future<void> _rejectRequest(NotificationData data) async {
+    final profile = context.read<ProfileBloc>().state.profile;
+    if (profile == null) return;
+    await sl<IEventsRepository>().rejectJoinRequest(
+      requestId: data.id,
+      organizerId: profile.uid,
+    );
+    await _loadNotifications();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,13 +172,19 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         children: [
           _buildHeader(context),
           Expanded(
-            child: _NotificationsList(
-              notifications: _kMockNotifications,
-              expandedIndex: _expandedIndex,
-              onToggle: (index) => setState(() {
-                _expandedIndex = _expandedIndex == index ? null : index;
-              }),
-            ),
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _notifications.isEmpty
+                ? const Center(child: Text(EventTexts.notificationsEmptyState))
+                : _NotificationsList(
+                    notifications: _notifications,
+                    expandedIndex: _expandedIndex,
+                    onToggle: (index) => setState(() {
+                      _expandedIndex = _expandedIndex == index ? null : index;
+                    }),
+                    onAccept: _acceptRequest,
+                    onReject: _rejectRequest,
+                  ),
           ),
         ],
       ),
@@ -180,7 +212,9 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            const Center(child: _StrokeTitle(text: 'Уведомления')),
+            const Center(
+              child: _StrokeTitle(text: EventTexts.notificationsHeaderTitle),
+            ),
             Align(
               alignment: Alignment.centerRight,
               child: GqCloseButton(onTap: () => Navigator.of(context).pop()),
@@ -191,10 +225,6 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
     );
   }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// _StrokeTitle — заголовок с чёрной обводкой и тенью (как в поиске).
-// ─────────────────────────────────────────────────────────────────────────────
 
 class _StrokeTitle extends StatelessWidget {
   final String text;
@@ -230,16 +260,12 @@ class _StrokeTitle extends StatelessWidget {
           text,
           maxLines: maxLines,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(
+          style: const TextStyle(
             fontFamily: 'Clash',
-            fontFamilyFallback: const ['Roboto', 'sans-serif'],
-            fontSize: fontSize,
-            fontWeight: FontWeight.bold,
+            fontFamilyFallback: ['Roboto', 'sans-serif'],
             color: Colors.white,
-            shadows: const [
-              Shadow(offset: Offset(0, UiConstants.textShadowOffsetY)),
-            ],
-          ),
+            shadows: [Shadow(offset: Offset(0, UiConstants.textShadowOffsetY))],
+          ).copyWith(fontSize: fontSize, fontWeight: FontWeight.bold),
         ),
       ],
     );

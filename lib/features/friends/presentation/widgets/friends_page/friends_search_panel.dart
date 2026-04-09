@@ -64,7 +64,13 @@ class _FriendsSearchPanel extends StatelessWidget {
             TextField(
               controller: controller,
               onChanged: onChanged,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.done,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               style: const TextStyle(color: AppColors.textPrimary),
+              onTapOutside: (_) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
+              onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
               decoration: InputDecoration(
                 hintText: FriendsTexts.searchHint,
                 hintStyle: const TextStyle(color: AppColors.textSecondary),

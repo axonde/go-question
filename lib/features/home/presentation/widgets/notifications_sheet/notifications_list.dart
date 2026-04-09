@@ -4,11 +4,15 @@ class _NotificationsList extends StatelessWidget {
   final List<NotificationData> notifications;
   final int? expandedIndex;
   final ValueChanged<int> onToggle;
+  final Future<void> Function(NotificationData) onAccept;
+  final Future<void> Function(NotificationData) onReject;
 
   const _NotificationsList({
     required this.notifications,
     required this.expandedIndex,
     required this.onToggle,
+    required this.onAccept,
+    required this.onReject,
   });
 
   @override
@@ -27,6 +31,8 @@ class _NotificationsList extends StatelessWidget {
             data: data,
             isExpanded: expandedIndex == index,
             onToggle: () => onToggle(index),
+            onAccept: data.showAccept ? () => onAccept(data) : null,
+            onReject: data.showReject ? () => onReject(data) : null,
           );
         },
       ),

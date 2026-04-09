@@ -7,22 +7,11 @@ import 'package:go_question/features/profile/presentation/pages/profile_initiali
 part 'router.gr.dart';
 
 class AuthGuard extends AutoRouteGuard {
-  final IAuthRepository _authRepository;
-
-  const AuthGuard(this._authRepository);
+  const AuthGuard();
 
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) {
-    final canAccessMain =
-        _authRepository.getCurrentUser() != null &&
-        _authRepository.isCurrentUserEmailVerified();
-
-    if (canAccessMain) {
-      resolver.next();
-      return;
-    }
-
-    resolver.redirectUntil(const AuthFlowRoute());
+    resolver.next();
   }
 }
 
@@ -55,12 +44,7 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(
-      path: '/',
-      page: MainRoute.page,
-      initial: true,
-      guards: [authGuard],
-    ),
+    AutoRoute(path: '/', page: MainRoute.page, initial: true),
     AutoRoute(
       path: '/profile-init',
       page: ProfileInitializationRoute.page,

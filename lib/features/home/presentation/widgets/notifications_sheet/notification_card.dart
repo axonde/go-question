@@ -4,12 +4,16 @@ class NotificationCard extends StatelessWidget {
   final NotificationData data;
   final bool isExpanded;
   final VoidCallback onToggle;
+  final VoidCallback? onAccept;
+  final VoidCallback? onReject;
 
   const NotificationCard({
     super.key,
     required this.data,
     required this.isExpanded,
     required this.onToggle,
+    this.onAccept,
+    this.onReject,
   });
 
   @override
@@ -71,7 +75,7 @@ class NotificationCard extends StatelessWidget {
               if (!isExpanded) ...[
                 const SizedBox(height: 4),
                 const Text(
-                  'Нажмите на уведомление, чтобы узнать детали.',
+                  EventTexts.notificationsTapHint,
                   style: TextStyle(
                     fontFamily: 'RussoOne',
                     color: Color(0xFF8A93A6),
@@ -93,8 +97,8 @@ class NotificationCard extends StatelessWidget {
                           height: 32,
                           child: GQButton(
                             baseColor: AppColors.error,
-                            onPressed: () {},
-                            text: 'Отклонить',
+                            onPressed: onReject ?? () {},
+                            text: EventTexts.buttonReject,
                             fontSize: UiConstants.textSize * 0.75,
                           ),
                         ),
@@ -105,8 +109,8 @@ class NotificationCard extends StatelessWidget {
                         height: 32,
                         child: GQButton(
                           baseColor: AppColors.success,
-                          onPressed: () {},
-                          text: 'Принять',
+                          onPressed: onAccept ?? () {},
+                          text: EventTexts.buttonApprove,
                           fontSize: UiConstants.textSize * 0.75,
                         ),
                       ),
@@ -198,6 +202,18 @@ class _UserInfo extends StatelessWidget {
                     strokeWidth: 2,
                   ),
                   const SizedBox(height: 4),
+                  if (data.userRegistrationId != null)
+                    Text(
+                      'ID: ${data.userRegistrationId}',
+                      style: const TextStyle(
+                        fontFamily: 'RussoOne',
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  if (data.userRegistrationId != null)
+                    const SizedBox(height: 2),
                   Text(
                     'Рейтинг: ${data.userRating ?? '0 🏆'}',
                     style: const TextStyle(

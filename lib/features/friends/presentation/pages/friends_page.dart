@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/friends_texts.dart';
@@ -84,7 +86,15 @@ class _FriendsPageState extends State<FriendsPage> {
       return;
     }
 
-    final result = await _profileRepository.getProfile(query.trim());
+    final registrationId = int.tryParse(query.trim());
+    if (registrationId == null) {
+      setState(() => _searchResult = null);
+      return;
+    }
+
+    final result = await _profileRepository.getProfileByRegistrationId(
+      registrationId,
+    );
     if (!mounted) return;
 
     result.fold(
@@ -100,6 +110,9 @@ class _FriendsPageState extends State<FriendsPage> {
   Future<void> _addFriend(_FriendUserData user) async {
     final currentUserId = _currentUserId;
     if (currentUserId == null || _isFriend(user.id)) {
+      if (currentUserId == null) {
+        sl<AppRouter>().push(const AuthFlowRoute());
+      }
       return;
     }
 
@@ -158,6 +171,7 @@ class _FriendsPageState extends State<FriendsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       body: SafeArea(
         child: _FriendsPageContent(
@@ -185,6 +199,7 @@ class _FriendsPageState extends State<FriendsPage> {
 
 class _FriendUserData {
   final String id;
+  final int registrationId;
   final String name;
   final String city;
   final int level;
@@ -192,6 +207,7 @@ class _FriendUserData {
 
   const _FriendUserData({
     required this.id,
+    required this.registrationId,
     required this.name,
     required this.city,
     required this.level,
@@ -209,6 +225,7 @@ class _FriendUserData {
     final hash = profile.uid.codeUnits.fold<int>(0, (sum, unit) => sum + unit);
     return _FriendUserData(
       id: profile.uid,
+      registrationId: profile.registrationId,
       name: profile.name,
       city: profile.city ?? FriendsTexts.friendCityFallback,
       level: profile.trophies,

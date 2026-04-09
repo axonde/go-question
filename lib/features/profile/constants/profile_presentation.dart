@@ -23,4 +23,41 @@ class ProfilePresentationConstants {
   static const String dialogInputHint = 'Введите значение';
   static const String dialogCancelButton = 'Отмена';
   static const String dialogSaveButton = 'Сохранить';
+
+  static const String completionTitle = 'Заполните профиль';
+  static const String completionDescription =
+      'Добавьте недостающие данные, чтобы мы могли корректно показать вас другим пользователям.';
+  static const String completionSaveButton = 'Сохранить профиль';
+  static const String completionCityHint = 'Город';
+  static const String completionCityLabel = 'Город';
+  static const String completionBioHint = 'Коротко о себе';
+  static const String completionGenderHint = 'Пол';
+  static const String completionGenderLabel = 'Пол';
+  static const String completionAgeHint = 'Возраст';
+  static const String completionAgeLabel = 'Возраст';
+  static const String completionBirthDateHint = 'Дата рождения';
+  static const String completionAvatarHint = 'Аватар из галереи';
+  static const String completionOptionalSuffix = 'необязательно';
+
+  static const List<String> completionCityOptions = [
+    'Москва',
+    'Санкт-Петербург',
+    'Казань',
+    'Екатеринбург',
+    'Новосибирск',
+    'Нижний Новгород',
+    'Краснодар',
+    'Сочи',
+    'Другой город',
+  ];
+
+  static const List<String> completionGenderOptions = [
+    'Мужской',
+    'Женский',
+    'Другое',
+    'Не указывать',
+  ];
+
+  static const int completionMinAge = 7;
+  static const int completionMaxAge = 99;
 }

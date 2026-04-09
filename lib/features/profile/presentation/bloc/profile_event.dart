@@ -64,3 +64,10 @@ final class ProfileRetryRequested extends ProfileEvent {
     required this.initialNickname,
   });
 }
+
+/// Update an existing profile after the user fills missing data.
+final class ProfileUpdateRequested extends ProfileEvent {
+  final Profile profile;
+
+  const ProfileUpdateRequested(this.profile);
+}

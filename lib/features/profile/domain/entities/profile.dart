@@ -21,6 +21,7 @@ part 'profile.freezed.dart';
 class Profile with _$Profile {
   const factory Profile({
     required String uid,
+    required int registrationId,
     required String email,
     required String name,
     required String nickname,
@@ -50,6 +51,9 @@ class Profile with _$Profile {
   void validate() {
     if (uid.isEmpty) {
       throw ArgumentError(ProfileValidationMessages.uidCannotBeEmpty);
+    }
+    if (registrationId < 1000) {
+      throw ArgumentError(ProfileValidationMessages.registrationIdInvalid);
     }
     if (email.trim().isEmpty) {
       throw ArgumentError(ProfileValidationMessages.emailCannotBeEmpty);

@@ -15,6 +15,9 @@ abstract class IProfileRemoteDataSource {
   /// Throws other Firestore exceptions on failure.
   Future<ProfileModel?> getProfile(String uid);
 
+  /// Retrieves profile by numeric registration id.
+  Future<ProfileModel?> getProfileByRegistrationId(int registrationId);
+
   /// Retrieves profiles by ids.
   Future<List<ProfileModel>> getProfilesByIds(List<String> uids);
 
@@ -176,6 +179,29 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
   }
 
   @override
+  Future<ProfileModel?> getProfileByRegistrationId(int registrationId) async {
+    try {
+      final snapshot = await _firestore
+          .collection(ProfileFirestoreConstants.usersCollection)
+          .where(
+            ProfileFirestoreConstants.fieldRegistrationId,
+            isEqualTo: registrationId,
+          )
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        return null;
+      }
+
+      final doc = snapshot.docs.first;
+      return ProfileModel.fromJson({...doc.data(), 'uid': doc.id});
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<void> createInitialProfile({
     required String uid,
     required String email,
@@ -191,6 +217,9 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
       final nicknameRef = _firestore
           .collection(ProfileFirestoreConstants.nicknamesCollection)
           .doc(nicknameKey);
+      final counterRef = _firestore
+          .collection(ProfileFirestoreConstants.countersCollection)
+          .doc(ProfileFirestoreConstants.userRegistrationCounterDoc);
 
       await _firestore.runTransaction((tx) async {
         final userSnapshot = await tx.get(userRef);
@@ -205,8 +234,18 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
           );
         }
 
+        final counterSnapshot = await tx.get(counterRef);
+        final currentCounter =
+            (counterSnapshot.data()?['value'] as num?)?.toInt() ?? 999;
+        final nextRegistrationId = currentCounter + 1;
+
         tx.set(nicknameRef, {'uid': uid, 'createdAt': now});
+        tx.set(counterRef, {
+          'value': nextRegistrationId,
+          'updatedAt': now,
+        }, SetOptions(merge: true));
         tx.set(userRef, {
+          'registrationId': nextRegistrationId,
           'email': email,
           'name': name,
           'nickname': nickname,

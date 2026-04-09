@@ -10,6 +10,11 @@ abstract class IProfileRepository {
   /// Returns Success(profile) if found, Failure(profileNotFound) if not.
   Future<Result<Profile, ProfileFailure>> getProfile(String uid);
 
+  /// Retrieves profile by numeric registration id.
+  Future<Result<Profile, ProfileFailure>> getProfileByRegistrationId(
+    int registrationId,
+  );
+
   /// Creates a new profile with initial data.
   /// Validates profile invariants.
   /// Returns Success(profile) on success, Failure for any domain/data errors.

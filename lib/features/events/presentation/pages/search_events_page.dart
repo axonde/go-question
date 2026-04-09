@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
+import 'package:go_question/core/types/result.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
 import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
+import 'package:go_question/features/events/presentation/pages/event_participants_dialog.dart';
 import 'package:go_question/features/events/presentation/utils/event_presentation_utils.dart';
+import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:go_question/injection_container/injection_container.dart';
 
 part 'search_events_page/event_search_card.dart';
 

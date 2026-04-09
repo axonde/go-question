@@ -15,6 +15,7 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     on<EventsSearchRefreshed>(_onSearchRefreshed);
     on<EventsDetailRequested>(_onDetailRequested);
     on<EventsCreateSubmitted>(_onCreateSubmitted);
+    on<EventsUpdateSubmitted>(_onUpdateSubmitted);
     on<EventsJoinRequested>(_onJoinRequested);
     on<EventsJoinRequestApproved>(_onJoinRequestApproved);
     on<EventsJoinRequestRejected>(_onJoinRequestRejected);
@@ -124,6 +125,30 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     emit(_loadingState());
 
     final result = await _repository.createEvent(event.event);
+
+    await result.foldAsync(
+      onSuccess: (_) async {
+        await _refreshEvents(emit);
+      },
+      onFailure: (failure) async {
+        emit(
+          state.copyWith(
+            status: EventsStatus.failure,
+            errorMessage: failure.message,
+            clearHint: true,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onUpdateSubmitted(
+    EventsUpdateSubmitted event,
+    Emitter<EventsState> emit,
+  ) async {
+    emit(_loadingState());
+
+    final result = await _repository.updateEvent(event.event);
 
     await result.foldAsync(
       onSuccess: (_) async {

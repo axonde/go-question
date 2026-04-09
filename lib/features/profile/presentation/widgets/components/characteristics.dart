@@ -79,6 +79,9 @@ class _DateFieldState extends State<_DateField> {
           controller: controller,
           autofocus: true,
           keyboardType: TextInputType.datetime,
+          textInputAction: TextInputAction.done,
+          onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+          onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             _DateInputFormatter(),
@@ -232,6 +235,9 @@ class _FieldState extends State<_Field> {
         content: TextField(
           controller: controller,
           autofocus: true,
+          textInputAction: TextInputAction.done,
+          onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+          onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
           decoration: const InputDecoration(
             hintText: ProfilePresentationConstants.dialogInputHint,
             border: OutlineInputBorder(),

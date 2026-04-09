@@ -17,6 +17,9 @@ class PasswordFieldState extends State<PasswordField> {
   Widget build(BuildContext context) {
     return TextFormField(
       onChanged: widget.onChanged,
+      textInputAction: TextInputAction.done,
+      onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+      onFieldSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
       obscureText: isObscure,
       decoration: InputDecoration(
         labelText: 'Пароль',

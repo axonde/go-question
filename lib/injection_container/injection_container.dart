@@ -79,7 +79,7 @@ Future<void> init() async {
 
   //! Router
 
-  sl.registerLazySingleton<AuthGuard>(() => AuthGuard(sl()));
+  sl.registerLazySingleton<AuthGuard>(() => const AuthGuard());
   sl.registerLazySingleton<GuestGuard>(() => GuestGuard(sl()));
   sl.registerLazySingleton<AppRouter>(
     () => AppRouter(authGuard: sl(), guestGuard: sl()),

@@ -109,6 +109,12 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
       if (!doc.exists) {
         throw const EventNotFoundException();
       }
+      final existingOrganizer =
+          (doc.data() ?? <String, dynamic>{})[EventsConstants.fieldOrganizer]
+              as String?;
+      if (existingOrganizer != null && existingOrganizer != event.organizer) {
+        throw const EventUpdateException();
+      }
       final data = event.toFirestore();
       await _eventsRef.doc(event.id).update(data);
     } on EventNotFoundException {
@@ -173,6 +179,7 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
         }
 
         final eventData = eventSnapshot.data() ?? <String, dynamic>{};
+        final requesterData = requesterSnapshot.data() ?? <String, dynamic>{};
         final pending = List<String>.from(
           eventData[EventsConstants.fieldPendingParticipantIds] ??
               const <String>[],
@@ -219,11 +226,32 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
               eventData[EventsConstants.fieldOrganizer],
           NotificationsConstants.fieldTitle: 'Новая заявка на участие',
           NotificationsConstants.fieldBody:
-              'Пользователь $requesterId хочет присоединиться к событию $eventId',
+              'Пользователь ${requesterData[ProfileFirestoreConstants.fieldName] ?? requesterId}'
+              ' (ID: ${requesterData[ProfileFirestoreConstants.fieldRegistrationId] ?? requesterId})'
+              ' хочет присоединиться к событию ${eventData[EventsConstants.fieldTitle]}',
           NotificationsConstants.fieldType: 'join_request',
           NotificationsConstants.fieldIsRead: false,
           NotificationsConstants.fieldCreatedAt: FieldValue.serverTimestamp(),
           NotificationsConstants.fieldRequestUserId: requesterId,
+          NotificationsConstants.fieldRequestUserName:
+              requesterData[ProfileFirestoreConstants.fieldName],
+          NotificationsConstants.fieldRequestUserRegistrationId:
+              requesterData[ProfileFirestoreConstants.fieldRegistrationId]
+                  ?.toString(),
+          NotificationsConstants.fieldRequestUserRating:
+              requesterData[ProfileFirestoreConstants.fieldRating]?.toString(),
+          NotificationsConstants.fieldRequestUserAge:
+              requesterData[ProfileFirestoreConstants.fieldAge]?.toString(),
+          NotificationsConstants.fieldRequestUserGender:
+              requesterData[ProfileFirestoreConstants.fieldGender],
+          NotificationsConstants.fieldRequestUserCity:
+              requesterData[ProfileFirestoreConstants.fieldCity],
+          NotificationsConstants.fieldRequestUserBio:
+              requesterData[ProfileFirestoreConstants.fieldBio],
+          NotificationsConstants.fieldRequestUserEventsAttended:
+              requesterData[ProfileFirestoreConstants.fieldVisitedEventsCount],
+          NotificationsConstants.fieldRequestUserEventsOrganized:
+              requesterData[ProfileFirestoreConstants.fieldCreatedEventsCount],
           NotificationsConstants.fieldEventId: eventId,
           NotificationsConstants.fieldEventTitle:
               eventData[EventsConstants.fieldTitle],

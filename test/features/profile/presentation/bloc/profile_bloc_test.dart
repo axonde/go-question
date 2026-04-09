@@ -19,6 +19,11 @@ class FakeProfileRepository implements IProfileRepository {
       throw UnimplementedError();
 
   @override
+  Future<Result<Profile, ProfileFailure>> getProfileByRegistrationId(
+    int registrationId,
+  ) async => throw UnimplementedError();
+
+  @override
   Future<Result<Profile, ProfileFailure>> incrementCreatedEventsCount(
     String uid,
   ) async => throw UnimplementedError();

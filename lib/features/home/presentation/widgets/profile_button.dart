@@ -60,14 +60,16 @@ class _ProfileCard extends StatelessWidget {
     final profile = context.watch<ProfileBloc>().state.profile;
     final authUser = context.watch<AuthBloc>().state.user;
     final profileName = profile?.name.trim();
-    final safeName = (profileName == null || profileName.isEmpty)
-        ? 'User'
-        : profileName;
+    final safeName = authUser == null
+        ? 'Войти'
+        : ((profileName == null || profileName.isEmpty) ? 'User' : profileName);
     final profileNickname = profile?.nickname.trim() ?? '';
     final authNickname = authUser?.nickname.trim() ?? '';
-    final nickname = profileNickname.isNotEmpty
-        ? profileNickname
-        : (authNickname.isNotEmpty ? authNickname : 'user');
+    final nickname = authUser == null
+        ? 'Для доступа к профилю'
+        : (profileNickname.isNotEmpty
+              ? profileNickname
+              : (authNickname.isNotEmpty ? authNickname : 'user'));
     final profileScore = profile?.trophies ?? 0;
 
     return DecoratedBox(

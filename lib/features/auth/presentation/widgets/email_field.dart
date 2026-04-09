@@ -10,6 +10,9 @@ class EmailField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       onChanged: onChanged,
+      textInputAction: TextInputAction.done,
+      onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+      onFieldSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
       decoration: const InputDecoration(
         labelText: 'Почта',
         border: OutlineInputBorder(),

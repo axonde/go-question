@@ -24,6 +24,12 @@ final class EventsCreateSubmitted extends EventsEvent {
   const EventsCreateSubmitted(this.event);
 }
 
+final class EventsUpdateSubmitted extends EventsEvent {
+  final EventEntity event;
+
+  const EventsUpdateSubmitted(this.event);
+}
+
 final class EventsJoinRequested extends EventsEvent {
   final String eventId;
   final String requesterId;

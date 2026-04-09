@@ -24,6 +24,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc(this._repository) : super(const ProfileState.initial()) {
     on<EnsureProfileExistsRequested>(_onEnsureProfileExistsRequested);
     on<ProfileRetryRequested>(_onRetryRequested);
+    on<ProfileUpdateRequested>(_onUpdateRequested);
   }
 
   /// Ensures profile exists. Called once after auth success.
@@ -79,6 +80,27 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       onSuccess: (profile) {
         emit(ProfileState.success(profile));
       },
+      onFailure: (failure) {
+        emit(
+          ProfileState.recoverableFailure(
+            message: profileInitializationFailedMessage,
+            failureType: failure.type,
+            failureMessage: failure.message,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onUpdateRequested(
+    ProfileUpdateRequested event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(const ProfileState.loading());
+
+    final result = await _repository.updateProfile(event.profile);
+    result.fold(
+      onSuccess: (profile) => emit(ProfileState.success(profile)),
       onFailure: (failure) {
         emit(
           ProfileState.recoverableFailure(

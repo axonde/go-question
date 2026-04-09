@@ -68,6 +68,56 @@ class ProfileRepositoryImpl implements IProfileRepository {
   }
 
   @override
+  Future<Result<Profile, ProfileFailure>> getProfileByRegistrationId(
+    int registrationId,
+  ) async {
+    try {
+      final modelOrNull = await _remoteDataSource.getProfileByRegistrationId(
+        registrationId,
+      );
+
+      if (modelOrNull == null) {
+        return Failure(
+          ProfileFailure(
+            ProfileFailureType.profileNotFound,
+            message:
+                '${ProfileFailureMessages.profileNotFoundForUid} $registrationId',
+          ),
+        );
+      }
+
+      final profile = modelOrNull.toEntity();
+      profile.validate();
+      _profileCache[profile.uid] = profile;
+      return Success(profile);
+    } catch (error) {
+      Profile? cached;
+      for (final profile in _profileCache.values) {
+        if (profile.registrationId == registrationId) {
+          cached = profile;
+          break;
+        }
+      }
+      if (cached != null) {
+        return Success(cached);
+      }
+
+      if (error is ArgumentError) {
+        return Failure(
+          ProfileFailure(
+            ProfileFailureType.invalidName,
+            message: error.message?.toString() ?? error.toString(),
+          ),
+        );
+      }
+
+      final mappedException = mapProfileFirestoreException(error);
+      final failure = _errorMapper.map(mappedException);
+      return Failure(failure);
+    }
+  }
+
+  @override
   Future<Result<Profile, ProfileFailure>> createInitialProfile({
     required String uid,
     required String initialEmail,
@@ -81,6 +131,7 @@ class ProfileRepositoryImpl implements IProfileRepository {
 
       final initialProfile = Profile(
         uid: uid,
+        registrationId: 1000,
         email: normalizedEmail,
         name: normalizedName,
         nickname: normalizedNickname,

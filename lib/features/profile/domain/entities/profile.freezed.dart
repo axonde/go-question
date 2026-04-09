@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$Profile {
   String get uid => throw _privateConstructorUsedError;
+  int get registrationId => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get nickname => throw _privateConstructorUsedError;
@@ -54,6 +55,7 @@ abstract class $ProfileCopyWith<$Res> {
   @useResult
   $Res call({
     String uid,
+    int registrationId,
     String email,
     String name,
     String nickname,
@@ -93,6 +95,7 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
   @override
   $Res call({
     Object? uid = null,
+    Object? registrationId = null,
     Object? email = null,
     Object? name = null,
     Object? nickname = null,
@@ -120,6 +123,10 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
                 ? _value.uid
                 : uid // ignore: cast_nullable_to_non_nullable
                       as String,
+            registrationId: null == registrationId
+                ? _value.registrationId
+                : registrationId // ignore: cast_nullable_to_non_nullable
+                      as int,
             email: null == email
                 ? _value.email
                 : email // ignore: cast_nullable_to_non_nullable
@@ -216,6 +223,7 @@ abstract class _$$ProfileImplCopyWith<$Res> implements $ProfileCopyWith<$Res> {
   @useResult
   $Res call({
     String uid,
+    int registrationId,
     String email,
     String name,
     String nickname,
@@ -254,6 +262,7 @@ class __$$ProfileImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? uid = null,
+    Object? registrationId = null,
     Object? email = null,
     Object? name = null,
     Object? nickname = null,
@@ -281,6 +290,10 @@ class __$$ProfileImplCopyWithImpl<$Res>
             ? _value.uid
             : uid // ignore: cast_nullable_to_non_nullable
                   as String,
+        registrationId: null == registrationId
+            ? _value.registrationId
+            : registrationId // ignore: cast_nullable_to_non_nullable
+                  as int,
         email: null == email
             ? _value.email
             : email // ignore: cast_nullable_to_non_nullable
@@ -371,6 +384,7 @@ class __$$ProfileImplCopyWithImpl<$Res>
 class _$ProfileImpl extends _Profile {
   const _$ProfileImpl({
     required this.uid,
+    required this.registrationId,
     required this.email,
     required this.name,
     required this.nickname,
@@ -401,6 +415,8 @@ class _$ProfileImpl extends _Profile {
 
   @override
   final String uid;
+  @override
+  final int registrationId;
   @override
   final String email;
   @override
@@ -492,7 +508,7 @@ class _$ProfileImpl extends _Profile {
 
   @override
   String toString() {
-    return 'Profile(uid: $uid, email: $email, name: $name, nickname: $nickname, birthDate: $birthDate, city: $city, bio: $bio, avatarUrl: $avatarUrl, gender: $gender, age: $age, rating: $rating, trophies: $trophies, visitedEventsCount: $visitedEventsCount, createdEventsCount: $createdEventsCount, joinedEventIds: $joinedEventIds, createdEventIds: $createdEventIds, friendIds: $friendIds, incomingFriendRequestIds: $incomingFriendRequestIds, outgoingFriendRequestIds: $outgoingFriendRequestIds, blockedUserIds: $blockedUserIds, lastSeenAt: $lastSeenAt)';
+    return 'Profile(uid: $uid, registrationId: $registrationId, email: $email, name: $name, nickname: $nickname, birthDate: $birthDate, city: $city, bio: $bio, avatarUrl: $avatarUrl, gender: $gender, age: $age, rating: $rating, trophies: $trophies, visitedEventsCount: $visitedEventsCount, createdEventsCount: $createdEventsCount, joinedEventIds: $joinedEventIds, createdEventIds: $createdEventIds, friendIds: $friendIds, incomingFriendRequestIds: $incomingFriendRequestIds, outgoingFriendRequestIds: $outgoingFriendRequestIds, blockedUserIds: $blockedUserIds, lastSeenAt: $lastSeenAt)';
   }
 
   @override
@@ -501,6 +517,8 @@ class _$ProfileImpl extends _Profile {
         (other.runtimeType == runtimeType &&
             other is _$ProfileImpl &&
             (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.registrationId, registrationId) ||
+                other.registrationId == registrationId) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.nickname, nickname) ||
@@ -552,6 +570,7 @@ class _$ProfileImpl extends _Profile {
   int get hashCode => Object.hashAll([
     runtimeType,
     uid,
+    registrationId,
     email,
     name,
     nickname,
@@ -586,6 +605,7 @@ class _$ProfileImpl extends _Profile {
 abstract class _Profile extends Profile {
   const factory _Profile({
     required final String uid,
+    required final int registrationId,
     required final String email,
     required final String name,
     required final String nickname,
@@ -611,6 +631,8 @@ abstract class _Profile extends Profile {
 
   @override
   String get uid;
+  @override
+  int get registrationId;
   @override
   String get email;
   @override

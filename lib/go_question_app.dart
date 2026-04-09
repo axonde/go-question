@@ -46,14 +46,8 @@ class GoQuestionApp extends StatelessWidget {
               );
             }
 
-            // Do profile initialization in background to avoid blocking UX
-            // with a dedicated loading screen.
-            appRouter.replace(const MainRoute());
+            appRouter.replace(const ProfileInitializationRoute());
             return;
-          }
-
-          if (state.status == AuthStatus.unauthenticated) {
-            appRouter.replace(const AuthFlowRoute());
           }
         },
         child: BlocBuilder<AuthBloc, AuthState>(

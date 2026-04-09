@@ -3,8 +3,11 @@ abstract final class ProfileFirestoreConstants {
   static const String usersCollection = 'users';
   static const String nicknamesCollection = 'nicknames';
   static const String friendRequestsCollection = 'friend_requests';
+  static const String countersCollection = 'counters';
+  static const String userRegistrationCounterDoc = 'user_registration';
 
   static const String fieldUid = 'uid';
+  static const String fieldRegistrationId = 'registrationId';
   static const String fieldEmail = 'email';
   static const String fieldName = 'name';
   static const String fieldNickname = 'nickname';
@@ -44,6 +47,7 @@ abstract final class ProfileFirestoreConstants {
 /// Validation error messages for Profile entity.
 abstract final class ProfileValidationMessages {
   static const String uidCannotBeEmpty = 'uid cannot be empty';
+  static const String registrationIdInvalid = 'registrationId must be >= 1000';
   static const String emailCannotBeEmpty = 'email cannot be empty';
   static const String nameCannotBeEmpty =
       'name cannot be empty or whitespace-only';

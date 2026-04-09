@@ -20,12 +20,17 @@ class EventTexts {
   static const buttonAdd = 'Добавить';
   static const buttonLeaveEvent = 'Покинуть';
   static const buttonClose = 'Закрыть';
+  static const buttonApprove = 'Принять';
+  static const buttonReject = 'Отклонить';
+  static const buttonRemove = 'Удалить';
+  static const buttonOpenProfile = 'Профиль';
 
   static const sectionDescription = 'Описание';
   static const sectionDetails = 'Детали';
   static const sectionPriceAndSlots = 'Стоимость и места';
   static const sectionCategory = 'Категория';
   static const sectionCity = 'Город';
+  static const sectionEventType = 'Тип мероприятия';
   static const searchHeaderTitle = 'Поиск ивента';
   static const createHeaderTitle = 'Создание ивента';
 
@@ -37,6 +42,18 @@ class EventTexts {
   static const snackBarEditEvent = 'Редактирование ивента';
   static const snackBarParticipantsList = 'Список участников';
   static const snackBarLeftEvent = 'Вы покинули мероприятие';
+  static const snackBarEventUpdated = 'Ивент обновлён';
+  static const snackBarParticipantApproved = 'Участник одобрен';
+  static const snackBarParticipantRejected = 'Участник отклонён';
+  static const snackBarParticipantRemoved = 'Участник удалён';
+  static const participantsRequestsSection = 'Заявки';
+  static const participantsMembersSection = 'Участники';
+  static const participantsEmptyRequests = 'Заявок пока нет';
+  static const participantsEmptyMembers = 'Участников пока нет';
+  static const notificationsHeaderTitle = 'Уведомления';
+  static const notificationsTapHint =
+      'Нажмите на уведомление, чтобы узнать детали.';
+  static const notificationsEmptyState = 'Уведомлений пока нет';
 
   static const emptyEventsByFilters = 'Нет ивентов по выбранным фильтрам';
   static const createImagePlaceholder = 'Добавить фото';
@@ -46,6 +63,7 @@ class EventTexts {
   static const createFieldStart = 'Начало';
   static const createFieldLocation = 'Место';
   static const createFieldCategory = 'Категория';
+  static const createFieldEventType = 'Тип мероприятия';
   static const createFieldPrice = 'Стоимость';
   static const createFieldMaxUsers = 'Лимит участников';
   static const createFieldParticipants = 'Текущее число участников';
@@ -57,6 +75,7 @@ class EventTexts {
   static const createHintTitle = 'Введите название';
   static const createHintLocation = 'Введите локацию';
   static const createHintCategory = 'Например, Турнир';
+  static const createHintEventType = 'Выберите тип';
   static const createHintPrice = '0';
   static const createHintMaxUsers = '16';
   static const createHintParticipants = '0';
@@ -103,4 +122,16 @@ class EventTexts {
   static const mockEvent5Location = 'Екатеринбург';
   static const mockEvent5Category = 'Фестиваль';
   static const mockEvent5Organizer = 'Уральский клуб Го';
+
+  static const List<String> eventCategoryOptions = [
+    'Турнир',
+    'Чемпионат',
+    'Кубок',
+    'Фестиваль',
+    'Тренировка',
+    'Лекция',
+    'Встреча клуба',
+    'Онлайн-игра',
+    'Другое',
+  ];
 }

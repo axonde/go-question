@@ -77,6 +77,18 @@ class _EventDetailsDialog extends StatelessWidget {
                 label: EventTexts.createFieldPrice,
                 value: priceLabel,
               ),
+              FutureBuilder<String?>(
+                future: _loadOrganizerName(),
+                builder: (context, snapshot) {
+                  final organizerName = snapshot.data?.trim().isNotEmpty == true
+                      ? snapshot.data!.trim()
+                      : event.organizer;
+                  return _DetailLine(
+                    label: EventTexts.organizerLabel,
+                    value: organizerName,
+                  );
+                },
+              ),
               const SizedBox(height: UiConstants.boxUnit * 1.25),
               Text(
                 event.description,
@@ -96,12 +108,10 @@ class _EventDetailsDialog extends StatelessWidget {
                         text: EventTexts.buttonParticipants,
                         baseColor: AppColors.secondary,
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                EventTexts.snackBarParticipantsList,
-                              ),
-                            ),
+                          showDialog<void>(
+                            context: context,
+                            builder: (_) =>
+                                EventParticipantsDialog(event: event),
                           );
                         },
                       ),
@@ -111,11 +121,27 @@ class _EventDetailsDialog extends StatelessWidget {
                       child: _ActionButton(
                         text: EventTexts.buttonEdit,
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(EventTexts.snackBarEditEvent),
+                          final currentProfile = context
+                              .read<ProfileBloc>()
+                              .state
+                              .profile;
+                          final updatedOrganizerId =
+                              currentProfile?.uid ?? event.organizer;
+                          showDialog<EventEntity>(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => CreateEventDialog(
+                              organizerAccountId: updatedOrganizerId,
+                              initialEvent: event,
                             ),
-                          );
+                          ).then((updated) {
+                            if (updated == null || !context.mounted) {
+                              return;
+                            }
+                            context.read<EventsBloc>().add(
+                              EventsUpdateSubmitted(updated),
+                            );
+                          });
                         },
                       ),
                     ),
@@ -168,6 +194,17 @@ class _EventDetailsDialog extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<String?> _loadOrganizerName() async {
+    final repository = sl<IProfileRepository>();
+    final result = await repository.getProfile(eventCardData.event.organizer);
+    return result.fold(
+      onSuccess: (profile) => profile.name.trim().isEmpty
+          ? (profile.nickname.trim().isEmpty ? null : profile.nickname)
+          : profile.name,
+      onFailure: (_) => null,
     );
   }
 }
