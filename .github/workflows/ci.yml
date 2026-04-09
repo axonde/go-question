@@ -45,6 +45,7 @@ jobs:
             }
           }
           EOF
+          dart format lib/firebase_options.dart
 
       - name: Generate code
         run: dart run build_runner build --delete-conflicting-outputs
