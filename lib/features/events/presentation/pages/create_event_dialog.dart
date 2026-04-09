@@ -44,6 +44,11 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
   String _status = EventConstants.statusOpen;
   String? _selectedLocation;
 
+  int get _currentParticipantsCount =>
+      widget.initialEvent?.participantIds.length ??
+      widget.initialEvent?.participants ??
+      0;
+
   @override
   void initState() {
     super.initState();
@@ -253,6 +258,19 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
                                   hint: EventTexts.createHintMaxUsers,
                                   controller: _maxUsersController,
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    final maxUsers =
+                                        int.tryParse((value ?? '').trim()) ?? 0;
+                                    if (maxUsers <= 0) {
+                                      return EventTexts
+                                          .createValidationMaxUsers;
+                                    }
+                                    if (maxUsers < _currentParticipantsCount) {
+                                      return EventTexts
+                                          .createValidationMaxUsersTooSmall;
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 _FormStatusInput(
                                   label: EventTexts.createFieldStatus,

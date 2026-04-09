@@ -248,10 +248,11 @@ class _JoinAction extends StatelessWidget {
     final isPending =
         currentUserId != null &&
         event.pendingParticipantIds.contains(currentUserId);
+    final isFull = event.maxUsers > 0 && event.participants >= event.maxUsers;
     final isBusy = context.watch<EventsBloc>().state.isLoading;
 
     return GQButton(
-      onPressed: isParticipant || isPending || isBusy
+      onPressed: isParticipant || isPending || isBusy || isFull
           ? () {}
           : () {
               if (currentUserId == null) {
@@ -281,16 +282,18 @@ class _JoinAction extends StatelessWidget {
           ? EventTexts.buttonJoined
           : isPending
           ? EventTexts.buttonJoinPending
+          : isFull
+          ? EventTexts.buttonEventFull
           : EventTexts.buttonJoin,
-      baseColor: isParticipant || isPending
+      baseColor: isParticipant || isPending || isFull
           ? const Color(0xFF78909C)
           : const Color(0xFF2E7D32),
-      mainGradient: isParticipant || isPending
+      mainGradient: isParticipant || isPending || isFull
           ? const LinearGradient(colors: [Color(0xFF90A4AE), Color(0xFF78909C)])
           : const LinearGradient(
               colors: [Color(0xFF43A047), Color(0xFF388E3C)],
             ),
-      outerGradient: isParticipant || isPending
+      outerGradient: isParticipant || isPending || isFull
           ? const LinearGradient(colors: [Color(0xFF546E7A), Color(0xFF546E7A)])
           : const LinearGradient(
               colors: [Color(0xFF1B5E20), Color(0xFF1B5E20)],
@@ -444,6 +447,39 @@ class _OrganizerActions extends StatelessWidget {
           outerGradient: const LinearGradient(
             colors: [Color(0xFF1B5E20), Color(0xFF1B5E20)],
           ),
+          width: UiConstants.boxUnit * 13,
+          height: UiConstants.boxUnit * 4.5,
+        ),
+        const SizedBox(height: UiConstants.boxUnit * 0.75),
+        GQButton(
+          onPressed: () async {
+            final shouldDelete = await showDialog<bool>(
+              context: context,
+              builder: (dialogContext) => AlertDialog(
+                title: const Text(EventTexts.deleteEventTitle),
+                content: const Text(EventTexts.deleteEventMessage),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(false),
+                    child: const Text(EventTexts.buttonClose),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(true),
+                    child: const Text(EventTexts.buttonDeleteEvent),
+                  ),
+                ],
+              ),
+            );
+            if (shouldDelete != true || !context.mounted) {
+              return;
+            }
+            context.read<EventsBloc>().add(EventsDeleteRequested(event.id));
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text(EventTexts.snackBarEventDeleted)),
+            );
+          },
+          text: EventTexts.buttonDeleteEvent,
+          baseColor: AppColors.error,
           width: UiConstants.boxUnit * 13,
           height: UiConstants.boxUnit * 4.5,
         ),

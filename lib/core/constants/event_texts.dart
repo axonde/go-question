@@ -13,8 +13,10 @@ class EventTexts {
   static const buttonJoin = 'Записаться';
   static const buttonJoinPending = 'Заявка отправлена';
   static const buttonJoined = 'Вы участвуете';
+  static const buttonEventFull = 'Мест нет';
   static const buttonEdit = 'Редактировать';
   static const buttonParticipants = 'Участники';
+  static const buttonDeleteEvent = 'Удалить ивент';
   static const buttonApply = 'Применить';
   static const buttonReset = 'Сбросить';
   static const buttonSearch = 'Поиск';
@@ -48,6 +50,7 @@ class EventTexts {
   static const snackBarParticipantApproved = 'Участник одобрен';
   static const snackBarParticipantRejected = 'Участник отклонён';
   static const snackBarParticipantRemoved = 'Участник удалён';
+  static const snackBarEventDeleted = 'Ивент удалён';
   static const participantsRequestsSection = 'Заявки';
   static const participantsMembersSection = 'Участники';
   static const participantsEmptyRequests = 'Заявок пока нет';
@@ -85,6 +88,12 @@ class EventTexts {
   static const createHintImageUrl = 'https://...';
   static const createHintDescription = 'Описание события';
   static const createSnackCreated = 'Ивент создан';
+  static const deleteEventTitle = 'Удалить ивент?';
+  static const deleteEventMessage =
+      'Событие будет удалено для всех участников. Это действие нельзя отменить.';
+  static const createValidationMaxUsers = 'Введите корректный лимит участников';
+  static const createValidationMaxUsersTooSmall =
+      'Лимит не может быть меньше текущего числа участников';
 
   static const filterFree = 'Бесплатно';
   static const filterPaid = 'Платно';

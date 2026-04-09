@@ -150,6 +150,9 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
 
       final data = doc.data() ?? <String, dynamic>{};
       final organizerId = data[EventsConstants.fieldOrganizer] as String?;
+      final participantIds = List<String>.from(
+        data[EventsConstants.fieldParticipantIds] ?? const <String>[],
+      );
 
       await _firestore.runTransaction((tx) async {
         tx.delete(docRef);
@@ -159,6 +162,17 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
                 FieldValue.arrayRemove([id]),
             ProfileFirestoreConstants.fieldCreatedEventsCount:
                 FieldValue.increment(-1),
+            ProfileFirestoreConstants.fieldUpdatedAt:
+                FieldValue.serverTimestamp(),
+          });
+        }
+        for (final participantId in participantIds) {
+          if (participantId.trim().isEmpty) {
+            continue;
+          }
+          tx.update(_usersRef.doc(participantId), {
+            ProfileFirestoreConstants.fieldJoinedEventIds:
+                FieldValue.arrayRemove([id]),
             ProfileFirestoreConstants.fieldUpdatedAt:
                 FieldValue.serverTimestamp(),
           });
@@ -200,8 +214,13 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
         final participants = List<String>.from(
           eventData[EventsConstants.fieldParticipantIds] ?? const <String>[],
         );
+        final maxUsers =
+            (eventData[EventsConstants.fieldMaxUsers] as num?)?.toInt() ?? 0;
         if (participants.contains(requesterId) ||
             pending.contains(requesterId)) {
+          return;
+        }
+        if (maxUsers > 0 && participants.length >= maxUsers) {
           return;
         }
 
@@ -322,6 +341,8 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
         final participants = List<String>.from(
           eventData[EventsConstants.fieldParticipantIds] ?? const <String>[],
         );
+        final maxUsers =
+            (eventData[EventsConstants.fieldMaxUsers] as num?)?.toInt() ?? 0;
         if (participants.contains(requesterId)) {
           tx.update(requestRef, {
             EventsConstants.joinRequestFieldStatus:
@@ -332,6 +353,44 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
             EventsConstants.joinRequestFieldUpdatedAt:
                 FieldValue.serverTimestamp(),
           });
+          return;
+        }
+        if (maxUsers > 0 && participants.length >= maxUsers) {
+          tx.update(eventRef, {
+            EventsConstants.fieldPendingParticipantIds: FieldValue.arrayRemove([
+              requesterId,
+            ]),
+            EventsConstants.fieldRejectedParticipantIds: FieldValue.arrayUnion([
+              requesterId,
+            ]),
+            EventsConstants.fieldUpdatedAt: FieldValue.serverTimestamp(),
+          });
+          tx.update(requestRef, {
+            EventsConstants.joinRequestFieldStatus:
+                EventsConstants.joinRequestStatusRejected,
+            EventsConstants.joinRequestFieldReviewedAt:
+                FieldValue.serverTimestamp(),
+            EventsConstants.joinRequestFieldReviewedBy: organizerId,
+            EventsConstants.joinRequestFieldUpdatedAt:
+                FieldValue.serverTimestamp(),
+          });
+          tx.set(_notificationsRef.doc('${requestId}_full'), {
+            NotificationsConstants.fieldId: '${requestId}_full',
+            NotificationsConstants.fieldUserId: requesterId,
+            NotificationsConstants.fieldTitle: 'Мест больше нет',
+            NotificationsConstants.fieldBody:
+                'Свободные места на событие ${eventData[EventsConstants.fieldTitle]} закончились',
+            NotificationsConstants.fieldType: 'system',
+            NotificationsConstants.fieldIsRead: false,
+            NotificationsConstants.fieldCreatedAt: FieldValue.serverTimestamp(),
+            NotificationsConstants.fieldEventId: eventId,
+            NotificationsConstants.fieldEventTitle:
+                eventData[EventsConstants.fieldTitle],
+            NotificationsConstants.fieldEventLocation:
+                eventData[EventsConstants.fieldLocation],
+            NotificationsConstants.fieldEventCategory:
+                eventData[EventsConstants.fieldCategory],
+          }, SetOptions(merge: true));
           return;
         }
 

@@ -7,7 +7,14 @@ class _EventDetailsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final event = eventCardData.event;
+    final event = context.select<EventsBloc, EventEntity>((bloc) {
+      for (final item in bloc.state.events) {
+        if (item.id == eventCardData.event.id) {
+          return item;
+        }
+      }
+      return eventCardData.event;
+    });
     final isOrganizer = eventCardData.viewerRole == EventViewerRole.organizer;
     final priceLabel = event.price == 0
         ? EventTexts.filterFree
@@ -148,6 +155,44 @@ class _EventDetailsDialog extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: UiConstants.boxUnit),
+                _ActionButton(
+                  text: EventTexts.buttonDeleteEvent,
+                  baseColor: AppColors.error,
+                  onTap: () async {
+                    final shouldDelete = await showDialog<bool>(
+                      context: context,
+                      builder: (dialogContext) => AlertDialog(
+                        title: const Text(EventTexts.deleteEventTitle),
+                        content: const Text(EventTexts.deleteEventMessage),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.of(dialogContext).pop(false),
+                            child: const Text(EventTexts.buttonClose),
+                          ),
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.of(dialogContext).pop(true),
+                            child: const Text(EventTexts.buttonDeleteEvent),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (shouldDelete != true || !context.mounted) {
+                      return;
+                    }
+                    context.read<EventsBloc>().add(
+                      EventsDeleteRequested(event.id),
+                    );
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(EventTexts.snackBarEventDeleted),
+                      ),
+                    );
+                  },
                 ),
               ] else ...[
                 _ActionButton(

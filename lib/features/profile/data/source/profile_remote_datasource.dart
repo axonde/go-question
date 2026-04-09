@@ -673,8 +673,14 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
       final friendRef = _firestore
           .collection(ProfileFirestoreConstants.usersCollection)
           .doc(friendUid);
+      final notificationRef = _firestore
+          .collection(NotificationsConstants.notificationsCollection)
+          .doc('${userUid}_${friendUid}_friend_removed');
 
       await _firestore.runTransaction((tx) async {
+        final userSnapshot = await tx.get(userRef);
+        final userData = userSnapshot.data() ?? <String, dynamic>{};
+
         tx.update(userRef, {
           ProfileFirestoreConstants.fieldFriendIds: FieldValue.arrayRemove([
             friendUid,
@@ -689,6 +695,38 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
           ProfileFirestoreConstants.fieldUpdatedAt:
               FieldValue.serverTimestamp(),
         });
+        tx.set(notificationRef, {
+          NotificationsConstants.fieldId:
+              '${userUid}_${friendUid}_friend_removed',
+          NotificationsConstants.fieldUserId: friendUid,
+          NotificationsConstants.fieldTitle: 'Удаление из друзей',
+          NotificationsConstants.fieldBody:
+              'Пользователь ${userData[ProfileFirestoreConstants.fieldName] ?? userData[ProfileFirestoreConstants.fieldNickname] ?? userUid} удалил вас из друзей',
+          NotificationsConstants.fieldType: 'system',
+          NotificationsConstants.fieldIsRead: false,
+          NotificationsConstants.fieldCreatedAt: FieldValue.serverTimestamp(),
+          NotificationsConstants.fieldRequestUserId: userUid,
+          NotificationsConstants.fieldRequestUserName:
+              userData[ProfileFirestoreConstants.fieldName] ??
+              userData[ProfileFirestoreConstants.fieldNickname],
+          NotificationsConstants.fieldRequestUserRegistrationId:
+              userData[ProfileFirestoreConstants.fieldRegistrationId]
+                  ?.toString(),
+          NotificationsConstants.fieldRequestUserRating:
+              userData[ProfileFirestoreConstants.fieldRating]?.toString(),
+          NotificationsConstants.fieldRequestUserAge:
+              userData[ProfileFirestoreConstants.fieldAge]?.toString(),
+          NotificationsConstants.fieldRequestUserGender:
+              userData[ProfileFirestoreConstants.fieldGender],
+          NotificationsConstants.fieldRequestUserCity:
+              userData[ProfileFirestoreConstants.fieldCity],
+          NotificationsConstants.fieldRequestUserBio:
+              userData[ProfileFirestoreConstants.fieldBio],
+          NotificationsConstants.fieldRequestUserEventsAttended:
+              userData[ProfileFirestoreConstants.fieldVisitedEventsCount],
+          NotificationsConstants.fieldRequestUserEventsOrganized:
+              userData[ProfileFirestoreConstants.fieldCreatedEventsCount],
+        }, SetOptions(merge: true));
       });
     } catch (e) {
       rethrow;

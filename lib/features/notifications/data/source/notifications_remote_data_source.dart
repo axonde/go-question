@@ -25,11 +25,12 @@ class NotificationsRemoteDataSourceImpl
     try {
       final snapshot = await _notificationsRef
           .where(NotificationsConstants.fieldUserId, isEqualTo: userId)
-          .orderBy(NotificationsConstants.fieldCreatedAt, descending: true)
           .get();
-      return snapshot.docs
+      final notifications = snapshot.docs
           .map((doc) => NotificationModelX.fromFirestore(doc))
-          .toList();
+          .toList(growable: false);
+      notifications.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return notifications;
     } on FirebaseException catch (_) {
       throw const NotificationFetchException();
     } catch (_) {
@@ -41,13 +42,14 @@ class NotificationsRemoteDataSourceImpl
   Stream<List<NotificationEntity>> watchNotifications(String userId) {
     return _notificationsRef
         .where(NotificationsConstants.fieldUserId, isEqualTo: userId)
-        .orderBy(NotificationsConstants.fieldCreatedAt, descending: true)
         .snapshots()
-        .map(
-          (snapshot) => snapshot.docs
+        .map((snapshot) {
+          final notifications = snapshot.docs
               .map((doc) => NotificationModelX.fromFirestore(doc))
-              .toList(growable: false),
-        );
+              .toList(growable: false);
+          notifications.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return notifications;
+        });
   }
 
   @override

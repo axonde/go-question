@@ -186,6 +186,11 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
                       final notifications = (snapshot.data ?? const [])
                           .map(NotificationData.fromEntity)
                           .toList(growable: false);
+                      if (snapshot.hasError && notifications.isEmpty) {
+                        return const Center(
+                          child: Text(EventTexts.notificationsEmptyState),
+                        );
+                      }
                       if (snapshot.connectionState == ConnectionState.waiting &&
                           notifications.isEmpty) {
                         return const Center(child: CircularProgressIndicator());

@@ -20,6 +20,7 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     on<EventsDetailRequested>(_onDetailRequested);
     on<EventsCreateSubmitted>(_onCreateSubmitted);
     on<EventsUpdateSubmitted>(_onUpdateSubmitted);
+    on<EventsDeleteRequested>(_onDeleteRequested);
     on<EventsJoinRequested>(_onJoinRequested);
     on<EventsJoinRequestApproved>(_onJoinRequestApproved);
     on<EventsJoinRequestRejected>(_onJoinRequestRejected);
@@ -196,6 +197,30 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
       eventId: event.eventId,
       requesterId: event.requesterId,
     );
+
+    await result.foldAsync(
+      onSuccess: (_) async {
+        await _refreshEvents(emit);
+      },
+      onFailure: (failure) async {
+        emit(
+          state.copyWith(
+            status: EventsStatus.failure,
+            errorMessage: failure.message,
+            clearHint: true,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onDeleteRequested(
+    EventsDeleteRequested event,
+    Emitter<EventsState> emit,
+  ) async {
+    emit(_loadingState());
+
+    final result = await _repository.deleteEvent(event.eventId);
 
     await result.foldAsync(
       onSuccess: (_) async {

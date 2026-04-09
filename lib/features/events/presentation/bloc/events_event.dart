@@ -36,6 +36,12 @@ final class EventsUpdateSubmitted extends EventsEvent {
   const EventsUpdateSubmitted(this.event);
 }
 
+final class EventsDeleteRequested extends EventsEvent {
+  final String eventId;
+
+  const EventsDeleteRequested(this.eventId);
+}
+
 final class EventsJoinRequested extends EventsEvent {
   final String eventId;
   final String requesterId;
