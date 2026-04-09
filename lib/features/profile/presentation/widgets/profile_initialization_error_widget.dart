@@ -6,12 +6,12 @@ import 'package:go_question/config/theme/app_text_styles.dart';
 import 'package:go_question/core/constants/profile_messages.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:go_question/injection_container/injection_container.dart';
 
 /// Error state widget for profile initialization with retry/logout options.
 class ProfileInitializationErrorWidget extends StatelessWidget {
   final String? errorMessage;
   final String? failureDetails;
-  static const String _defaultProfileName = 'User';
 
   const ProfileInitializationErrorWidget({
     super.key,
@@ -73,7 +73,7 @@ class ProfileInitializationErrorWidget extends StatelessWidget {
                     onPressed: () {
                       final authBloc = context.read<AuthBloc>();
                       authBloc.add(const AuthSignOutRequested());
-                      context.read<AppRouter>().replace(const AuthFlowRoute());
+                      sl<AppRouter>().replace(const MainRoute());
                     },
                     icon: const Icon(Icons.logout),
                     label: const Text('Выход'),
@@ -94,7 +94,9 @@ class ProfileInitializationErrorWidget extends StatelessWidget {
                           ProfileRetryRequested(
                             uid: user.uid,
                             initialEmail: user.email,
-                            initialName: _defaultProfileName,
+                            initialName: user.nickname.isEmpty
+                                ? profileDefaultInitialName
+                                : user.nickname,
                             initialNickname: user.nickname,
                           ),
                         );

@@ -10,6 +10,7 @@ _$NotificationEntityImpl _$$NotificationEntityImplFromJson(
   Map<String, dynamic> json,
 ) => _$NotificationEntityImpl(
   id: json['id'] as String,
+  userId: json['userId'] as String,
   title: json['title'] as String,
   body: json['body'] as String,
   type: $enumDecode(_$NotificationTypeEnumMap, json['type']),
@@ -17,6 +18,7 @@ _$NotificationEntityImpl _$$NotificationEntityImplFromJson(
   createdAt: const TimestampConverter().fromJson(json['createdAt']),
   requestUserId: json['requestUserId'] as String?,
   requestUserName: json['requestUserName'] as String?,
+  requestUserRegistrationId: json['requestUserRegistrationId'] as String?,
   requestUserRating: json['requestUserRating'] as String?,
   requestUserAge: json['requestUserAge'] as String?,
   requestUserGender: json['requestUserGender'] as String?,
@@ -37,6 +39,7 @@ Map<String, dynamic> _$$NotificationEntityImplToJson(
   _$NotificationEntityImpl instance,
 ) => <String, dynamic>{
   'id': instance.id,
+  'userId': instance.userId,
   'title': instance.title,
   'body': instance.body,
   'type': _$NotificationTypeEnumMap[instance.type]!,
@@ -44,6 +47,7 @@ Map<String, dynamic> _$$NotificationEntityImplToJson(
   'createdAt': const TimestampConverter().toJson(instance.createdAt),
   'requestUserId': instance.requestUserId,
   'requestUserName': instance.requestUserName,
+  'requestUserRegistrationId': instance.requestUserRegistrationId,
   'requestUserRating': instance.requestUserRating,
   'requestUserAge': instance.requestUserAge,
   'requestUserGender': instance.requestUserGender,
@@ -60,6 +64,7 @@ Map<String, dynamic> _$$NotificationEntityImplToJson(
 
 const _$NotificationTypeEnumMap = {
   NotificationType.joinRequest: 'join_request',
+  NotificationType.friendRequest: 'friend_request',
   NotificationType.eventReminder: 'event_reminder',
   NotificationType.message: 'message',
   NotificationType.system: 'system',

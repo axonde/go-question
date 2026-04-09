@@ -20,6 +20,7 @@ class GoogleButton extends StatelessWidget {
       fontSize: AppTextStyles.button.fontSize,
       aspectRatio: 110 / 20,
       onPressed: onPressed,
+      isLoading: isLoading,
       widthFactor: 1,
     );
   }

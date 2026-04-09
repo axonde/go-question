@@ -22,17 +22,31 @@ ProfileModel _$ProfileModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ProfileModel {
   String get uid => throw _privateConstructorUsedError;
+  int get registrationId => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get nickname => throw _privateConstructorUsedError;
   @TimestampConverter()
   DateTime? get birthDate => throw _privateConstructorUsedError;
   String? get city => throw _privateConstructorUsedError;
+  String? get bio => throw _privateConstructorUsedError;
+  String? get avatarUrl => throw _privateConstructorUsedError;
+  String? get gender => throw _privateConstructorUsedError;
+  int? get age => throw _privateConstructorUsedError;
+  double get rating => throw _privateConstructorUsedError;
   int get trophies => throw _privateConstructorUsedError;
   int get visitedEventsCount => throw _privateConstructorUsedError;
   int get createdEventsCount => throw _privateConstructorUsedError;
   List<String> get joinedEventIds => throw _privateConstructorUsedError;
   List<String> get createdEventIds => throw _privateConstructorUsedError;
+  List<String> get friendIds => throw _privateConstructorUsedError;
+  List<String> get incomingFriendRequestIds =>
+      throw _privateConstructorUsedError;
+  List<String> get outgoingFriendRequestIds =>
+      throw _privateConstructorUsedError;
+  List<String> get blockedUserIds => throw _privateConstructorUsedError;
+  @TimestampConverter()
+  DateTime? get lastSeenAt => throw _privateConstructorUsedError;
   @TimestampConverter()
   DateTime get createdAt => throw _privateConstructorUsedError;
   @TimestampConverter()
@@ -57,16 +71,27 @@ abstract class $ProfileModelCopyWith<$Res> {
   @useResult
   $Res call({
     String uid,
+    int registrationId,
     String email,
     String name,
     String nickname,
     @TimestampConverter() DateTime? birthDate,
     String? city,
+    String? bio,
+    String? avatarUrl,
+    String? gender,
+    int? age,
+    double rating,
     int trophies,
     int visitedEventsCount,
     int createdEventsCount,
     List<String> joinedEventIds,
     List<String> createdEventIds,
+    List<String> friendIds,
+    List<String> incomingFriendRequestIds,
+    List<String> outgoingFriendRequestIds,
+    List<String> blockedUserIds,
+    @TimestampConverter() DateTime? lastSeenAt,
     @TimestampConverter() DateTime createdAt,
     @TimestampConverter() DateTime updatedAt,
   });
@@ -88,16 +113,27 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
   @override
   $Res call({
     Object? uid = null,
+    Object? registrationId = null,
     Object? email = null,
     Object? name = null,
     Object? nickname = null,
     Object? birthDate = freezed,
     Object? city = freezed,
+    Object? bio = freezed,
+    Object? avatarUrl = freezed,
+    Object? gender = freezed,
+    Object? age = freezed,
+    Object? rating = null,
     Object? trophies = null,
     Object? visitedEventsCount = null,
     Object? createdEventsCount = null,
     Object? joinedEventIds = null,
     Object? createdEventIds = null,
+    Object? friendIds = null,
+    Object? incomingFriendRequestIds = null,
+    Object? outgoingFriendRequestIds = null,
+    Object? blockedUserIds = null,
+    Object? lastSeenAt = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -107,6 +143,10 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
                 ? _value.uid
                 : uid // ignore: cast_nullable_to_non_nullable
                       as String,
+            registrationId: null == registrationId
+                ? _value.registrationId
+                : registrationId // ignore: cast_nullable_to_non_nullable
+                      as int,
             email: null == email
                 ? _value.email
                 : email // ignore: cast_nullable_to_non_nullable
@@ -127,6 +167,26 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
                 ? _value.city
                 : city // ignore: cast_nullable_to_non_nullable
                       as String?,
+            bio: freezed == bio
+                ? _value.bio
+                : bio // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            avatarUrl: freezed == avatarUrl
+                ? _value.avatarUrl
+                : avatarUrl // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            gender: freezed == gender
+                ? _value.gender
+                : gender // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            age: freezed == age
+                ? _value.age
+                : age // ignore: cast_nullable_to_non_nullable
+                      as int?,
+            rating: null == rating
+                ? _value.rating
+                : rating // ignore: cast_nullable_to_non_nullable
+                      as double,
             trophies: null == trophies
                 ? _value.trophies
                 : trophies // ignore: cast_nullable_to_non_nullable
@@ -147,6 +207,26 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
                 ? _value.createdEventIds
                 : createdEventIds // ignore: cast_nullable_to_non_nullable
                       as List<String>,
+            friendIds: null == friendIds
+                ? _value.friendIds
+                : friendIds // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            incomingFriendRequestIds: null == incomingFriendRequestIds
+                ? _value.incomingFriendRequestIds
+                : incomingFriendRequestIds // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            outgoingFriendRequestIds: null == outgoingFriendRequestIds
+                ? _value.outgoingFriendRequestIds
+                : outgoingFriendRequestIds // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            blockedUserIds: null == blockedUserIds
+                ? _value.blockedUserIds
+                : blockedUserIds // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            lastSeenAt: freezed == lastSeenAt
+                ? _value.lastSeenAt
+                : lastSeenAt // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
             createdAt: null == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
@@ -172,16 +252,27 @@ abstract class _$$ProfileModelImplCopyWith<$Res>
   @useResult
   $Res call({
     String uid,
+    int registrationId,
     String email,
     String name,
     String nickname,
     @TimestampConverter() DateTime? birthDate,
     String? city,
+    String? bio,
+    String? avatarUrl,
+    String? gender,
+    int? age,
+    double rating,
     int trophies,
     int visitedEventsCount,
     int createdEventsCount,
     List<String> joinedEventIds,
     List<String> createdEventIds,
+    List<String> friendIds,
+    List<String> incomingFriendRequestIds,
+    List<String> outgoingFriendRequestIds,
+    List<String> blockedUserIds,
+    @TimestampConverter() DateTime? lastSeenAt,
     @TimestampConverter() DateTime createdAt,
     @TimestampConverter() DateTime updatedAt,
   });
@@ -202,16 +293,27 @@ class __$$ProfileModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? uid = null,
+    Object? registrationId = null,
     Object? email = null,
     Object? name = null,
     Object? nickname = null,
     Object? birthDate = freezed,
     Object? city = freezed,
+    Object? bio = freezed,
+    Object? avatarUrl = freezed,
+    Object? gender = freezed,
+    Object? age = freezed,
+    Object? rating = null,
     Object? trophies = null,
     Object? visitedEventsCount = null,
     Object? createdEventsCount = null,
     Object? joinedEventIds = null,
     Object? createdEventIds = null,
+    Object? friendIds = null,
+    Object? incomingFriendRequestIds = null,
+    Object? outgoingFriendRequestIds = null,
+    Object? blockedUserIds = null,
+    Object? lastSeenAt = freezed,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -221,6 +323,10 @@ class __$$ProfileModelImplCopyWithImpl<$Res>
             ? _value.uid
             : uid // ignore: cast_nullable_to_non_nullable
                   as String,
+        registrationId: null == registrationId
+            ? _value.registrationId
+            : registrationId // ignore: cast_nullable_to_non_nullable
+                  as int,
         email: null == email
             ? _value.email
             : email // ignore: cast_nullable_to_non_nullable
@@ -241,6 +347,26 @@ class __$$ProfileModelImplCopyWithImpl<$Res>
             ? _value.city
             : city // ignore: cast_nullable_to_non_nullable
                   as String?,
+        bio: freezed == bio
+            ? _value.bio
+            : bio // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        avatarUrl: freezed == avatarUrl
+            ? _value.avatarUrl
+            : avatarUrl // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        gender: freezed == gender
+            ? _value.gender
+            : gender // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        age: freezed == age
+            ? _value.age
+            : age // ignore: cast_nullable_to_non_nullable
+                  as int?,
+        rating: null == rating
+            ? _value.rating
+            : rating // ignore: cast_nullable_to_non_nullable
+                  as double,
         trophies: null == trophies
             ? _value.trophies
             : trophies // ignore: cast_nullable_to_non_nullable
@@ -261,6 +387,26 @@ class __$$ProfileModelImplCopyWithImpl<$Res>
             ? _value._createdEventIds
             : createdEventIds // ignore: cast_nullable_to_non_nullable
                   as List<String>,
+        friendIds: null == friendIds
+            ? _value._friendIds
+            : friendIds // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        incomingFriendRequestIds: null == incomingFriendRequestIds
+            ? _value._incomingFriendRequestIds
+            : incomingFriendRequestIds // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        outgoingFriendRequestIds: null == outgoingFriendRequestIds
+            ? _value._outgoingFriendRequestIds
+            : outgoingFriendRequestIds // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        blockedUserIds: null == blockedUserIds
+            ? _value._blockedUserIds
+            : blockedUserIds // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        lastSeenAt: freezed == lastSeenAt
+            ? _value.lastSeenAt
+            : lastSeenAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
         createdAt: null == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
@@ -279,20 +425,35 @@ class __$$ProfileModelImplCopyWithImpl<$Res>
 class _$ProfileModelImpl extends _ProfileModel {
   const _$ProfileModelImpl({
     required this.uid,
+    required this.registrationId,
     required this.email,
     required this.name,
     required this.nickname,
     @TimestampConverter() this.birthDate,
     this.city,
+    this.bio,
+    this.avatarUrl,
+    this.gender,
+    this.age,
+    this.rating = 0.0,
     this.trophies = 0,
     this.visitedEventsCount = 0,
     this.createdEventsCount = 0,
     final List<String> joinedEventIds = const <String>[],
     final List<String> createdEventIds = const <String>[],
+    final List<String> friendIds = const <String>[],
+    final List<String> incomingFriendRequestIds = const <String>[],
+    final List<String> outgoingFriendRequestIds = const <String>[],
+    final List<String> blockedUserIds = const <String>[],
+    @TimestampConverter() this.lastSeenAt,
     @TimestampConverter() required this.createdAt,
     @TimestampConverter() required this.updatedAt,
   }) : _joinedEventIds = joinedEventIds,
        _createdEventIds = createdEventIds,
+       _friendIds = friendIds,
+       _incomingFriendRequestIds = incomingFriendRequestIds,
+       _outgoingFriendRequestIds = outgoingFriendRequestIds,
+       _blockedUserIds = blockedUserIds,
        super._();
 
   factory _$ProfileModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -300,6 +461,8 @@ class _$ProfileModelImpl extends _ProfileModel {
 
   @override
   final String uid;
+  @override
+  final int registrationId;
   @override
   final String email;
   @override
@@ -311,6 +474,17 @@ class _$ProfileModelImpl extends _ProfileModel {
   final DateTime? birthDate;
   @override
   final String? city;
+  @override
+  final String? bio;
+  @override
+  final String? avatarUrl;
+  @override
+  final String? gender;
+  @override
+  final int? age;
+  @override
+  @JsonKey()
+  final double rating;
   @override
   @JsonKey()
   final int trophies;
@@ -338,6 +512,47 @@ class _$ProfileModelImpl extends _ProfileModel {
     return EqualUnmodifiableListView(_createdEventIds);
   }
 
+  final List<String> _friendIds;
+  @override
+  @JsonKey()
+  List<String> get friendIds {
+    if (_friendIds is EqualUnmodifiableListView) return _friendIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_friendIds);
+  }
+
+  final List<String> _incomingFriendRequestIds;
+  @override
+  @JsonKey()
+  List<String> get incomingFriendRequestIds {
+    if (_incomingFriendRequestIds is EqualUnmodifiableListView)
+      return _incomingFriendRequestIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_incomingFriendRequestIds);
+  }
+
+  final List<String> _outgoingFriendRequestIds;
+  @override
+  @JsonKey()
+  List<String> get outgoingFriendRequestIds {
+    if (_outgoingFriendRequestIds is EqualUnmodifiableListView)
+      return _outgoingFriendRequestIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_outgoingFriendRequestIds);
+  }
+
+  final List<String> _blockedUserIds;
+  @override
+  @JsonKey()
+  List<String> get blockedUserIds {
+    if (_blockedUserIds is EqualUnmodifiableListView) return _blockedUserIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_blockedUserIds);
+  }
+
+  @override
+  @TimestampConverter()
+  final DateTime? lastSeenAt;
   @override
   @TimestampConverter()
   final DateTime createdAt;
@@ -347,7 +562,7 @@ class _$ProfileModelImpl extends _ProfileModel {
 
   @override
   String toString() {
-    return 'ProfileModel(uid: $uid, email: $email, name: $name, nickname: $nickname, birthDate: $birthDate, city: $city, trophies: $trophies, visitedEventsCount: $visitedEventsCount, createdEventsCount: $createdEventsCount, joinedEventIds: $joinedEventIds, createdEventIds: $createdEventIds, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ProfileModel(uid: $uid, registrationId: $registrationId, email: $email, name: $name, nickname: $nickname, birthDate: $birthDate, city: $city, bio: $bio, avatarUrl: $avatarUrl, gender: $gender, age: $age, rating: $rating, trophies: $trophies, visitedEventsCount: $visitedEventsCount, createdEventsCount: $createdEventsCount, joinedEventIds: $joinedEventIds, createdEventIds: $createdEventIds, friendIds: $friendIds, incomingFriendRequestIds: $incomingFriendRequestIds, outgoingFriendRequestIds: $outgoingFriendRequestIds, blockedUserIds: $blockedUserIds, lastSeenAt: $lastSeenAt, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -356,6 +571,8 @@ class _$ProfileModelImpl extends _ProfileModel {
         (other.runtimeType == runtimeType &&
             other is _$ProfileModelImpl &&
             (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.registrationId, registrationId) ||
+                other.registrationId == registrationId) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.nickname, nickname) ||
@@ -363,6 +580,12 @@ class _$ProfileModelImpl extends _ProfileModel {
             (identical(other.birthDate, birthDate) ||
                 other.birthDate == birthDate) &&
             (identical(other.city, city) || other.city == city) &&
+            (identical(other.bio, bio) || other.bio == bio) &&
+            (identical(other.avatarUrl, avatarUrl) ||
+                other.avatarUrl == avatarUrl) &&
+            (identical(other.gender, gender) || other.gender == gender) &&
+            (identical(other.age, age) || other.age == age) &&
+            (identical(other.rating, rating) || other.rating == rating) &&
             (identical(other.trophies, trophies) ||
                 other.trophies == trophies) &&
             (identical(other.visitedEventsCount, visitedEventsCount) ||
@@ -377,6 +600,24 @@ class _$ProfileModelImpl extends _ProfileModel {
               other._createdEventIds,
               _createdEventIds,
             ) &&
+            const DeepCollectionEquality().equals(
+              other._friendIds,
+              _friendIds,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._incomingFriendRequestIds,
+              _incomingFriendRequestIds,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._outgoingFriendRequestIds,
+              _outgoingFriendRequestIds,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._blockedUserIds,
+              _blockedUserIds,
+            ) &&
+            (identical(other.lastSeenAt, lastSeenAt) ||
+                other.lastSeenAt == lastSeenAt) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -385,22 +626,33 @@ class _$ProfileModelImpl extends _ProfileModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     runtimeType,
     uid,
+    registrationId,
     email,
     name,
     nickname,
     birthDate,
     city,
+    bio,
+    avatarUrl,
+    gender,
+    age,
+    rating,
     trophies,
     visitedEventsCount,
     createdEventsCount,
     const DeepCollectionEquality().hash(_joinedEventIds),
     const DeepCollectionEquality().hash(_createdEventIds),
+    const DeepCollectionEquality().hash(_friendIds),
+    const DeepCollectionEquality().hash(_incomingFriendRequestIds),
+    const DeepCollectionEquality().hash(_outgoingFriendRequestIds),
+    const DeepCollectionEquality().hash(_blockedUserIds),
+    lastSeenAt,
     createdAt,
     updatedAt,
-  );
+  ]);
 
   /// Create a copy of ProfileModel
   /// with the given fields replaced by the non-null parameter values.
@@ -419,16 +671,27 @@ class _$ProfileModelImpl extends _ProfileModel {
 abstract class _ProfileModel extends ProfileModel {
   const factory _ProfileModel({
     required final String uid,
+    required final int registrationId,
     required final String email,
     required final String name,
     required final String nickname,
     @TimestampConverter() final DateTime? birthDate,
     final String? city,
+    final String? bio,
+    final String? avatarUrl,
+    final String? gender,
+    final int? age,
+    final double rating,
     final int trophies,
     final int visitedEventsCount,
     final int createdEventsCount,
     final List<String> joinedEventIds,
     final List<String> createdEventIds,
+    final List<String> friendIds,
+    final List<String> incomingFriendRequestIds,
+    final List<String> outgoingFriendRequestIds,
+    final List<String> blockedUserIds,
+    @TimestampConverter() final DateTime? lastSeenAt,
     @TimestampConverter() required final DateTime createdAt,
     @TimestampConverter() required final DateTime updatedAt,
   }) = _$ProfileModelImpl;
@@ -439,6 +702,8 @@ abstract class _ProfileModel extends ProfileModel {
 
   @override
   String get uid;
+  @override
+  int get registrationId;
   @override
   String get email;
   @override
@@ -451,6 +716,16 @@ abstract class _ProfileModel extends ProfileModel {
   @override
   String? get city;
   @override
+  String? get bio;
+  @override
+  String? get avatarUrl;
+  @override
+  String? get gender;
+  @override
+  int? get age;
+  @override
+  double get rating;
+  @override
   int get trophies;
   @override
   int get visitedEventsCount;
@@ -460,6 +735,17 @@ abstract class _ProfileModel extends ProfileModel {
   List<String> get joinedEventIds;
   @override
   List<String> get createdEventIds;
+  @override
+  List<String> get friendIds;
+  @override
+  List<String> get incomingFriendRequestIds;
+  @override
+  List<String> get outgoingFriendRequestIds;
+  @override
+  List<String> get blockedUserIds;
+  @override
+  @TimestampConverter()
+  DateTime? get lastSeenAt;
   @override
   @TimestampConverter()
   DateTime get createdAt;

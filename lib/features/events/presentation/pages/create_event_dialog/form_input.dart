@@ -24,6 +24,9 @@ class _FormInput extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         keyboardType: keyboardType,
+        textInputAction: TextInputAction.done,
+        onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+        onFieldSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
         maxLines: maxLines,
         validator: validator,
         style: const TextStyle(

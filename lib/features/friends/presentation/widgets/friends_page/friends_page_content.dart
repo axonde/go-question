@@ -6,8 +6,10 @@ class _FriendsPageContent extends StatelessWidget {
   final TextEditingController searchController;
   final _FriendUserData? searchResult;
   final bool hasQuery;
-  final bool isAlreadyFriend;
-  final List<_FriendUserData> friends;
+  final Profile? currentProfile;
+  final IProfileRepository profileRepository;
+  final Set<String> pendingFriendRequestIds;
+  final Set<String> pendingFriendRemovalIds;
   final ValueChanged<String> onSearchChanged;
   final ValueChanged<_FriendUserData> onAddFriend;
   final ValueChanged<String> onRemoveFriend;
@@ -19,8 +21,10 @@ class _FriendsPageContent extends StatelessWidget {
     required this.searchController,
     required this.searchResult,
     required this.hasQuery,
-    required this.isAlreadyFriend,
-    required this.friends,
+    required this.currentProfile,
+    required this.profileRepository,
+    required this.pendingFriendRequestIds,
+    required this.pendingFriendRemovalIds,
     required this.onSearchChanged,
     required this.onAddFriend,
     required this.onRemoveFriend,
@@ -66,44 +70,20 @@ class _FriendsPageContent extends StatelessWidget {
             controller: searchController,
             searchResult: searchResult,
             hasQuery: hasQuery,
-            isAlreadyFriend: isAlreadyFriend,
+            currentProfile: currentProfile,
+            pendingFriendRequestIds: pendingFriendRequestIds,
             onChanged: onSearchChanged,
             onAddFriend: onAddFriend,
             onOpenProfile: onOpenProfile,
           ),
           SizedBox(height: sectionGap),
-          Row(
-            children: [
-              const Expanded(
-                child: Text(
-                  FriendsTexts.friendsSectionTitle,
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: UiConstants.textSize,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-              Text(
-                '${friends.length} ${FriendsTexts.friendCountLabel}',
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: UiConstants.textSize * 0.8,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: compactModeEnabled
-                ? UiConstants.boxUnit
-                : UiConstants.boxUnit * 1.5,
-          ),
           Expanded(
-            child: _FriendsList(
+            child: _FriendsRealtimeSection(
               hintsEnabled: hintsEnabled,
               compactModeEnabled: compactModeEnabled,
-              friends: friends,
+              currentProfile: currentProfile,
+              profileRepository: profileRepository,
+              pendingFriendRemovalIds: pendingFriendRemovalIds,
               onRemoveFriend: onRemoveFriend,
               onOpenProfile: onOpenProfile,
             ),

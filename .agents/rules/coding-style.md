@@ -37,6 +37,10 @@ Use `dart format` as the single formatting source of truth.
 - Avoid inline hardcoded colors/sizing when a theme token already exists.
 - Prefer small reusable widgets over very large `build()` methods.
 - Use `context.mounted` checks after `await` before UI actions.
+- Do not create widgets in helper methods like `_buildHeader()` / `_buildPage()`.
+- Widgets must be extracted into classes (prefer private classes when local).
+- Prefer `StatelessWidget` by default; use `StatefulWidget` only for truly local ephemeral UI state.
+- Keep widgets as dumb/presentational as possible; business state and logic must be driven by BLoC.
 
 ## Async and Error Handling
 

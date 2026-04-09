@@ -8,6 +8,7 @@ part 'notification_entity.g.dart';
 class NotificationEntity with _$NotificationEntity {
   const factory NotificationEntity({
     required String id,
+    required String userId,
     required String title,
     required String body,
     required NotificationType type,
@@ -16,6 +17,7 @@ class NotificationEntity with _$NotificationEntity {
     // Опциональные поля для запросов на участие
     String? requestUserId,
     String? requestUserName,
+    String? requestUserRegistrationId,
     String? requestUserRating,
     String? requestUserAge,
     String? requestUserGender,
@@ -38,6 +40,8 @@ class NotificationEntity with _$NotificationEntity {
 enum NotificationType {
   @JsonValue('join_request')
   joinRequest,
+  @JsonValue('friend_request')
+  friendRequest,
   @JsonValue('event_reminder')
   eventReminder,
   @JsonValue('message')

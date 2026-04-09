@@ -4,6 +4,12 @@ sealed class EventsEvent {
   const EventsEvent();
 }
 
+final class _EventsStreamUpdated extends EventsEvent {
+  final List<EventEntity> events;
+
+  const _EventsStreamUpdated(this.events);
+}
+
 final class EventsSearchStarted extends EventsEvent {
   const EventsSearchStarted();
 }
@@ -22,6 +28,62 @@ final class EventsCreateSubmitted extends EventsEvent {
   final EventEntity event;
 
   const EventsCreateSubmitted(this.event);
+}
+
+final class EventsUpdateSubmitted extends EventsEvent {
+  final EventEntity event;
+
+  const EventsUpdateSubmitted(this.event);
+}
+
+final class EventsDeleteRequested extends EventsEvent {
+  final String eventId;
+
+  const EventsDeleteRequested(this.eventId);
+}
+
+final class EventsJoinRequested extends EventsEvent {
+  final String eventId;
+  final String requesterId;
+
+  const EventsJoinRequested({required this.eventId, required this.requesterId});
+}
+
+final class EventsJoinRequestApproved extends EventsEvent {
+  final String requestId;
+  final String organizerId;
+
+  const EventsJoinRequestApproved({
+    required this.requestId,
+    required this.organizerId,
+  });
+}
+
+final class EventsJoinRequestRejected extends EventsEvent {
+  final String requestId;
+  final String organizerId;
+
+  const EventsJoinRequestRejected({
+    required this.requestId,
+    required this.organizerId,
+  });
+}
+
+final class EventsLeaveRequested extends EventsEvent {
+  final String eventId;
+  final String userId;
+
+  const EventsLeaveRequested({required this.eventId, required this.userId});
+}
+
+final class EventsParticipantRemoveRequested extends EventsEvent {
+  final String eventId;
+  final String userId;
+
+  const EventsParticipantRemoveRequested({
+    required this.eventId,
+    required this.userId,
+  });
 }
 
 final class EventsPageChanged extends EventsEvent {

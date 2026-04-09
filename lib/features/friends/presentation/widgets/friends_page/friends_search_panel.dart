@@ -6,7 +6,8 @@ class _FriendsSearchPanel extends StatelessWidget {
   final TextEditingController controller;
   final _FriendUserData? searchResult;
   final bool hasQuery;
-  final bool isAlreadyFriend;
+  final Profile? currentProfile;
+  final Set<String> pendingFriendRequestIds;
   final ValueChanged<String> onChanged;
   final ValueChanged<_FriendUserData> onAddFriend;
   final ValueChanged<_FriendUserData> onOpenProfile;
@@ -17,7 +18,8 @@ class _FriendsSearchPanel extends StatelessWidget {
     required this.controller,
     required this.searchResult,
     required this.hasQuery,
-    required this.isAlreadyFriend,
+    required this.currentProfile,
+    required this.pendingFriendRequestIds,
     required this.onChanged,
     required this.onAddFriend,
     required this.onOpenProfile,
@@ -64,7 +66,13 @@ class _FriendsSearchPanel extends StatelessWidget {
             TextField(
               controller: controller,
               onChanged: onChanged,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.done,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               style: const TextStyle(color: AppColors.textPrimary),
+              onTapOutside: (_) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
+              onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
               decoration: InputDecoration(
                 hintText: FriendsTexts.searchHint,
                 hintStyle: const TextStyle(color: AppColors.textSecondary),
@@ -97,7 +105,8 @@ class _FriendsSearchPanel extends StatelessWidget {
               hintsEnabled: hintsEnabled,
               searchResult: searchResult,
               hasQuery: hasQuery,
-              isAlreadyFriend: isAlreadyFriend,
+              currentProfile: currentProfile,
+              pendingFriendRequestIds: pendingFriendRequestIds,
               onAddFriend: onAddFriend,
               onOpenProfile: onOpenProfile,
             ),

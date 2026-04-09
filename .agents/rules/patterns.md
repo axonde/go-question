@@ -31,6 +31,7 @@ Do not introduce parallel architecture tracks without explicit approval.
 - Firebase SDK usage belongs to data/core services, not widgets.
 - UI must dispatch events/intents, not orchestrate repository internals.
 - Repository/domain boundaries should return typed `Result`, not raw thrown errors.
+- Business logic and feature state transitions are controlled by BLoC, not by widget helper methods.
 
 ## Delivery Order for One Feature
 
@@ -41,6 +42,16 @@ For implementation workflow (especially when multiple developers share one featu
 3. Finish in `presentation` layer (BLoC/Cubit and screen wiring).
 
 If final UI is not ready, create a minimal page scaffold and connect bloc flow to it.
+
+## Widget Composition Rules
+
+- Do not build reusable widget trees in `_build*` methods.
+- Each logical widget block should be represented by a widget class.
+- Prefer `StatelessWidget` for presentational components.
+- For feature-local composite components, use `part`/`part of` structure:
+  - main widget file in `widgets/` declares parts
+  - subcomponents in sibling `components/` files use private classes and `part of`
+  - these subcomponents are private to the feature/component boundary
 
 ## Exception and Failure Rules
 

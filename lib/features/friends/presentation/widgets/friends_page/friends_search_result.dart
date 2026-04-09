@@ -4,7 +4,8 @@ class _FriendsSearchResult extends StatelessWidget {
   final bool hintsEnabled;
   final _FriendUserData? searchResult;
   final bool hasQuery;
-  final bool isAlreadyFriend;
+  final Profile? currentProfile;
+  final Set<String> pendingFriendRequestIds;
   final ValueChanged<_FriendUserData> onAddFriend;
   final ValueChanged<_FriendUserData> onOpenProfile;
 
@@ -12,7 +13,8 @@ class _FriendsSearchResult extends StatelessWidget {
     required this.hintsEnabled,
     required this.searchResult,
     required this.hasQuery,
-    required this.isAlreadyFriend,
+    required this.currentProfile,
+    required this.pendingFriendRequestIds,
     required this.onAddFriend,
     required this.onOpenProfile,
   });
@@ -43,40 +45,50 @@ class _FriendsSearchResult extends StatelessWidget {
       );
     }
 
-    return _FriendCard(
-      user: searchResult!,
-      trailing: isAlreadyFriend
-          ? Container(
-              constraints: const BoxConstraints(
-                minWidth: UiConstants.boxUnit * 11,
-                maxWidth: UiConstants.boxUnit * 14,
+    final currentUserId = context.read<ProfileBloc>().state.profile?.uid ?? '';
+    final actionLabel = FriendRelationUtils.actionLabel(
+      currentProfile: currentProfile,
+      currentUserId: currentUserId,
+      otherUid: searchResult!.id,
+    );
+    final canSendRequest = FriendRelationUtils.canSendRequest(
+      currentProfile: currentProfile,
+      currentUserId: currentUserId,
+      otherUid: searchResult!.id,
+    );
+    final isPendingAction = pendingFriendRequestIds.contains(searchResult!.id);
+    final trailing = actionLabel == FriendsTexts.alreadyFriend
+        ? Container(
+            constraints: const BoxConstraints(
+              minWidth: UiConstants.boxUnit * 11,
+              maxWidth: UiConstants.boxUnit * 14,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: UiConstants.horizontalPadding * 1.5,
+              vertical: UiConstants.verticalPadding,
+            ),
+            decoration: BoxDecoration(
+              color: FriendsUiConstants.alreadyFriendBackground,
+              borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
+              border: Border.all(color: FriendsUiConstants.alreadyFriendBorder),
+            ),
+            child: const Text(
+              FriendsTexts.alreadyFriend,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: UiConstants.textSize * 0.65,
+                fontWeight: FontWeight.w700,
               ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: UiConstants.horizontalPadding * 1.5,
-                vertical: UiConstants.verticalPadding,
-              ),
-              decoration: BoxDecoration(
-                color: FriendsUiConstants.alreadyFriendBackground,
-                borderRadius: BorderRadius.circular(
-                  UiConstants.borderRadius * 4,
-                ),
-                border: Border.all(
-                  color: FriendsUiConstants.alreadyFriendBorder,
-                ),
-              ),
-              child: const Text(
-                FriendsTexts.alreadyFriend,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: UiConstants.textSize * 0.65,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            )
-          : Pressable(
+            ),
+          )
+        : canSendRequest
+        ? FirebaseActionShimmer(
+            isLoading: isPendingAction,
+            borderRadius: UiConstants.borderRadius * 4,
+            child: Pressable(
               onTap: () => onAddFriend(searchResult!),
               child: Container(
                 padding: const EdgeInsets.symmetric(
@@ -100,6 +112,30 @@ class _FriendsSearchResult extends StatelessWidget {
                 ),
               ),
             ),
+          )
+        : Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: UiConstants.horizontalPadding * 1.75,
+              vertical: UiConstants.verticalPadding * 1.25,
+            ),
+            decoration: BoxDecoration(
+              color: FriendsUiConstants.alreadyFriendBackground,
+              borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
+              border: Border.all(color: FriendsUiConstants.alreadyFriendBorder),
+            ),
+            child: Text(
+              actionLabel,
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: UiConstants.textSize * 0.72,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          );
+
+    return _FriendCard(
+      user: searchResult!,
+      trailing: trailing,
       onTap: () => onOpenProfile(searchResult!),
     );
   }

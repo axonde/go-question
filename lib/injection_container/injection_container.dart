@@ -15,6 +15,10 @@ import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/events/data/repositories/events_repository_impl.dart';
 import 'package:go_question/features/events/data/source/events_remote_data_source.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
+import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
+import 'package:go_question/features/notifications/data/repositories/notifications_repository_impl.dart';
+import 'package:go_question/features/notifications/data/source/notifications_remote_data_source.dart';
+import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
 import 'package:go_question/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:go_question/features/onboarding/data/source/onboarding_local_data_source.dart';
 import 'package:go_question/features/onboarding/domain/repositories/i_onboarding_repository.dart';
@@ -90,6 +94,7 @@ Future<void> init() async {
 
   //! Features - Events
 
+  sl.registerFactory(() => EventsBloc(sl()));
   sl.registerLazySingleton<IEventsRepository>(() => EventsRepositoryImpl(sl()));
 
   sl.registerLazySingleton<IEventsRemoteDataSource>(
@@ -109,17 +114,12 @@ Future<void> init() async {
   sl.registerFactory(() => ScoreBloc());
 
   //! Features - Notifications
-  // TODO: Раскомментируйте эти строки для подключения Firestore:
-  // sl.registerLazySingleton<INotificationsRemoteDataSource>(
-  //   () => NotificationsRemoteDataSourceImpl(sl()),
-  // );
-  // sl.registerLazySingleton<INotificationsRepository>(
-  //   () => NotificationsRepositoryImpl(sl()),
-  // );
-  // Не забудьте добавить импорты:
-  // import 'package:go_question/features/notifications/data/repositories/notifications_repository_impl.dart';
-  // import 'package:go_question/features/notifications/data/source/notifications_remote_data_source.dart';
-  // import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
+  sl.registerLazySingleton<INotificationsRemoteDataSource>(
+    () => NotificationsRemoteDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<INotificationsRepository>(
+    () => NotificationsRepositoryImpl(sl()),
+  );
 
   //! Core
   sl.registerLazySingleton<SfxService>(() => SfxService());

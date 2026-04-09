@@ -6,6 +6,7 @@ void main() {
     test('creates valid profile with all fields', () {
       const profile = Profile(
         uid: 'test-uid',
+        registrationId: 1000,
         email: 'user@test.dev',
         name: 'Test User',
         nickname: 'tester',
@@ -31,6 +32,7 @@ void main() {
     test('creates valid profile with nullable optional fields', () {
       const profile = Profile(
         uid: 'test-uid',
+        registrationId: 1000,
         email: 'user@test.dev',
         name: 'Test User',
         nickname: 'tester',
@@ -44,6 +46,7 @@ void main() {
     test('fails validation when uid is empty', () {
       const profile = Profile(
         uid: '',
+        registrationId: 1000,
         email: 'user@test.dev',
         name: 'Test User',
         nickname: 'tester',
@@ -55,6 +58,7 @@ void main() {
     test('fails validation when email is empty', () {
       const profile = Profile(
         uid: 'test-uid',
+        registrationId: 1000,
         email: '',
         name: 'Test User',
         nickname: 'tester',
@@ -66,6 +70,7 @@ void main() {
     test('fails validation when name is empty', () {
       const profile = Profile(
         uid: 'test-uid',
+        registrationId: 1000,
         email: 'user@test.dev',
         name: '',
         nickname: 'tester',
@@ -77,6 +82,7 @@ void main() {
     test('fails validation when name is whitespace-only', () {
       const profile = Profile(
         uid: 'test-uid',
+        registrationId: 1000,
         email: 'user@test.dev',
         name: '   ',
         nickname: 'tester',
@@ -88,6 +94,7 @@ void main() {
     test('fails validation when nickname is empty', () {
       const profile = Profile(
         uid: 'test-uid',
+        registrationId: 1000,
         email: 'user@test.dev',
         name: 'Test User',
         nickname: '',
@@ -99,6 +106,7 @@ void main() {
     test('fails validation when birthDate is in the future', () {
       final profile = Profile(
         uid: 'test-uid',
+        registrationId: 1000,
         email: 'user@test.dev',
         name: 'Test User',
         nickname: 'tester',
@@ -111,6 +119,7 @@ void main() {
     test('fails validation when trophies is negative', () {
       const profile = Profile(
         uid: 'test-uid',
+        registrationId: 1000,
         email: 'user@test.dev',
         name: 'Test User',
         nickname: 'tester',
@@ -123,6 +132,7 @@ void main() {
     test('fails validation when visitedEventsCount is negative', () {
       const profile = Profile(
         uid: 'test-uid',
+        registrationId: 1000,
         email: 'user@test.dev',
         name: 'Test User',
         nickname: 'tester',
@@ -135,6 +145,7 @@ void main() {
     test('fails validation when createdEventsCount is negative', () {
       const profile = Profile(
         uid: 'test-uid',
+        registrationId: 1000,
         email: 'user@test.dev',
         name: 'Test User',
         nickname: 'tester',
@@ -147,6 +158,7 @@ void main() {
     test('defaults counters and trophies to 0', () {
       const profile = Profile(
         uid: 'test-uid',
+        registrationId: 1000,
         email: 'user@test.dev',
         name: 'Test User',
         nickname: 'tester',
@@ -163,6 +175,7 @@ void main() {
     test('fails validation when joinedEventIds contains empty value', () {
       const profile = Profile(
         uid: 'test-uid',
+        registrationId: 1000,
         email: 'user@test.dev',
         name: 'Test User',
         nickname: 'tester',
@@ -175,6 +188,7 @@ void main() {
     test('fails validation when createdEventIds contains empty value', () {
       const profile = Profile(
         uid: 'test-uid',
+        registrationId: 1000,
         email: 'user@test.dev',
         name: 'Test User',
         nickname: 'tester',

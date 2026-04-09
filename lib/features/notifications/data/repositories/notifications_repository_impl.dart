@@ -11,6 +11,11 @@ class NotificationsRepositoryImpl implements INotificationsRepository {
   const NotificationsRepositoryImpl(this._remoteDataSource);
 
   @override
+  Stream<List<NotificationEntity>> watchNotifications(String userId) {
+    return _remoteDataSource.watchNotifications(userId);
+  }
+
+  @override
   Future<Result<List<NotificationEntity>, NotificationFailure>>
   getNotifications(String userId) async {
     try {

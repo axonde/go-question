@@ -71,12 +71,7 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(
-      path: '/',
-      page: MainRoute.page,
-      initial: true,
-      guards: [authGuard],
-    ),
+    AutoRoute(path: '/', page: MainRoute.page, initial: true),
     AutoRoute(
       path: '/profile-init',
       page: ProfileInitializationRoute.page,

@@ -8,6 +8,7 @@ class NotificationsMockDataSource implements INotificationsRemoteDataSource {
   final List<NotificationEntity> _mockNotifications = [
     NotificationEntity(
       id: '1',
+      userId: 'current-user-id',
       title: 'Запрос на участие',
       body:
           'Джиган хочет присоединиться к вашему ивенту: "Вечеринка на пляже", который состоится 04.04.2027 в 17:00.',
@@ -32,6 +33,7 @@ class NotificationsMockDataSource implements INotificationsRemoteDataSource {
     ),
     NotificationEntity(
       id: '2',
+      userId: 'current-user-id',
       title: 'Событие скоро начнется!',
       body:
           'Событие "Вечеринка на пляже", которое состоится 04.04.2027 в 17:00, начнется через 2 часа. Не забудьте подготовиться!',
@@ -46,6 +48,7 @@ class NotificationsMockDataSource implements INotificationsRemoteDataSource {
     ),
     NotificationEntity(
       id: '3',
+      userId: 'current-user-id',
       title: 'Новое сообщение',
       body: 'У вас новое сообщение от организатора турнира.',
       type: NotificationType.message,
@@ -74,6 +77,11 @@ class NotificationsMockDataSource implements INotificationsRemoteDataSource {
     // Имитация задержки сети
     await Future.delayed(const Duration(milliseconds: 300));
     return List.from(_mockNotifications);
+  }
+
+  @override
+  Stream<List<NotificationEntity>> watchNotifications(String userId) {
+    return Stream.value(List<NotificationEntity>.from(_mockNotifications));
   }
 
   @override

@@ -13,6 +13,12 @@ class EventConstants {
   static const defaultImageUrl = '';
   static const defaultParticipants = 0;
   static const fallbackOrganizerId = 'current-user-id';
+  static const visibilityPublic = 'public';
+  static const visibilityFriends = 'friends';
+  static const visibilityPrivate = 'private';
+  static const joinModeOpen = 'open';
+  static const joinModeRequest = 'request';
+  static const joinModeInvite = 'invite';
 
   static const monthsLong = [
     '',

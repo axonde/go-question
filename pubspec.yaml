@@ -38,6 +38,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.0.0
+  flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.4.0
   flutter_svg: ^2.2.4
   freezed_annotation: ^2.4.4
@@ -112,3 +113,15 @@ flutter_native_splash:
   android_12:
     color: "#000000" # фон – такой же, как и для старых версий
     image: assets/images/splash_logo.png
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  # Separate paths for each platform
+  image_path_android: "assets/icons/png/app_icon_android.png"
+  image_path_ios: "assets/icons/png/app_icon_ios.png"
+  
+  # Optional: For Android adaptive icons
+  adaptive_icon_background: "#00A3FF" # or "assets/icon/background.png"
+  adaptive_icon_foreground: "assets/icons/png/app_icon_android.png"

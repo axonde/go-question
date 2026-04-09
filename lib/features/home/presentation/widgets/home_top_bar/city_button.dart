@@ -26,11 +26,13 @@ class _CityButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(
           horizontal: UiConstants.leftPadding * 1.5,
         ),
-        // fitWidth: текст всегда заполняет доступную ширину →
-        // "Москва" и "Санкт-Петербург" выглядят одинаково.
-        child: FittedBox(
-          fit: BoxFit.fitWidth,
-          child: _TopBarText(text: city),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: _TopBarText(text: city),
+          ),
         ),
       ),
     );

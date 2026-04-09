@@ -4,6 +4,12 @@ sealed class ProfileEvent {
   const ProfileEvent();
 }
 
+final class _ProfileStreamUpdated extends ProfileEvent {
+  final Profile profile;
+
+  const _ProfileStreamUpdated(this.profile);
+}
+
 /// Request to ensure profile exists. Idempotent operation.
 ///
 /// **Context:** Called immediately after successful auth to guarantee
@@ -63,4 +69,18 @@ final class ProfileRetryRequested extends ProfileEvent {
     required this.initialName,
     required this.initialNickname,
   });
+}
+
+/// Update an existing profile after the user fills missing data.
+final class ProfileUpdateRequested extends ProfileEvent {
+  final Profile profile;
+
+  const ProfileUpdateRequested(this.profile);
+}
+
+/// Refreshes profile from repository without changing local edits.
+final class ProfileRefreshRequested extends ProfileEvent {
+  final String uid;
+
+  const ProfileRefreshRequested(this.uid);
 }

@@ -24,7 +24,8 @@ class SubmitButton extends StatelessWidget {
       aspectRatio: 110 / 20,
       fontSize: AppTextStyles.button.fontSize,
       widthFactor: 1,
-      onPressed: isLoading ? () {} : onPressed,
+      onPressed: onPressed,
+      isLoading: isLoading,
       text: isLogin ? 'Войти' : 'Зарегистрироваться',
     );
   }
