@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,15 +7,16 @@ import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/app_text_styles.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/widgets/avatar_square.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
-import 'package:go_question/core/widgets/icons/gq_edit_icon.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/home/presentation/widgets/city_selector_sheet.dart';
 import 'package:go_question/features/profile/constants/profile_presentation.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/injection_container/injection_container.dart';
+import 'package:image_picker/image_picker.dart';
 
 part 'components/avatar.dart';
 part 'components/characteristics.dart';
@@ -73,6 +76,7 @@ class _ProfileContent extends StatelessWidget {
         profile.name.trim().isEmpty &&
         profile.nickname.trim().isEmpty &&
         authNickname.isEmpty;
+    final imagePicker = ImagePicker();
 
     return DecoratedBox(
       decoration: const BoxDecoration(color: AppColors.popupOutBackground),
@@ -121,7 +125,28 @@ class _ProfileContent extends StatelessWidget {
                         GqCloseButton(onTap: () => Navigator.of(context).pop()),
                       ],
                     ),
-                    const _Avatar(),
+                    _Avatar(
+                      avatarUrl: profile.avatarUrl,
+                      onTap: () async {
+                        final picked = await imagePicker.pickImage(
+                          source: ImageSource.gallery,
+                          imageQuality: 85,
+                          maxWidth: 1024,
+                        );
+                        if (picked == null || !context.mounted) {
+                          return;
+                        }
+                        final path = picked.path.trim();
+                        if (path.isEmpty || !File(path).existsSync()) {
+                          return;
+                        }
+                        context.read<ProfileBloc>().add(
+                          ProfileUpdateRequested(
+                            profile.copyWith(avatarUrl: path),
+                          ),
+                        );
+                      },
+                    ),
                     _Profile(name: profileName, registrationId: registrationId),
                     _Characteristics(
                       birthDate: birthDateText,

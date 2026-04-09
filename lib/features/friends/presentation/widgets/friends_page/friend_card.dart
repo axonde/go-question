@@ -37,23 +37,15 @@ class _FriendCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Container(
-                width: UiConstants.boxUnit * 7,
-                height: UiConstants.boxUnit * 7,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: user.avatarColor,
-                  border: Border.all(color: FriendsUiConstants.avatarBorder),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  user.name.isEmpty ? '?' : user.name[0],
-                  style: const TextStyle(
-                    color: FriendsUiConstants.avatarText,
-                    fontSize: UiConstants.textSize * 1.1,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
+              AvatarSquare(
+                size: UiConstants.boxUnit * 7,
+                imagePathOrUrl: user.avatarUrl,
+                backgroundColor: user.avatarColor,
+                borderRadius: UiConstants.borderRadius * 3,
+                borderColor: FriendsUiConstants.avatarBorder,
+                fallbackText: user.name.isEmpty ? '?' : user.name[0],
+                fallbackTextSize: UiConstants.textSize * 1.1,
+                fallbackTextWeight: FontWeight.w900,
               ),
               const SizedBox(width: UiConstants.boxUnit * 1.5),
               Expanded(
