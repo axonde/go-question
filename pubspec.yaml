@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  audioplayers: ^6.6.0
   auto_route: ^10.2.5
   cloud_firestore: ^6.2.0
   cupertino_icons: ^1.0.8
@@ -44,6 +45,7 @@ dependencies:
   internet_connection_checker_plus: ^2.5.1
   json_annotation: ^4.9.0
   shared_preferences: ^2.5.3
+  video_player: ^2.11.1
 
 dev_dependencies:
   auto_route_generator: ^10.2.3
@@ -73,6 +75,8 @@ flutter:
     - assets/icons/svgs/
     - assets/images/background/
     - assets/images/presets/
+    - assets/videos/
+    - assets/audio/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -98,10 +102,10 @@ flutter:
           weight: 400
 
 flutter_native_splash:
-  color: "#FFFFFF" # фоновый цвет
+  color: "#000000" # фоновый цвет
   image: assets/images/splash_logo.png # путь к логотипу
   android: true
   ios: true
   android_12:
-    color: "#FFFFFF" # фон – такой же, как и для старых версий
+    color: "#000000" # фон – такой же, как и для старых версий
     image: assets/images/splash_logo.png

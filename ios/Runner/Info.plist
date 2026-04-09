@@ -68,12 +68,12 @@
 		</array>
 		<key>CFBundleURLTypes</key>
 		<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-			<string>com.googleusercontent.apps.49427015791-ibfsh55e50lr4ua11ppr30lv9scmt1g3</string>
-			</array>
-		</dict>
+			<dict>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.49427015791-ibfsh55e50lr4ua11ppr30lv9scmt1g3</string>
+				</array>
+			</dict>
 		</array>
 		<key>GIDClientID</key>
 		<string>49427015791-ibfsh55e50lr4ua11ppr30lv9scmt1g3.apps.googleusercontent.com</string>
