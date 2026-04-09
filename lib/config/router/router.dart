@@ -2,17 +2,26 @@ import 'package:auto_route/auto_route.dart';
 import 'package:go_question/config/main_nav_page.dart';
 import 'package:go_question/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:go_question/features/auth/presentation/pages/auth_flow_page.dart';
+import 'package:go_question/features/onboarding/domain/repositories/i_onboarding_repository.dart';
+import 'package:go_question/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:go_question/features/profile/presentation/pages/profile_initialization_page.dart';
 
 part 'router.gr.dart';
 
 class AuthGuard extends AutoRouteGuard {
   final IAuthRepository _authRepository;
+  final IOnboardingRepository _onboardingRepository;
 
-  const AuthGuard(this._authRepository);
+  const AuthGuard(this._authRepository, this._onboardingRepository);
 
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) {
+    // Intercept with Onboarding if not completed on this device
+    if (!_onboardingRepository.getOnboardingStatus()) {
+      resolver.redirectUntil(const OnboardingRoute());
+      return;
+    }
+
     final canAccessMain =
         _authRepository.getCurrentUser() != null &&
         _authRepository.isCurrentUserEmailVerified();
@@ -28,8 +37,9 @@ class AuthGuard extends AutoRouteGuard {
 
 class GuestGuard extends AutoRouteGuard {
   final IAuthRepository _authRepository;
+  final IOnboardingRepository _onboardingRepository;
 
-  const GuestGuard(this._authRepository);
+  const GuestGuard(this._authRepository, this._onboardingRepository);
 
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) {
@@ -37,12 +47,18 @@ class GuestGuard extends AutoRouteGuard {
         _authRepository.getCurrentUser() == null ||
         !_authRepository.isCurrentUserEmailVerified();
 
-    if (canAccessGuestOnlyPages) {
-      resolver.next();
+    if (!canAccessGuestOnlyPages) {
+      resolver.redirectUntil(const MainRoute());
       return;
     }
 
-    resolver.redirectUntil(const MainRoute());
+    // Intercept with Onboarding if not completed
+    if (!_onboardingRepository.getOnboardingStatus()) {
+      resolver.redirectUntil(const OnboardingRoute());
+      return;
+    }
+
+    resolver.next();
   }
 }
 
@@ -67,6 +83,7 @@ class AppRouter extends RootStackRouter {
       guards: [authGuard],
     ),
     AutoRoute(path: '/auth', page: AuthFlowRoute.page, guards: [guestGuard]),
+    AutoRoute(path: '/onboarding', page: OnboardingRoute.page),
     RedirectRoute(path: '*', redirectTo: '/'),
   ];
 }

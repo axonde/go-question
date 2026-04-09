@@ -13,6 +13,12 @@ import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/events/data/repositories/events_repository_impl.dart';
 import 'package:go_question/features/events/data/source/events_remote_data_source.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
+import 'package:go_question/features/onboarding/data/repositories/onboarding_repository_impl.dart';
+import 'package:go_question/features/onboarding/data/source/onboarding_local_data_source.dart';
+import 'package:go_question/features/onboarding/domain/repositories/i_onboarding_repository.dart';
+import 'package:go_question/features/onboarding/domain/usecases/check_onboarding_status.dart';
+import 'package:go_question/features/onboarding/domain/usecases/complete_onboarding.dart';
+import 'package:go_question/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:go_question/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:go_question/features/profile/data/source/profile_remote_datasource.dart';
 import 'package:go_question/features/profile/domain/errors/profile_exception_to_failure_mapper.dart';
@@ -27,6 +33,21 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   final sharedPreferences = await SharedPreferences.getInstance();
+
+  //! Features - Onboarding
+
+  sl.registerFactory(() => OnboardingBloc(sl(), sl()));
+
+  sl.registerLazySingleton(() => CheckOnboardingStatus(sl()));
+  sl.registerLazySingleton(() => CompleteOnboarding(sl()));
+
+  sl.registerLazySingleton<IOnboardingRepository>(
+    () => OnboardingRepositoryImpl(sl()),
+  );
+
+  sl.registerLazySingleton<OnboardingLocalDataSource>(
+    () => OnboardingLocalDataSourceImpl(sl()),
+  );
 
   //! Features - Auth
 
@@ -74,8 +95,8 @@ Future<void> init() async {
 
   //! Router
 
-  sl.registerLazySingleton<AuthGuard>(() => AuthGuard(sl()));
-  sl.registerLazySingleton<GuestGuard>(() => GuestGuard(sl()));
+  sl.registerLazySingleton<AuthGuard>(() => AuthGuard(sl(), sl()));
+  sl.registerLazySingleton<GuestGuard>(() => GuestGuard(sl(), sl()));
   sl.registerLazySingleton<AppRouter>(
     () => AppRouter(authGuard: sl(), guestGuard: sl()),
   );
