@@ -15,6 +15,7 @@ class AchievementsBloc extends Bloc<AchievementsEvent, AchievementsState> {
     on<AchievementsOpenedRequested>(_onOpenedRequested);
     on<AchievementsViewedRequested>(_onViewedRequested);
     on<AchievementsRefreshRequested>(_onRefreshRequested);
+    on<AchievementsSessionClearedRequested>(_onSessionClearedRequested);
   }
 
   Future<void> _onOpenedRequested(
@@ -109,6 +110,13 @@ class AchievementsBloc extends Bloc<AchievementsEvent, AchievementsState> {
         );
       },
     );
+  }
+
+  void _onSessionClearedRequested(
+    AchievementsSessionClearedRequested event,
+    Emitter<AchievementsState> emit,
+  ) {
+    emit(const AchievementsState.initial());
   }
 
   String _mapErrorMessage(AchievementFailure failure) {

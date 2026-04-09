@@ -43,13 +43,13 @@ dependencies:
   flutter_svg: ^2.2.4
   freezed_annotation: ^2.4.4
   get_it: ^9.2.1
+  gif_view: ^1.0.3
   google_sign_in: ^6.2.2
   internet_connection_checker_plus: ^2.5.1
   json_annotation: ^4.9.0
   just_audio: ^0.10.5
   shared_preferences: ^2.5.3
   video_player: ^2.11.1
-  gif_view: ^1.0.3
 
 dev_dependencies:
   auto_route_generator: ^10.2.3

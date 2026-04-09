@@ -3,7 +3,8 @@ import 'package:go_question/features/onboarding/data/repositories/onboarding_rep
 import 'package:go_question/features/onboarding/data/source/onboarding_local_data_source.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockOnboardingLocalDataSource extends Mock implements OnboardingLocalDataSource {}
+class MockOnboardingLocalDataSource extends Mock
+    implements OnboardingLocalDataSource {}
 
 void main() {
   late OnboardingRepositoryImpl repository;
@@ -17,8 +18,7 @@ void main() {
   group('getOnboardingStatus', () {
     test('should return status from data source', () {
       // arrange
-      when(() => mockDataSource.getOnboardingStatus())
-          .thenReturn(true);
+      when(() => mockDataSource.getOnboardingStatus()).thenReturn(true);
       // act
       final result = repository.getOnboardingStatus();
       // assert
@@ -30,8 +30,9 @@ void main() {
   group('setOnboardingCompleted', () {
     test('should call setOnboardingCompleted on data source', () async {
       // arrange
-      when(() => mockDataSource.setOnboardingCompleted())
-          .thenAnswer((_) async => {});
+      when(
+        () => mockDataSource.setOnboardingCompleted(),
+      ).thenAnswer((_) async => {});
       // act
       await repository.setOnboardingCompleted();
       // assert

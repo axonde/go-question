@@ -30,12 +30,11 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> closeLogin() async {
-      final popped = await Navigator.of(
-        context,
-        rootNavigator: true,
-      ).maybePop();
-      if (!popped && context.mounted) {
+    void closeLogin() {
+      final navigator = Navigator.of(context, rootNavigator: true);
+      if (navigator.canPop()) {
+        navigator.pop();
+      } else if (context.mounted) {
         context.router.replace(const MainRoute());
       }
     }

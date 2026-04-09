@@ -6,9 +6,11 @@ class _FriendsSearchPanel extends StatelessWidget {
   final TextEditingController controller;
   final _FriendUserData? searchResult;
   final bool hasQuery;
+  final bool canSearch;
   final Profile? currentProfile;
   final Set<String> pendingFriendRequestIds;
   final ValueChanged<String> onChanged;
+  final VoidCallback onRequireRegistration;
   final ValueChanged<_FriendUserData> onAddFriend;
   final ValueChanged<_FriendUserData> onOpenProfile;
 
@@ -18,9 +20,11 @@ class _FriendsSearchPanel extends StatelessWidget {
     required this.controller,
     required this.searchResult,
     required this.hasQuery,
+    required this.canSearch,
     required this.currentProfile,
     required this.pendingFriendRequestIds,
     required this.onChanged,
+    required this.onRequireRegistration,
     required this.onAddFriend,
     required this.onOpenProfile,
   });
@@ -65,7 +69,9 @@ class _FriendsSearchPanel extends StatelessWidget {
             ),
             TextField(
               controller: controller,
-              onChanged: onChanged,
+              readOnly: !canSearch,
+              onTap: canSearch ? null : onRequireRegistration,
+              onChanged: canSearch ? onChanged : null,
               keyboardType: TextInputType.number,
               textInputAction: TextInputAction.done,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -104,7 +110,7 @@ class _FriendsSearchPanel extends StatelessWidget {
             _FriendsSearchResult(
               hintsEnabled: hintsEnabled,
               searchResult: searchResult,
-              hasQuery: hasQuery,
+              hasQuery: canSearch && hasQuery,
               currentProfile: currentProfile,
               pendingFriendRequestIds: pendingFriendRequestIds,
               onAddFriend: onAddFriend,

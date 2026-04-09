@@ -30,6 +30,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileRetryRequested>(_onRetryRequested);
     on<ProfileUpdateRequested>(_onUpdateRequested);
     on<ProfileRefreshRequested>(_onRefreshRequested);
+    on<ProfileSessionClearedRequested>(_onSessionClearedRequested);
   }
 
   /// Ensures profile exists. Called once after auth success.
@@ -142,6 +143,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     Emitter<ProfileState> emit,
   ) {
     emit(ProfileState.success(event.profile));
+  }
+
+  Future<void> _onSessionClearedRequested(
+    ProfileSessionClearedRequested event,
+    Emitter<ProfileState> emit,
+  ) async {
+    await _profileSubscription?.cancel();
+    _profileSubscription = null;
+    emit(const ProfileState.initial());
   }
 
   Future<Result<Profile, ProfileFailure>> _ensureProfileExists({

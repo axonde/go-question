@@ -36,9 +36,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         curve: Curves.easeInOut,
       );
     } else {
-      context.read<OnboardingBloc>().add(
-        const OnboardingCompletedRequested(),
-      );
+      context.read<OnboardingBloc>().add(const OnboardingCompletedRequested());
     }
   }
 
@@ -131,7 +129,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 }
 
-
 enum BubbleTailDirection { leftEdge, bottomRightEdge, bottomLeftEdge }
 
 class _AnimatedOnboardingSlide extends StatefulWidget {
@@ -139,23 +136,23 @@ class _AnimatedOnboardingSlide extends StatefulWidget {
   final String characterAsset;
   final String bubbleText;
   final BubbleTailDirection tailDirection;
-  
+
   final double? charLeft;
   final double? charRight;
   final double? charBottom;
   final double charHeight;
-  
+
   final double? bubbleLeft;
   final double? bubbleRight;
   final double? bubbleBottom;
-  
+
   final double? tapTextLeft;
   final double? tapTextRight;
   final double? tapTextBottom;
-  
+
   final double? tapZoneLeft;
   final double? tapZoneRight;
-  
+
   final VoidCallback onTap;
 
   const _AnimatedOnboardingSlide({
@@ -180,7 +177,8 @@ class _AnimatedOnboardingSlide extends StatefulWidget {
   });
 
   @override
-  State<_AnimatedOnboardingSlide> createState() => _AnimatedOnboardingSlideState();
+  State<_AnimatedOnboardingSlide> createState() =>
+      _AnimatedOnboardingSlideState();
 }
 
 class _AnimatedOnboardingSlideState extends State<_AnimatedOnboardingSlide> {
@@ -198,11 +196,11 @@ class _AnimatedOnboardingSlideState extends State<_AnimatedOnboardingSlide> {
     Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) setState(() => _showCharacter = true);
     });
-    
+
     Future.delayed(const Duration(milliseconds: 1000), () {
       if (mounted) setState(() => _showBubble = true);
     });
-    
+
     Future.delayed(const Duration(milliseconds: 1800), () {
       if (mounted) setState(() => _showSkip = true);
     });
@@ -216,10 +214,7 @@ class _AnimatedOnboardingSlideState extends State<_AnimatedOnboardingSlide> {
       fit: StackFit.expand,
       children: [
         // Фон
-        Image.asset(
-          widget.bgAsset,
-          fit: BoxFit.cover,
-        ),
+        Image.asset(widget.bgAsset, fit: BoxFit.cover),
 
         // Персонаж
         Positioned(
@@ -388,11 +383,8 @@ class _FinalOnboardingSlideState extends State<_FinalOnboardingSlide> {
       fit: StackFit.expand,
       children: [
         // Фон
-        Image.asset(
-          'assets/images/onboarding/bg4.png',
-          fit: BoxFit.cover,
-        ),
-        
+        Image.asset('assets/images/onboarding/bg4.png', fit: BoxFit.cover),
+
         // Кнопки по центру
         AnimatedOpacity(
           opacity: _showContent ? 1.0 : 0.0,

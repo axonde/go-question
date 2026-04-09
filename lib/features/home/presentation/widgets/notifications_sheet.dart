@@ -7,6 +7,7 @@ import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/loading/firebase_action_shimmer.dart';
 import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
+import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
 import 'package:go_question/features/notifications/domain/entities/notification_entity.dart';
 import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
@@ -106,6 +107,16 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
   int? _expandedIndex;
   final Set<String> _processingIds = <String>{};
 
+  void _resetUiState() {
+    if (_expandedIndex == null && _processingIds.isEmpty) {
+      return;
+    }
+    setState(() {
+      _expandedIndex = null;
+      _processingIds.clear();
+    });
+  }
+
   Future<void> _acceptRequest(NotificationData data) async {
     final profile = context.read<ProfileBloc>().state.profile;
     if (profile == null || _processingIds.contains(data.id)) return;
@@ -155,68 +166,81 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
   @override
   Widget build(BuildContext context) {
     final profile = context.watch<ProfileBloc>().state.profile;
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(UiConstants.borderRadius * 8),
-        ),
-        border: Border(
-          top: BorderSide(color: Color(0xFF62697B)),
-          left: BorderSide(color: Color(0xFF62697B)),
-          right: BorderSide(color: Color(0xFF62697B)),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0xCC000000),
-            offset: Offset(0, -UiConstants.shadowOffsetY),
+    return BlocListener<AuthBloc, AuthState>(
+      listenWhen: (previous, current) => previous.status != current.status,
+      listener: (context, state) {
+        if (state.status == AuthStatus.unauthenticated) {
+          _resetUiState();
+        }
+      },
+      child: DecoratedBox(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(UiConstants.borderRadius * 8),
           ),
-        ],
-      ),
-      child: Column(
-        children: [
-          _buildHeader(context),
-          Expanded(
-            child: profile == null
-                ? const Center(child: Text(EventTexts.notificationsEmptyState))
-                : StreamBuilder<List<NotificationEntity>>(
-                    stream: sl<INotificationsRepository>().watchNotifications(
-                      profile.uid,
+          border: Border(
+            top: BorderSide(color: Color(0xFF62697B)),
+            left: BorderSide(color: Color(0xFF62697B)),
+            right: BorderSide(color: Color(0xFF62697B)),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xCC000000),
+              offset: Offset(0, -UiConstants.shadowOffsetY),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            _buildHeader(context),
+            Expanded(
+              child: profile == null
+                  ? const Center(
+                      child: Text(EventTexts.notificationsEmptyState),
+                    )
+                  : StreamBuilder<List<NotificationEntity>>(
+                      stream: sl<INotificationsRepository>().watchNotifications(
+                        profile.uid,
+                      ),
+                      builder: (context, snapshot) {
+                        final notifications = (snapshot.data ?? const [])
+                            .map(NotificationData.fromEntity)
+                            .toList(growable: false);
+                        if (snapshot.hasError && notifications.isEmpty) {
+                          return const Center(
+                            child: Text(EventTexts.notificationsEmptyState),
+                          );
+                        }
+                        if (snapshot.connectionState ==
+                                ConnectionState.waiting &&
+                            notifications.isEmpty) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (notifications.isEmpty) {
+                          return const Center(
+                            child: Text(EventTexts.notificationsEmptyState),
+                          );
+                        }
+                        return _NotificationsList(
+                          notifications: notifications,
+                          processingIds: _processingIds,
+                          expandedIndex: _expandedIndex,
+                          onToggle: (index) => setState(() {
+                            _expandedIndex = _expandedIndex == index
+                                ? null
+                                : index;
+                          }),
+                          onAccept: _acceptRequest,
+                          onReject: _rejectRequest,
+                        );
+                      },
                     ),
-                    builder: (context, snapshot) {
-                      final notifications = (snapshot.data ?? const [])
-                          .map(NotificationData.fromEntity)
-                          .toList(growable: false);
-                      if (snapshot.hasError && notifications.isEmpty) {
-                        return const Center(
-                          child: Text(EventTexts.notificationsEmptyState),
-                        );
-                      }
-                      if (snapshot.connectionState == ConnectionState.waiting &&
-                          notifications.isEmpty) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      if (notifications.isEmpty) {
-                        return const Center(
-                          child: Text(EventTexts.notificationsEmptyState),
-                        );
-                      }
-                      return _NotificationsList(
-                        notifications: notifications,
-                        processingIds: _processingIds,
-                        expandedIndex: _expandedIndex,
-                        onToggle: (index) => setState(() {
-                          _expandedIndex = _expandedIndex == index
-                              ? null
-                              : index;
-                        }),
-                        onAccept: _acceptRequest,
-                        onReject: _rejectRequest,
-                      );
-                    },
-                  ),
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

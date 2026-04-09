@@ -95,3 +95,7 @@ final class EventsPageChanged extends EventsEvent {
 final class EventsTransientCleared extends EventsEvent {
   const EventsTransientCleared();
 }
+
+final class EventsSessionClearedRequested extends EventsEvent {
+  const EventsSessionClearedRequested();
+}

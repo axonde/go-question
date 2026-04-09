@@ -21,3 +21,7 @@ final class AchievementsRefreshRequested extends AchievementsEvent {
 
   const AchievementsRefreshRequested(this.uid);
 }
+
+final class AchievementsSessionClearedRequested extends AchievementsEvent {
+  const AchievementsSessionClearedRequested();
+}

@@ -12,6 +12,8 @@ class SettingsTexts {
   static const compactModeTitle = 'Компактный режим';
   static const compactModeSubtitle =
       'Делать интерфейс плотнее и уменьшать вертикальные отступы.';
+  static const soundTitle = 'Звук';
+  static const soundSubtitle = 'Включать музыку и звуки интерфейса.';
   static const accountTitle = 'Аккаунт';
   static const signOut = 'Выйти из профиля';
   static const signIn = 'Войти';
