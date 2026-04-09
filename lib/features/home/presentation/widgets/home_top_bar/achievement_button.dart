@@ -44,11 +44,15 @@ class _AchievementButton extends StatelessWidget {
             width: height,
             height: height,
             decoration: _achievementDecoration,
-            child: Icon(
-              Icons.military_tech,
-              color: HomeUiConstants.achievementIcon,
-              size: height * 0.6,
+            child: Image.asset(
+              'assets/icons/png/crown_icon.png',
+              fit: BoxFit.contain,
             ),
+            //  Icon(
+            //   Icons.military_tech,
+            //   color: HomeUiConstants.achievementIcon,
+            //   size: height * 0.6,
+            // ),
           ),
           if (hasUnreadAchievements)
             Positioned(

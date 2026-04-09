@@ -13,7 +13,7 @@ class GqCloseButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final Widget svg = SvgPicture.asset(
       'assets/icons/svgs/close.svg',
-      semanticsLabel: 'Dart Logo',
+      semanticsLabel: 'Close',
     );
 
     return Pressable(
