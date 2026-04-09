@@ -14,6 +14,7 @@ class SettingsTexts {
       'Делать интерфейс плотнее и уменьшать вертикальные отступы.';
   static const accountTitle = 'Аккаунт';
   static const signOut = 'Выйти из профиля';
+  static const signIn = 'Войти';
 
   const SettingsTexts._();
 }

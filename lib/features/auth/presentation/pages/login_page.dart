@@ -1,4 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 
 import '../widgets/email_field.dart';
@@ -28,6 +30,13 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> closeLogin() async {
+      final popped = await context.router.maybePop();
+      if (!popped && context.mounted) {
+        context.router.replace(const MainRoute());
+      }
+    }
+
     return Scaffold(
       body: SafeArea(
         minimum: const EdgeInsets.only(
@@ -40,6 +49,13 @@ class LoginPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  onPressed: closeLogin,
+                  icon: const Icon(Icons.close),
+                ),
+              ),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

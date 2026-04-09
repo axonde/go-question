@@ -1,5 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/settings_texts.dart';
@@ -11,18 +13,23 @@ class SignOutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = context.select<AuthBloc, bool>(
-      (bloc) => bloc.state.isLoading,
-    );
+    final authState = context.select<AuthBloc, AuthState>((bloc) => bloc.state);
+    final isLoading = authState.isLoading;
+    final isLoggedOut = authState.status == AuthStatus.unauthenticated;
 
     return GQButton(
-      onPressed: () =>
-          context.read<AuthBloc>().add(const AuthSignOutRequested()),
+      onPressed: () {
+        if (isLoggedOut) {
+          context.router.push(const AuthFlowRoute());
+          return;
+        }
+        context.read<AuthBloc>().add(const AuthSignOutRequested());
+      },
       isLoading: isLoading,
-      text: SettingsTexts.signOut,
+      text: isLoggedOut ? SettingsTexts.signIn : SettingsTexts.signOut,
       widthFactor: 1,
       aspectRatio: 4.8,
-      baseColor: AppColors.redBackground,
+      baseColor: isLoggedOut ? AppColors.success : AppColors.redBackground,
       textColor: AppColors.textPrimary,
       textStrokeColor: AppColors.stroke,
       fontSize: UiConstants.textSize * 0.9,
