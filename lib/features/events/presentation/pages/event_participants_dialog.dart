@@ -290,6 +290,10 @@ class _ParticipantTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.select<EventsBloc, bool>(
+      (bloc) => bloc.state.isLoading,
+    );
+
     return DecoratedBox(
       decoration: BoxDecoration(
         color: const Color(0xFF17365B),
@@ -332,6 +336,7 @@ class _ParticipantTile extends StatelessWidget {
             if (showApprove)
               GQButton(
                 onPressed: onAccept,
+                isLoading: isLoading,
                 text: EventTexts.buttonApprove,
                 baseColor: AppColors.secondary,
                 width: UiConstants.boxUnit * 8,
@@ -342,6 +347,7 @@ class _ParticipantTile extends StatelessWidget {
                 padding: const EdgeInsets.only(left: UiConstants.boxUnit),
                 child: GQButton(
                   onPressed: onReject,
+                  isLoading: isLoading,
                   text: EventTexts.buttonReject,
                   baseColor: AppColors.primaryVariant,
                   width: UiConstants.boxUnit * 8,
@@ -353,6 +359,7 @@ class _ParticipantTile extends StatelessWidget {
                 padding: const EdgeInsets.only(left: UiConstants.boxUnit),
                 child: GQButton(
                   onPressed: onReject,
+                  isLoading: isLoading,
                   text: EventTexts.buttonRemove,
                   baseColor: AppColors.error,
                   width: UiConstants.boxUnit * 8,

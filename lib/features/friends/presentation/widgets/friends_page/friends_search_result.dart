@@ -5,6 +5,7 @@ class _FriendsSearchResult extends StatelessWidget {
   final _FriendUserData? searchResult;
   final bool hasQuery;
   final Profile? currentProfile;
+  final Set<String> pendingFriendRequestIds;
   final ValueChanged<_FriendUserData> onAddFriend;
   final ValueChanged<_FriendUserData> onOpenProfile;
 
@@ -13,6 +14,7 @@ class _FriendsSearchResult extends StatelessWidget {
     required this.searchResult,
     required this.hasQuery,
     required this.currentProfile,
+    required this.pendingFriendRequestIds,
     required this.onAddFriend,
     required this.onOpenProfile,
   });
@@ -54,6 +56,7 @@ class _FriendsSearchResult extends StatelessWidget {
       currentUserId: currentUserId,
       otherUid: searchResult!.id,
     );
+    final isPendingAction = pendingFriendRequestIds.contains(searchResult!.id);
     final trailing = actionLabel == FriendsTexts.alreadyFriend
         ? Container(
             constraints: const BoxConstraints(
@@ -82,26 +85,30 @@ class _FriendsSearchResult extends StatelessWidget {
             ),
           )
         : canSendRequest
-        ? Pressable(
-            onTap: () => onAddFriend(searchResult!),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: UiConstants.horizontalPadding * 1.75,
-                vertical: UiConstants.verticalPadding * 1.25,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.secondary,
-                borderRadius: BorderRadius.circular(
-                  UiConstants.borderRadius * 4,
+        ? FirebaseActionShimmer(
+            isLoading: isPendingAction,
+            borderRadius: UiConstants.borderRadius * 4,
+            child: Pressable(
+              onTap: () => onAddFriend(searchResult!),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: UiConstants.horizontalPadding * 1.75,
+                  vertical: UiConstants.verticalPadding * 1.25,
                 ),
-                border: Border.all(color: AppColors.secondaryVariant),
-              ),
-              child: const Text(
-                FriendsTexts.addFriend,
-                style: TextStyle(
-                  color: FriendsUiConstants.avatarText,
-                  fontSize: UiConstants.textSize * 0.72,
-                  fontWeight: FontWeight.w900,
+                decoration: BoxDecoration(
+                  color: AppColors.secondary,
+                  borderRadius: BorderRadius.circular(
+                    UiConstants.borderRadius * 4,
+                  ),
+                  border: Border.all(color: AppColors.secondaryVariant),
+                ),
+                child: const Text(
+                  FriendsTexts.addFriend,
+                  style: TextStyle(
+                    color: FriendsUiConstants.avatarText,
+                    fontSize: UiConstants.textSize * 0.72,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
               ),
             ),

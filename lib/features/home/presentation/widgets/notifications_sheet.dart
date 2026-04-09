@@ -5,6 +5,7 @@ import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
+import 'package:go_question/core/widgets/loading/firebase_action_shimmer.dart';
 import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
 import 'package:go_question/features/notifications/domain/entities/notification_entity.dart';
@@ -202,6 +203,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
                       }
                       return _NotificationsList(
                         notifications: notifications,
+                        processingIds: _processingIds,
                         expandedIndex: _expandedIndex,
                         onToggle: (index) => setState(() {
                           _expandedIndex = _expandedIndex == index

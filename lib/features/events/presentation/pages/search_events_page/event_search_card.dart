@@ -278,6 +278,7 @@ class _JoinAction extends StatelessWidget {
                 );
               }
             },
+      isLoading: isBusy && !isParticipant && !isPending,
       text: isParticipant
           ? EventTexts.buttonJoined
           : isPending
@@ -399,6 +400,10 @@ class _OrganizerActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.select<EventsBloc, bool>(
+      (bloc) => bloc.state.isLoading,
+    );
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -420,6 +425,7 @@ class _OrganizerActions extends StatelessWidget {
               );
             });
           },
+          isLoading: isLoading,
           text: EventTexts.buttonEdit,
           baseColor: const Color(0xFF1565C0),
           mainGradient: const LinearGradient(
@@ -439,6 +445,7 @@ class _OrganizerActions extends StatelessWidget {
               builder: (_) => EventParticipantsDialog(event: event),
             );
           },
+          isLoading: isLoading,
           text: EventTexts.buttonParticipants,
           baseColor: const Color(0xFF2E7D32),
           mainGradient: const LinearGradient(
@@ -478,6 +485,7 @@ class _OrganizerActions extends StatelessWidget {
               const SnackBar(content: Text(EventTexts.snackBarEventDeleted)),
             );
           },
+          isLoading: isLoading,
           text: EventTexts.buttonDeleteEvent,
           baseColor: AppColors.error,
           width: UiConstants.boxUnit * 13,

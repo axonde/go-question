@@ -7,6 +7,7 @@ class _FriendsSearchPanel extends StatelessWidget {
   final _FriendUserData? searchResult;
   final bool hasQuery;
   final Profile? currentProfile;
+  final Set<String> pendingFriendRequestIds;
   final ValueChanged<String> onChanged;
   final ValueChanged<_FriendUserData> onAddFriend;
   final ValueChanged<_FriendUserData> onOpenProfile;
@@ -18,6 +19,7 @@ class _FriendsSearchPanel extends StatelessWidget {
     required this.searchResult,
     required this.hasQuery,
     required this.currentProfile,
+    required this.pendingFriendRequestIds,
     required this.onChanged,
     required this.onAddFriend,
     required this.onOpenProfile,
@@ -104,6 +106,7 @@ class _FriendsSearchPanel extends StatelessWidget {
               searchResult: searchResult,
               hasQuery: hasQuery,
               currentProfile: currentProfile,
+              pendingFriendRequestIds: pendingFriendRequestIds,
               onAddFriend: onAddFriend,
               onOpenProfile: onOpenProfile,
             ),

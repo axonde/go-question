@@ -8,6 +8,7 @@ import 'package:go_question/core/constants/friends_texts.dart';
 import 'package:go_question/core/constants/friends_ui_constants.dart';
 import 'package:go_question/core/types/result.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
+import 'package:go_question/core/widgets/loading/firebase_action_shimmer.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/features/friends/presentation/utils/friend_relation_utils.dart';
 import 'package:go_question/features/profile/domain/entities/profile.dart';
@@ -146,37 +147,23 @@ class _FriendsPageState extends State<FriendsPage> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       body: SafeArea(
-        child: StreamBuilder<List<Profile>>(
-          stream: currentProfile == null
-              ? null
-              : _profileRepository.watchFriends(currentProfile.uid),
-          builder: (context, snapshot) {
-            final friends = (snapshot.data ?? const <Profile>[])
-                .map(_FriendUserData.fromProfile)
-                .toList(growable: false);
-            final isLoadingFriends =
-                currentProfile != null &&
-                snapshot.connectionState == ConnectionState.waiting &&
-                friends.isEmpty;
-
-            return _FriendsPageContent(
-              hintsEnabled: widget.hintsEnabled,
-              compactModeEnabled: widget.compactModeEnabled,
-              searchController: _searchController,
-              searchResult: _searchResult,
-              hasQuery: _query.isNotEmpty,
-              currentProfile: currentProfile,
-              friends: friends,
-              isLoadingFriends: isLoadingFriends,
-              onSearchChanged: (value) {
-                setState(() {});
-                _searchUser(value);
-              },
-              onAddFriend: _addFriend,
-              onRemoveFriend: _removeFriend,
-              onOpenProfile: _openProfilePreview,
-            );
+        child: _FriendsPageContent(
+          hintsEnabled: widget.hintsEnabled,
+          compactModeEnabled: widget.compactModeEnabled,
+          searchController: _searchController,
+          searchResult: _searchResult,
+          hasQuery: _query.isNotEmpty,
+          currentProfile: currentProfile,
+          profileRepository: _profileRepository,
+          pendingFriendRequestIds: _pendingFriendRequestIds,
+          pendingFriendRemovalIds: _pendingFriendRemovalIds,
+          onSearchChanged: (value) {
+            setState(() {});
+            _searchUser(value);
           },
+          onAddFriend: _addFriend,
+          onRemoveFriend: _removeFriend,
+          onOpenProfile: _openProfilePreview,
         ),
       ),
     );

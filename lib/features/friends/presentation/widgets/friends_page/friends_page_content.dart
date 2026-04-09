@@ -7,8 +7,9 @@ class _FriendsPageContent extends StatelessWidget {
   final _FriendUserData? searchResult;
   final bool hasQuery;
   final Profile? currentProfile;
-  final bool isLoadingFriends;
-  final List<_FriendUserData> friends;
+  final IProfileRepository profileRepository;
+  final Set<String> pendingFriendRequestIds;
+  final Set<String> pendingFriendRemovalIds;
   final ValueChanged<String> onSearchChanged;
   final ValueChanged<_FriendUserData> onAddFriend;
   final ValueChanged<String> onRemoveFriend;
@@ -21,8 +22,9 @@ class _FriendsPageContent extends StatelessWidget {
     required this.searchResult,
     required this.hasQuery,
     required this.currentProfile,
-    required this.isLoadingFriends,
-    required this.friends,
+    required this.profileRepository,
+    required this.pendingFriendRequestIds,
+    required this.pendingFriendRemovalIds,
     required this.onSearchChanged,
     required this.onAddFriend,
     required this.onRemoveFriend,
@@ -69,48 +71,22 @@ class _FriendsPageContent extends StatelessWidget {
             searchResult: searchResult,
             hasQuery: hasQuery,
             currentProfile: currentProfile,
+            pendingFriendRequestIds: pendingFriendRequestIds,
             onChanged: onSearchChanged,
             onAddFriend: onAddFriend,
             onOpenProfile: onOpenProfile,
           ),
           SizedBox(height: sectionGap),
-          Row(
-            children: [
-              const Expanded(
-                child: Text(
-                  FriendsTexts.friendsSectionTitle,
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: UiConstants.textSize,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-              Text(
-                '${friends.length} ${FriendsTexts.friendCountLabel}',
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: UiConstants.textSize * 0.8,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: compactModeEnabled
-                ? UiConstants.boxUnit
-                : UiConstants.boxUnit * 1.5,
-          ),
           Expanded(
-            child: isLoadingFriends && friends.isEmpty
-                ? const Center(child: CircularProgressIndicator())
-                : _FriendsList(
-                    hintsEnabled: hintsEnabled,
-                    compactModeEnabled: compactModeEnabled,
-                    friends: friends,
-                    onRemoveFriend: onRemoveFriend,
-                    onOpenProfile: onOpenProfile,
-                  ),
+            child: _FriendsRealtimeSection(
+              hintsEnabled: hintsEnabled,
+              compactModeEnabled: compactModeEnabled,
+              currentProfile: currentProfile,
+              profileRepository: profileRepository,
+              pendingFriendRemovalIds: pendingFriendRemovalIds,
+              onRemoveFriend: onRemoveFriend,
+              onOpenProfile: onOpenProfile,
+            ),
           ),
         ],
       ),

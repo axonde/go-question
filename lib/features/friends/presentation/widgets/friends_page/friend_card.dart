@@ -6,6 +6,7 @@ class _FriendCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const _FriendCard({
+    super.key,
     required this.user,
     required this.trailing,
     required this.onTap,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/city_constants.dart';
 import 'package:go_question/core/constants/event_constants.dart';
@@ -6,6 +7,7 @@ import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
+import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 import 'package:go_question/features/events/presentation/utils/event_presentation_utils.dart';
 
 part 'create_event_dialog/form_input.dart';
@@ -291,17 +293,20 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
                         const SizedBox(height: UiConstants.boxUnit),
                         SizedBox(
                           width: double.infinity,
-                          child: GQButton(
-                            onPressed: _submit,
-                            text: EventTexts.buttonAdd,
-                            baseColor: const Color(0xFFFFC00F),
-                            mainGradient: const LinearGradient(
-                              colors: [Color(0xFFFFD54F), Color(0xFFFFC107)],
+                          child: BlocBuilder<EventsBloc, EventsState>(
+                            builder: (context, state) => GQButton(
+                              onPressed: _submit,
+                              isLoading: state.isLoading,
+                              text: EventTexts.buttonAdd,
+                              baseColor: const Color(0xFFFFC00F),
+                              mainGradient: const LinearGradient(
+                                colors: [Color(0xFFFFD54F), Color(0xFFFFC107)],
+                              ),
+                              outerGradient: const LinearGradient(
+                                colors: [Color(0xFFF9A825), Color(0xFFF57F17)],
+                              ),
+                              height: UiConstants.boxUnit * 6,
                             ),
-                            outerGradient: const LinearGradient(
-                              colors: [Color(0xFFF9A825), Color(0xFFF57F17)],
-                            ),
-                            height: UiConstants.boxUnit * 6,
                           ),
                         ),
                       ],

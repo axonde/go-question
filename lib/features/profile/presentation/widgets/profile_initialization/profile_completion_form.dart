@@ -166,12 +166,16 @@ class _ProfileCompletionFormState extends State<_ProfileCompletionForm> {
                     const SizedBox(height: UiConstants.boxUnit * 2),
                     SizedBox(
                       width: double.infinity,
-                      child: GQButton(
-                        onPressed: _save,
-                        text: ProfilePresentationConstants.completionSaveButton,
-                        baseColor: AppColors.primary,
-                        widthFactor: 1,
-                        height: UiConstants.boxUnit * 5.5,
+                      child: BlocBuilder<ProfileBloc, ProfileState>(
+                        builder: (context, state) => GQButton(
+                          onPressed: _save,
+                          isLoading: state.isLoading,
+                          text:
+                              ProfilePresentationConstants.completionSaveButton,
+                          baseColor: AppColors.primary,
+                          widthFactor: 1,
+                          height: UiConstants.boxUnit * 5.5,
+                        ),
                       ),
                     ),
                   ],

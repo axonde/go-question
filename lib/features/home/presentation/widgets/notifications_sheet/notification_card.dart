@@ -2,6 +2,7 @@ part of '../notifications_sheet.dart';
 
 class NotificationCard extends StatelessWidget {
   final NotificationData data;
+  final bool isLoading;
   final bool isExpanded;
   final VoidCallback onToggle;
   final VoidCallback? onAccept;
@@ -10,6 +11,7 @@ class NotificationCard extends StatelessWidget {
   const NotificationCard({
     super.key,
     required this.data,
+    this.isLoading = false,
     required this.isExpanded,
     required this.onToggle,
     this.onAccept,
@@ -98,6 +100,7 @@ class NotificationCard extends StatelessWidget {
                           child: GQButton(
                             baseColor: AppColors.error,
                             onPressed: onReject ?? () {},
+                            isLoading: isLoading,
                             text: EventTexts.buttonReject,
                             fontSize: UiConstants.textSize * 0.75,
                           ),
@@ -110,6 +113,7 @@ class NotificationCard extends StatelessWidget {
                         child: GQButton(
                           baseColor: AppColors.success,
                           onPressed: onAccept ?? () {},
+                          isLoading: isLoading,
                           text: EventTexts.buttonApprove,
                           fontSize: UiConstants.textSize * 0.75,
                         ),
