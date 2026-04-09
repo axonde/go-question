@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gif_view/gif_view.dart';
 
 /// Центральная заглушка главного экрана.
 class HomePlaceholder extends StatelessWidget {
@@ -20,11 +21,9 @@ class HomePlaceholder extends StatelessWidget {
         child: FractionallySizedBox(
           widthFactor: 0.84,
           heightFactor: 0.84,
-          child: Image.asset(
+          child: GifView.asset(
             'assets/images/background/arena.gif',
             fit: BoxFit.contain,
-            gaplessPlayback: true,
-            filterQuality: FilterQuality.low,
           ),
         ),
       ),
