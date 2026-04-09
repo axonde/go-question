@@ -49,7 +49,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       child: BlocConsumer<OnboardingBloc, OnboardingState>(
         listener: (context, state) {
           if (state.status == OnboardingStatus.completed) {
-            context.replaceRoute(const AuthFlowRoute());
+            context.replaceRoute(const MainRoute());
           }
         },
         builder: (context, state) {

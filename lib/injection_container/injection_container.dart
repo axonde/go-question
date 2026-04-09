@@ -105,8 +105,13 @@ Future<void> init() async {
 
   sl.registerLazySingleton<AuthGuard>(() => AuthGuard(sl(), sl()));
   sl.registerLazySingleton<GuestGuard>(() => GuestGuard(sl(), sl()));
+  sl.registerLazySingleton<OnboardingGuard>(() => OnboardingGuard(sl()));
   sl.registerLazySingleton<AppRouter>(
-    () => AppRouter(authGuard: sl(), guestGuard: sl()),
+    () => AppRouter(
+      authGuard: sl(),
+      guestGuard: sl(),
+      onboardingGuard: sl(),
+    ),
   );
 
   //! Other features

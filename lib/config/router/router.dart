@@ -62,16 +62,41 @@ class GuestGuard extends AutoRouteGuard {
   }
 }
 
+class OnboardingGuard extends AutoRouteGuard {
+  final IOnboardingRepository _onboardingRepository;
+
+  const OnboardingGuard(this._onboardingRepository);
+
+  @override
+  void onNavigation(NavigationResolver resolver, StackRouter router) {
+    if (!_onboardingRepository.getOnboardingStatus()) {
+      resolver.redirectUntil(const OnboardingRoute());
+      return;
+    }
+    resolver.next();
+  }
+}
+
 @AutoRouterConfig(replaceInRouteName: 'Page,Route')
 class AppRouter extends RootStackRouter {
   final AuthGuard authGuard;
   final GuestGuard guestGuard;
+  final OnboardingGuard onboardingGuard;
 
-  AppRouter({required this.authGuard, required this.guestGuard});
+  AppRouter({
+    required this.authGuard,
+    required this.guestGuard,
+    required this.onboardingGuard,
+  });
 
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(path: '/', page: MainRoute.page, initial: true),
+    AutoRoute(
+      path: '/',
+      page: MainRoute.page,
+      initial: true,
+      guards: [onboardingGuard],
+    ),
     AutoRoute(
       path: '/profile-init',
       page: ProfileInitializationRoute.page,
