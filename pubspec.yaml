@@ -75,6 +75,7 @@ flutter:
     - assets/icons/svgs/
     - assets/images/background/
     - assets/images/presets/
+    - assets/images/onboarding/
     - assets/videos/
     - assets/audio/
 

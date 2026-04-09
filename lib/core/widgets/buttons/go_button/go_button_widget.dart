@@ -118,7 +118,15 @@ class GQButton extends StatelessWidget {
     return AspectRatio(aspectRatio: aspectRatio, child: content);
   }
 
+  // Используем статический плеер для всех кнопок, чтобы не плодить инстансы
+  static final AudioPlayer _tapPlayer = AudioPlayer()..setReleaseMode(ReleaseMode.stop);
+
+  void _handleTap() {
+    _tapPlayer.play(AssetSource('audio/tap.mp3'), volume: 1.0);
+    onPressed();
+  }
+
   @override
   Widget build(BuildContext context) =>
-      Pressable(onTap: onPressed, child: _sized(_buildColors()));
+      Pressable(onTap: _handleTap, child: _sized(_buildColors()));
 }

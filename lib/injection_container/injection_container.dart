@@ -1,8 +1,10 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_question/config/router/router.dart';
 import 'package:go_question/core/network/network_info.dart';
+import 'package:go_question/core/services/background_music_service.dart';
 import 'package:go_question/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:go_question/features/auth/data/source/auth_page_memory.dart';
 import 'package:go_question/features/auth/data/source/datasource.dart';
@@ -119,7 +121,9 @@ Future<void> init() async {
   // import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
 
   //! Core
-
+  sl.registerLazySingleton<BackgroundMusicService>(
+    () => BackgroundMusicService(AudioPlayer()),
+  );
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
   //! External
