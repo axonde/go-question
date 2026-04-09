@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 
@@ -44,15 +45,18 @@ class VerifyMailPage extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 64),
               GQButton(
+                height: 65,
                 onPressed: isLoading ? () {} : onCheckVerified,
                 text: 'I have verified my email',
               ),
               const SizedBox(height: 12),
               GQButton(
+                height: 65,
                 onPressed: isLoading ? () {} : onResend,
                 text: 'Resend verification email',
+                baseColor: AppColors.primary,
               ),
               const SizedBox(height: 12),
               TextButton(

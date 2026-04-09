@@ -1,7 +1,8 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:go_question/core/constants/startup_constants.dart';
+import 'package:go_question/core/services/background_music_service.dart';
 import 'package:go_question/features/startup/presentation/pages/startup_video_page.dart';
+import 'package:go_question/injection_container/injection_container.dart';
 
 class StartupVideoGate extends StatefulWidget {
   final Widget child;
@@ -14,38 +15,24 @@ class StartupVideoGate extends StatefulWidget {
 
 class _StartupVideoGateState extends State<StartupVideoGate> {
   bool _startupCompleted = false;
-  late final AudioPlayer _backgroundMusicPlayer = AudioPlayer();
 
   Future<void> _completeStartup() async {
     if (_startupCompleted) {
       return;
     }
 
-    try {
-      await _backgroundMusicPlayer.setReleaseMode(ReleaseMode.loop);
-      await _backgroundMusicPlayer.setVolume(
-        StartupConstants.backgroundMusicVolume,
-      );
-      await _backgroundMusicPlayer.play(
-        AssetSource(StartupConstants.backgroundMusicAssetPath),
-      );
-    } catch (_) {
-      // Музыка стартует только когда ассет будет добавлен пользователем.
-    }
-
-    if (!mounted) {
-      return;
-    }
+    // Сначала делаем переход, затем фоном запускаем музыку.
+    // Переход не должен зависеть от успешности загрузки аудио.
+    if (!mounted) return;
 
     setState(() {
       _startupCompleted = true;
     });
-  }
 
-  @override
-  void dispose() {
-    _backgroundMusicPlayer.dispose();
-    super.dispose();
+    // Fire-and-forget: ошибки музыки не блокируют UI
+    sl<BackgroundMusicService>()
+        .start(assetPath: StartupConstants.backgroundMusicAssetPath)
+        .catchError((_) {});
   }
 
   @override

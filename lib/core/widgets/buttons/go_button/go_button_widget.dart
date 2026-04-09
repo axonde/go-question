@@ -120,6 +120,11 @@ class GQButton extends StatelessWidget {
     return AspectRatio(aspectRatio: aspectRatio, child: content);
   }
 
+  void _handleTap() {
+    sl<SfxService>().playTap();
+    onPressed();
+  }
+
   @override
   Widget build(BuildContext context) {
     final child = FirebaseActionShimmer(
@@ -132,6 +137,6 @@ class GQButton extends StatelessWidget {
       return child;
     }
 
-    return Pressable(onTap: onPressed, child: child);
+    return Pressable(onTap: _handleTap, child: child);
   }
 }
