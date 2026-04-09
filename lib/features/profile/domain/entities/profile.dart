@@ -14,6 +14,7 @@ part 'profile.freezed.dart';
 /// - birthDate: nullable, must not be in future when present
 /// - trophies: >= 0, default 0
 /// - counters: >= 0, default 0
+/// - event id lists: IDs must be non-empty strings
 ///
 /// Broken invariants throw ArgumentError.
 @freezed
@@ -28,6 +29,8 @@ class Profile with _$Profile {
     @Default(0) int trophies,
     @Default(0) int visitedEventsCount,
     @Default(0) int createdEventsCount,
+    @Default(<String>[]) List<String> joinedEventIds,
+    @Default(<String>[]) List<String> createdEventIds,
   }) = _Profile;
 
   const Profile._();
@@ -60,6 +63,12 @@ class Profile with _$Profile {
     }
     if (createdEventsCount < 0) {
       throw ArgumentError(ProfileValidationMessages.createdEventsCountInvalid);
+    }
+    if (joinedEventIds.any((id) => id.trim().isEmpty)) {
+      throw ArgumentError(ProfileValidationMessages.eventIdCannotBeEmpty);
+    }
+    if (createdEventIds.any((id) => id.trim().isEmpty)) {
+      throw ArgumentError(ProfileValidationMessages.eventIdCannotBeEmpty);
     }
   }
 }

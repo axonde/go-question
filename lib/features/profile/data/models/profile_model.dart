@@ -17,6 +17,8 @@ part 'profile_model.g.dart';
 /// - trophies: int
 /// - visitedEventsCount: int
 /// - createdEventsCount: int
+/// - joinedEventIds: `List<String>`
+/// - createdEventIds: `List<String>`
 /// - createdAt: Timestamp
 /// - updatedAt: Timestamp
 @freezed
@@ -31,6 +33,8 @@ class ProfileModel with _$ProfileModel {
     @Default(0) int trophies,
     @Default(0) int visitedEventsCount,
     @Default(0) int createdEventsCount,
+    @Default(<String>[]) List<String> joinedEventIds,
+    @Default(<String>[]) List<String> createdEventIds,
     @TimestampConverter() required DateTime createdAt,
     @TimestampConverter() required DateTime updatedAt,
   }) = _ProfileModel;
@@ -52,6 +56,8 @@ class ProfileModel with _$ProfileModel {
       trophies: trophies,
       visitedEventsCount: visitedEventsCount,
       createdEventsCount: createdEventsCount,
+      joinedEventIds: joinedEventIds,
+      createdEventIds: createdEventIds,
     );
   }
 
@@ -68,6 +74,8 @@ class ProfileModel with _$ProfileModel {
       trophies: profile.trophies,
       visitedEventsCount: profile.visitedEventsCount,
       createdEventsCount: profile.createdEventsCount,
+      joinedEventIds: profile.joinedEventIds,
+      createdEventIds: profile.createdEventIds,
       createdAt: now,
       updatedAt: now,
     );

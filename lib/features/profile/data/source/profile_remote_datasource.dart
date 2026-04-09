@@ -145,6 +145,8 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
           'trophies': 0,
           'visitedEventsCount': 0,
           'createdEventsCount': 0,
+          'joinedEventIds': const <String>[],
+          'createdEventIds': const <String>[],
           'createdAt': now,
           'updatedAt': now,
         }, SetOptions(merge: false));

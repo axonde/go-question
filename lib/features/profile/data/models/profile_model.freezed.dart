@@ -31,6 +31,8 @@ mixin _$ProfileModel {
   int get trophies => throw _privateConstructorUsedError;
   int get visitedEventsCount => throw _privateConstructorUsedError;
   int get createdEventsCount => throw _privateConstructorUsedError;
+  List<String> get joinedEventIds => throw _privateConstructorUsedError;
+  List<String> get createdEventIds => throw _privateConstructorUsedError;
   @TimestampConverter()
   DateTime get createdAt => throw _privateConstructorUsedError;
   @TimestampConverter()
@@ -63,6 +65,8 @@ abstract class $ProfileModelCopyWith<$Res> {
     int trophies,
     int visitedEventsCount,
     int createdEventsCount,
+    List<String> joinedEventIds,
+    List<String> createdEventIds,
     @TimestampConverter() DateTime createdAt,
     @TimestampConverter() DateTime updatedAt,
   });
@@ -92,6 +96,8 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
     Object? trophies = null,
     Object? visitedEventsCount = null,
     Object? createdEventsCount = null,
+    Object? joinedEventIds = null,
+    Object? createdEventIds = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -133,6 +139,14 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
                 ? _value.createdEventsCount
                 : createdEventsCount // ignore: cast_nullable_to_non_nullable
                       as int,
+            joinedEventIds: null == joinedEventIds
+                ? _value.joinedEventIds
+                : joinedEventIds // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            createdEventIds: null == createdEventIds
+                ? _value.createdEventIds
+                : createdEventIds // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
             createdAt: null == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
@@ -166,6 +180,8 @@ abstract class _$$ProfileModelImplCopyWith<$Res>
     int trophies,
     int visitedEventsCount,
     int createdEventsCount,
+    List<String> joinedEventIds,
+    List<String> createdEventIds,
     @TimestampConverter() DateTime createdAt,
     @TimestampConverter() DateTime updatedAt,
   });
@@ -194,6 +210,8 @@ class __$$ProfileModelImplCopyWithImpl<$Res>
     Object? trophies = null,
     Object? visitedEventsCount = null,
     Object? createdEventsCount = null,
+    Object? joinedEventIds = null,
+    Object? createdEventIds = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -235,6 +253,14 @@ class __$$ProfileModelImplCopyWithImpl<$Res>
             ? _value.createdEventsCount
             : createdEventsCount // ignore: cast_nullable_to_non_nullable
                   as int,
+        joinedEventIds: null == joinedEventIds
+            ? _value._joinedEventIds
+            : joinedEventIds // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        createdEventIds: null == createdEventIds
+            ? _value._createdEventIds
+            : createdEventIds // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
         createdAt: null == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
@@ -261,9 +287,13 @@ class _$ProfileModelImpl extends _ProfileModel {
     this.trophies = 0,
     this.visitedEventsCount = 0,
     this.createdEventsCount = 0,
+    final List<String> joinedEventIds = const <String>[],
+    final List<String> createdEventIds = const <String>[],
     @TimestampConverter() required this.createdAt,
     @TimestampConverter() required this.updatedAt,
-  }) : super._();
+  }) : _joinedEventIds = joinedEventIds,
+       _createdEventIds = createdEventIds,
+       super._();
 
   factory _$ProfileModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ProfileModelImplFromJson(json);
@@ -290,6 +320,24 @@ class _$ProfileModelImpl extends _ProfileModel {
   @override
   @JsonKey()
   final int createdEventsCount;
+  final List<String> _joinedEventIds;
+  @override
+  @JsonKey()
+  List<String> get joinedEventIds {
+    if (_joinedEventIds is EqualUnmodifiableListView) return _joinedEventIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_joinedEventIds);
+  }
+
+  final List<String> _createdEventIds;
+  @override
+  @JsonKey()
+  List<String> get createdEventIds {
+    if (_createdEventIds is EqualUnmodifiableListView) return _createdEventIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_createdEventIds);
+  }
+
   @override
   @TimestampConverter()
   final DateTime createdAt;
@@ -299,7 +347,7 @@ class _$ProfileModelImpl extends _ProfileModel {
 
   @override
   String toString() {
-    return 'ProfileModel(uid: $uid, email: $email, name: $name, nickname: $nickname, birthDate: $birthDate, city: $city, trophies: $trophies, visitedEventsCount: $visitedEventsCount, createdEventsCount: $createdEventsCount, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ProfileModel(uid: $uid, email: $email, name: $name, nickname: $nickname, birthDate: $birthDate, city: $city, trophies: $trophies, visitedEventsCount: $visitedEventsCount, createdEventsCount: $createdEventsCount, joinedEventIds: $joinedEventIds, createdEventIds: $createdEventIds, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -321,6 +369,14 @@ class _$ProfileModelImpl extends _ProfileModel {
                 other.visitedEventsCount == visitedEventsCount) &&
             (identical(other.createdEventsCount, createdEventsCount) ||
                 other.createdEventsCount == createdEventsCount) &&
+            const DeepCollectionEquality().equals(
+              other._joinedEventIds,
+              _joinedEventIds,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._createdEventIds,
+              _createdEventIds,
+            ) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -340,6 +396,8 @@ class _$ProfileModelImpl extends _ProfileModel {
     trophies,
     visitedEventsCount,
     createdEventsCount,
+    const DeepCollectionEquality().hash(_joinedEventIds),
+    const DeepCollectionEquality().hash(_createdEventIds),
     createdAt,
     updatedAt,
   );
@@ -369,6 +427,8 @@ abstract class _ProfileModel extends ProfileModel {
     final int trophies,
     final int visitedEventsCount,
     final int createdEventsCount,
+    final List<String> joinedEventIds,
+    final List<String> createdEventIds,
     @TimestampConverter() required final DateTime createdAt,
     @TimestampConverter() required final DateTime updatedAt,
   }) = _$ProfileModelImpl;
@@ -396,6 +456,10 @@ abstract class _ProfileModel extends ProfileModel {
   int get visitedEventsCount;
   @override
   int get createdEventsCount;
+  @override
+  List<String> get joinedEventIds;
+  @override
+  List<String> get createdEventIds;
   @override
   @TimestampConverter()
   DateTime get createdAt;

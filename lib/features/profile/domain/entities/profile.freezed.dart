@@ -26,6 +26,8 @@ mixin _$Profile {
   int get trophies => throw _privateConstructorUsedError;
   int get visitedEventsCount => throw _privateConstructorUsedError;
   int get createdEventsCount => throw _privateConstructorUsedError;
+  List<String> get joinedEventIds => throw _privateConstructorUsedError;
+  List<String> get createdEventIds => throw _privateConstructorUsedError;
 
   /// Create a copy of Profile
   /// with the given fields replaced by the non-null parameter values.
@@ -48,6 +50,8 @@ abstract class $ProfileCopyWith<$Res> {
     int trophies,
     int visitedEventsCount,
     int createdEventsCount,
+    List<String> joinedEventIds,
+    List<String> createdEventIds,
   });
 }
 
@@ -75,6 +79,8 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
     Object? trophies = null,
     Object? visitedEventsCount = null,
     Object? createdEventsCount = null,
+    Object? joinedEventIds = null,
+    Object? createdEventIds = null,
   }) {
     return _then(
       _value.copyWith(
@@ -114,6 +120,14 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
                 ? _value.createdEventsCount
                 : createdEventsCount // ignore: cast_nullable_to_non_nullable
                       as int,
+            joinedEventIds: null == joinedEventIds
+                ? _value.joinedEventIds
+                : joinedEventIds // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            createdEventIds: null == createdEventIds
+                ? _value.createdEventIds
+                : createdEventIds // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
           )
           as $Val,
     );
@@ -138,6 +152,8 @@ abstract class _$$ProfileImplCopyWith<$Res> implements $ProfileCopyWith<$Res> {
     int trophies,
     int visitedEventsCount,
     int createdEventsCount,
+    List<String> joinedEventIds,
+    List<String> createdEventIds,
   });
 }
 
@@ -164,6 +180,8 @@ class __$$ProfileImplCopyWithImpl<$Res>
     Object? trophies = null,
     Object? visitedEventsCount = null,
     Object? createdEventsCount = null,
+    Object? joinedEventIds = null,
+    Object? createdEventIds = null,
   }) {
     return _then(
       _$ProfileImpl(
@@ -203,6 +221,14 @@ class __$$ProfileImplCopyWithImpl<$Res>
             ? _value.createdEventsCount
             : createdEventsCount // ignore: cast_nullable_to_non_nullable
                   as int,
+        joinedEventIds: null == joinedEventIds
+            ? _value._joinedEventIds
+            : joinedEventIds // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        createdEventIds: null == createdEventIds
+            ? _value._createdEventIds
+            : createdEventIds // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
       ),
     );
   }
@@ -221,7 +247,11 @@ class _$ProfileImpl extends _Profile {
     this.trophies = 0,
     this.visitedEventsCount = 0,
     this.createdEventsCount = 0,
-  }) : super._();
+    final List<String> joinedEventIds = const <String>[],
+    final List<String> createdEventIds = const <String>[],
+  }) : _joinedEventIds = joinedEventIds,
+       _createdEventIds = createdEventIds,
+       super._();
 
   @override
   final String uid;
@@ -244,10 +274,27 @@ class _$ProfileImpl extends _Profile {
   @override
   @JsonKey()
   final int createdEventsCount;
+  final List<String> _joinedEventIds;
+  @override
+  @JsonKey()
+  List<String> get joinedEventIds {
+    if (_joinedEventIds is EqualUnmodifiableListView) return _joinedEventIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_joinedEventIds);
+  }
+
+  final List<String> _createdEventIds;
+  @override
+  @JsonKey()
+  List<String> get createdEventIds {
+    if (_createdEventIds is EqualUnmodifiableListView) return _createdEventIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_createdEventIds);
+  }
 
   @override
   String toString() {
-    return 'Profile(uid: $uid, email: $email, name: $name, nickname: $nickname, birthDate: $birthDate, city: $city, trophies: $trophies, visitedEventsCount: $visitedEventsCount, createdEventsCount: $createdEventsCount)';
+    return 'Profile(uid: $uid, email: $email, name: $name, nickname: $nickname, birthDate: $birthDate, city: $city, trophies: $trophies, visitedEventsCount: $visitedEventsCount, createdEventsCount: $createdEventsCount, joinedEventIds: $joinedEventIds, createdEventIds: $createdEventIds)';
   }
 
   @override
@@ -268,7 +315,15 @@ class _$ProfileImpl extends _Profile {
             (identical(other.visitedEventsCount, visitedEventsCount) ||
                 other.visitedEventsCount == visitedEventsCount) &&
             (identical(other.createdEventsCount, createdEventsCount) ||
-                other.createdEventsCount == createdEventsCount));
+                other.createdEventsCount == createdEventsCount) &&
+            const DeepCollectionEquality().equals(
+              other._joinedEventIds,
+              _joinedEventIds,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._createdEventIds,
+              _createdEventIds,
+            ));
   }
 
   @override
@@ -283,6 +338,8 @@ class _$ProfileImpl extends _Profile {
     trophies,
     visitedEventsCount,
     createdEventsCount,
+    const DeepCollectionEquality().hash(_joinedEventIds),
+    const DeepCollectionEquality().hash(_createdEventIds),
   );
 
   /// Create a copy of Profile
@@ -305,6 +362,8 @@ abstract class _Profile extends Profile {
     final int trophies,
     final int visitedEventsCount,
     final int createdEventsCount,
+    final List<String> joinedEventIds,
+    final List<String> createdEventIds,
   }) = _$ProfileImpl;
   const _Profile._() : super._();
 
@@ -326,6 +385,10 @@ abstract class _Profile extends Profile {
   int get visitedEventsCount;
   @override
   int get createdEventsCount;
+  @override
+  List<String> get joinedEventIds;
+  @override
+  List<String> get createdEventIds;
 
   /// Create a copy of Profile
   /// with the given fields replaced by the non-null parameter values.

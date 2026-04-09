@@ -10,6 +10,9 @@ import 'package:go_question/features/auth/domain/errors/auth_exception_to_failur
 import 'package:go_question/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:go_question/features/auth/domain/services/auth_page_memory.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:go_question/features/events/data/repositories/events_repository_impl.dart';
+import 'package:go_question/features/events/data/source/events_remote_data_source.dart';
+import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
 import 'package:go_question/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:go_question/features/profile/data/source/profile_remote_datasource.dart';
 import 'package:go_question/features/profile/domain/errors/profile_exception_to_failure_mapper.dart';
@@ -59,6 +62,14 @@ Future<void> init() async {
 
   sl.registerLazySingleton<IProfileRemoteDataSource>(
     () => ProfileRemoteDataSourceImpl(sl(), sl()),
+  );
+
+  //! Features - Events
+
+  sl.registerLazySingleton<IEventsRepository>(() => EventsRepositoryImpl(sl()));
+
+  sl.registerLazySingleton<IEventsRemoteDataSource>(
+    () => EventsRemoteDataSourceImpl(sl()),
   );
 
   //! Router

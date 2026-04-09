@@ -12,6 +12,8 @@ void main() {
         trophies: 10,
         visitedEventsCount: 5,
         createdEventsCount: 2,
+        joinedEventIds: ['event-1', 'event-2'],
+        createdEventIds: ['created-1'],
       );
 
       profile.validate(); // Should not throw
@@ -22,6 +24,8 @@ void main() {
       expect(profile.trophies, equals(10));
       expect(profile.visitedEventsCount, equals(5));
       expect(profile.createdEventsCount, equals(2));
+      expect(profile.joinedEventIds, equals(['event-1', 'event-2']));
+      expect(profile.createdEventIds, equals(['created-1']));
     });
 
     test('creates valid profile with nullable optional fields', () {
@@ -152,6 +156,32 @@ void main() {
       expect(profile.trophies, equals(0));
       expect(profile.visitedEventsCount, equals(0));
       expect(profile.createdEventsCount, equals(0));
+      expect(profile.joinedEventIds, isEmpty);
+      expect(profile.createdEventIds, isEmpty);
+    });
+
+    test('fails validation when joinedEventIds contains empty value', () {
+      const profile = Profile(
+        uid: 'test-uid',
+        email: 'user@test.dev',
+        name: 'Test User',
+        nickname: 'tester',
+        joinedEventIds: ['event-1', '   '],
+      );
+
+      expect(() => profile.validate(), throwsA(isA<ArgumentError>()));
+    });
+
+    test('fails validation when createdEventIds contains empty value', () {
+      const profile = Profile(
+        uid: 'test-uid',
+        email: 'user@test.dev',
+        name: 'Test User',
+        nickname: 'tester',
+        createdEventIds: [''],
+      );
+
+      expect(() => profile.validate(), throwsA(isA<ArgumentError>()));
     });
   });
 }

@@ -17,6 +17,16 @@ _$ProfileModelImpl _$$ProfileModelImplFromJson(Map<String, dynamic> json) =>
       trophies: (json['trophies'] as num?)?.toInt() ?? 0,
       visitedEventsCount: (json['visitedEventsCount'] as num?)?.toInt() ?? 0,
       createdEventsCount: (json['createdEventsCount'] as num?)?.toInt() ?? 0,
+      joinedEventIds:
+          (json['joinedEventIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
+      createdEventIds:
+          (json['createdEventIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
       createdAt: const TimestampConverter().fromJson(json['createdAt']),
       updatedAt: const TimestampConverter().fromJson(json['updatedAt']),
     );
@@ -35,6 +45,8 @@ Map<String, dynamic> _$$ProfileModelImplToJson(_$ProfileModelImpl instance) =>
       'trophies': instance.trophies,
       'visitedEventsCount': instance.visitedEventsCount,
       'createdEventsCount': instance.createdEventsCount,
+      'joinedEventIds': instance.joinedEventIds,
+      'createdEventIds': instance.createdEventIds,
       'createdAt': const TimestampConverter().toJson(instance.createdAt),
       'updatedAt': const TimestampConverter().toJson(instance.updatedAt),
     };

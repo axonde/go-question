@@ -20,6 +20,8 @@ abstract final class ProfileValidationMessages {
       'visitedEventsCount must be >= 0';
   static const String createdEventsCountInvalid =
       'createdEventsCount must be >= 0';
+  static const String eventIdCannotBeEmpty =
+      'event id cannot be empty or whitespace-only';
   static const String incrementByInvalid = 'by must be >= 0, got';
 }
 
