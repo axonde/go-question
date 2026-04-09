@@ -28,6 +28,11 @@ lib/features/<feature_name>/
     bloc/ or cubit/
     pages/
     widgets/
+      <logical_component>.dart
+      components/
+        _<logical_component>_fields.dart
+        _<logical_component>_actions.dart
+        _<logical_component>_header.dart
     validators/
 ```
 
@@ -59,6 +64,10 @@ Do not start final presentation integration before domain contracts are agreed.
 - Keep UI free from direct Firebase calls.
 - Use `const` wherever possible.
 - Extract reusable constants to `lib/core/constants/` or theme token files.
+- Do not create reusable widget trees via `_build*` methods; extract widget classes.
+- Prefer `StatelessWidget` for dumb/presentational UI parts.
+- Keep business behavior controlled by BLoC.
+- For feature-local internal subcomponents, use `part`/`part of` with private classes.
 
 ## 5) Definition of Done
 

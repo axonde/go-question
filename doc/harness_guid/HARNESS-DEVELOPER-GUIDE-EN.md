@@ -92,7 +92,19 @@ Rules:
 - final presentation integration starts only after domain contracts are agreed
 - each layer owner keeps interfaces explicit and stable
 
-## 6) Standard Workflow (End-to-End)
+## 6) UI Composition Rules (Mandatory)
+
+- Do not create reusable widget UI via `_build*` methods.
+- Widgets must be classes; prefer `StatelessWidget` whenever possible.
+- Keep widgets dumb/presentational.
+- Business state and transitions are controlled by BLoC.
+- For a logical feature-local composite component, use:
+  - root file in `widgets/`
+  - internal subparts in `widgets/components/`
+  - `part` in root + `part of` in subfiles
+  - private classes for internal-only subparts
+
+## 7) Standard Workflow (End-to-End)
 
 1. Load context from `AGENTS.md` + `.agents/harness/harness_index.md`.
 2. Analyze scope and impacted layers.
@@ -111,7 +123,7 @@ Rules:
 8. Prepare clean commit set (Conventional Commits, cohesive, rollback-safe).
 9. Open one logical PR from a named branch.
 
-## 7) Git and GitHub Workflow
+## 8) Git and GitHub Workflow
 
 Source of truth: `.agents/rules/git-github.md`
 
@@ -146,7 +158,7 @@ Format:
 - PR must come from a named branch.
 - Use template: `.github/pull_request_template.md`.
 
-## 8) Context Control During Long Tasks
+## 9) Context Control During Long Tasks
 
 If the model starts drifting:
 
@@ -162,7 +174,7 @@ Restate active constraints and quality gate.
 Then continue with minimal, architecture-safe edits only.
 ```
 
-## 9) Definition of Done
+## 10) Definition of Done
 
 A task is done only when all are true:
 
@@ -173,7 +185,7 @@ A task is done only when all are true:
 - commit history is cohesive and rollback-safe
 - PR scope is one logical feature/fix
 
-## 10) Quick Daily Checklist
+## 11) Quick Daily Checklist
 
 - Context loaded?
 - Scope clear?
