@@ -6,6 +6,7 @@ import 'package:go_question/features/notifications/domain/errors/notification_ex
 
 abstract interface class INotificationsRemoteDataSource {
   Future<List<NotificationEntity>> getNotifications(String userId);
+  Stream<List<NotificationEntity>> watchNotifications(String userId);
   Future<void> markAsRead(String notificationId);
   Future<void> markAllAsRead(String userId);
 }
@@ -23,17 +24,32 @@ class NotificationsRemoteDataSourceImpl
   Future<List<NotificationEntity>> getNotifications(String userId) async {
     try {
       final snapshot = await _notificationsRef
-          .where('userId', isEqualTo: userId)
-          .orderBy('createdAt', descending: true)
+          .where(NotificationsConstants.fieldUserId, isEqualTo: userId)
           .get();
-      return snapshot.docs
+      final notifications = snapshot.docs
           .map((doc) => NotificationModelX.fromFirestore(doc))
-          .toList();
+          .toList(growable: false);
+      notifications.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return notifications;
     } on FirebaseException catch (_) {
       throw const NotificationFetchException();
     } catch (_) {
       throw const NotificationFetchException();
     }
+  }
+
+  @override
+  Stream<List<NotificationEntity>> watchNotifications(String userId) {
+    return _notificationsRef
+        .where(NotificationsConstants.fieldUserId, isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) {
+          final notifications = snapshot.docs
+              .map((doc) => NotificationModelX.fromFirestore(doc))
+              .toList(growable: false);
+          notifications.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return notifications;
+        });
   }
 
   @override
@@ -43,7 +59,9 @@ class NotificationsRemoteDataSourceImpl
       if (!doc.exists) {
         throw const NotificationNotFoundException();
       }
-      await _notificationsRef.doc(notificationId).update({'isRead': true});
+      await _notificationsRef.doc(notificationId).update({
+        NotificationsConstants.fieldIsRead: true,
+      });
     } on NotificationNotFoundException {
       rethrow;
     } on FirebaseException catch (_) {
@@ -57,13 +75,13 @@ class NotificationsRemoteDataSourceImpl
   Future<void> markAllAsRead(String userId) async {
     try {
       final snapshot = await _notificationsRef
-          .where('userId', isEqualTo: userId)
-          .where('isRead', isEqualTo: false)
+          .where(NotificationsConstants.fieldUserId, isEqualTo: userId)
+          .where(NotificationsConstants.fieldIsRead, isEqualTo: false)
           .get();
 
       final batch = _firestore.batch();
       for (final doc in snapshot.docs) {
-        batch.update(doc.reference, {'isRead': true});
+        batch.update(doc.reference, {NotificationsConstants.fieldIsRead: true});
       }
       await batch.commit();
     } on FirebaseException catch (_) {

@@ -2,13 +2,19 @@ part of '../notifications_sheet.dart';
 
 class _NotificationsList extends StatelessWidget {
   final List<NotificationData> notifications;
+  final Set<String> processingIds;
   final int? expandedIndex;
   final ValueChanged<int> onToggle;
+  final Future<void> Function(NotificationData) onAccept;
+  final Future<void> Function(NotificationData) onReject;
 
   const _NotificationsList({
     required this.notifications,
+    required this.processingIds,
     required this.expandedIndex,
     required this.onToggle,
+    required this.onAccept,
+    required this.onReject,
   });
 
   @override
@@ -23,10 +29,16 @@ class _NotificationsList extends StatelessWidget {
             const SizedBox(height: UiConstants.boxUnit * 1.5),
         itemBuilder: (context, index) {
           final data = notifications[index];
-          return NotificationCard(
-            data: data,
-            isExpanded: expandedIndex == index,
-            onToggle: () => onToggle(index),
+          return FirebaseActionShimmer(
+            isLoading: processingIds.contains(data.id),
+            child: NotificationCard(
+              data: data,
+              isLoading: processingIds.contains(data.id),
+              isExpanded: expandedIndex == index,
+              onToggle: () => onToggle(index),
+              onAccept: data.showAccept ? () => onAccept(data) : null,
+              onReject: data.showReject ? () => onReject(data) : null,
+            ),
           );
         },
       ),

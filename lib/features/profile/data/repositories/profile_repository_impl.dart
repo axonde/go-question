@@ -9,22 +9,20 @@ import '../source/profile_remote_datasource.dart';
 
 /// Repository implementation for Profile feature.
 ///
-/// **Responsibilities:**
+/// Responsibilities:
 /// 1. Delegates to datasource (Firestore operations)
 /// 2. Maps domain entities ↔ DTOs
 /// 3. Catches datasource exceptions → maps to typed failures
 /// 4. Returns Result with Profile on success, ProfileFailure on error
-///
-/// **Error flow:**
-/// Datasource throws (AppException | ProfileValidationException)
-///   → caught & mapped via ProfileExceptionToFailureMapper
-///   → wrapped in Failure with ProfileFailure
-///   → returned to use case/presentation
+/// 5. Keeps an in-memory cache so screen switches do not drop data
 class ProfileRepositoryImpl implements IProfileRepository {
   final IProfileRemoteDataSource _remoteDataSource;
   final ProfileExceptionToFailureMapper _errorMapper;
 
-  const ProfileRepositoryImpl(this._remoteDataSource, this._errorMapper);
+  final Map<String, Profile> _profileCache = {};
+  final Map<String, List<Profile>> _friendsCache = {};
+
+  ProfileRepositoryImpl(this._remoteDataSource, this._errorMapper);
 
   @override
   Future<Result<Profile, ProfileFailure>> getProfile(String uid) async {
@@ -32,6 +30,10 @@ class ProfileRepositoryImpl implements IProfileRepository {
       final modelOrNull = await _remoteDataSource.getProfile(uid);
 
       if (modelOrNull == null) {
+        final cached = _profileCache[uid];
+        if (cached != null) {
+          return Success(cached);
+        }
         return Failure(
           ProfileFailure(
             ProfileFailureType.profileNotFound,
@@ -41,9 +43,78 @@ class ProfileRepositoryImpl implements IProfileRepository {
       }
 
       final profile = modelOrNull.toEntity();
-      profile.validate(); // Ensure entity invariants
+      profile.validate();
+      _profileCache[uid] = profile;
       return Success(profile);
     } catch (error) {
+      final cached = _profileCache[uid];
+      if (cached != null) {
+        return Success(cached);
+      }
+
+      if (error is ArgumentError) {
+        return Failure(
+          ProfileFailure(
+            ProfileFailureType.invalidName,
+            message: error.message?.toString() ?? error.toString(),
+          ),
+        );
+      }
+
+      final mappedException = mapProfileFirestoreException(error);
+      final failure = _errorMapper.map(mappedException);
+      return Failure(failure);
+    }
+  }
+
+  @override
+  Stream<Profile?> watchProfile(String uid) {
+    return _remoteDataSource.watchProfile(uid).map((modelOrNull) {
+      if (modelOrNull == null) {
+        return null;
+      }
+      final profile = modelOrNull.toEntity();
+      profile.validate();
+      _profileCache[uid] = profile;
+      return profile;
+    });
+  }
+
+  @override
+  Future<Result<Profile, ProfileFailure>> getProfileByRegistrationId(
+    int registrationId,
+  ) async {
+    try {
+      final modelOrNull = await _remoteDataSource.getProfileByRegistrationId(
+        registrationId,
+      );
+
+      if (modelOrNull == null) {
+        return Failure(
+          ProfileFailure(
+            ProfileFailureType.profileNotFound,
+            message:
+                '${ProfileFailureMessages.profileNotFoundForUid} $registrationId',
+          ),
+        );
+      }
+
+      final profile = modelOrNull.toEntity();
+      profile.validate();
+      _profileCache[profile.uid] = profile;
+      return Success(profile);
+    } catch (error) {
+      Profile? cached;
+      for (final profile in _profileCache.values) {
+        if (profile.registrationId == registrationId) {
+          cached = profile;
+          break;
+        }
+      }
+      if (cached != null) {
+        return Success(cached);
+      }
+
       if (error is ArgumentError) {
         return Failure(
           ProfileFailure(
@@ -73,6 +144,7 @@ class ProfileRepositoryImpl implements IProfileRepository {
 
       final initialProfile = Profile(
         uid: uid,
+        registrationId: 1000,
         email: normalizedEmail,
         name: normalizedName,
         nickname: normalizedNickname,
@@ -86,10 +158,8 @@ class ProfileRepositoryImpl implements IProfileRepository {
         nickname: initialProfile.nickname,
       );
 
-      // Fetch the created profile to return
       final modelOrNull = await _remoteDataSource.getProfile(uid);
       if (modelOrNull == null) {
-        // Should not happen if creation succeeded, but guard against race
         return const Failure(
           ProfileFailure(
             ProfileFailureType.unknown,
@@ -100,6 +170,7 @@ class ProfileRepositoryImpl implements IProfileRepository {
 
       final profile = modelOrNull.toEntity();
       profile.validate();
+      _profileCache[uid] = profile;
       return Success(profile);
     } catch (error) {
       if (error is ArgumentError) {
@@ -120,7 +191,7 @@ class ProfileRepositoryImpl implements IProfileRepository {
   @override
   Future<Result<Profile, ProfileFailure>> updateProfile(Profile profile) async {
     try {
-      profile.validate(); // Enforce invariants before update
+      profile.validate();
 
       final currentProfileModel = await _remoteDataSource.getProfile(
         profile.uid,
@@ -143,10 +214,15 @@ class ProfileRepositoryImpl implements IProfileRepository {
         name: profile.name,
         birthDate: profile.birthDate,
         city: profile.city,
+        bio: profile.bio,
+        avatarUrl: profile.avatarUrl,
+        gender: profile.gender,
+        age: profile.age,
+        rating: profile.rating,
         trophies: profile.trophies,
       );
 
-      // Return updated profile
+      _profileCache[profile.uid] = profile;
       return Success(profile);
     } catch (error) {
       if (error is ArgumentError) {
@@ -180,7 +256,6 @@ class ProfileRepositoryImpl implements IProfileRepository {
     try {
       await _remoteDataSource.incrementVisitedEvents(uid);
 
-      // Fetch updated profile
       final modelOrNull = await _remoteDataSource.getProfile(uid);
       if (modelOrNull == null) {
         return Failure(
@@ -194,6 +269,7 @@ class ProfileRepositoryImpl implements IProfileRepository {
 
       final profile = modelOrNull.toEntity();
       profile.validate();
+      _profileCache[uid] = profile;
       return Success(profile);
     } catch (error) {
       if (error is ArgumentError) {
@@ -227,7 +303,6 @@ class ProfileRepositoryImpl implements IProfileRepository {
     try {
       await _remoteDataSource.incrementCreatedEvents(uid);
 
-      // Fetch updated profile
       final modelOrNull = await _remoteDataSource.getProfile(uid);
       if (modelOrNull == null) {
         return Failure(
@@ -241,6 +316,7 @@ class ProfileRepositoryImpl implements IProfileRepository {
 
       final profile = modelOrNull.toEntity();
       profile.validate();
+      _profileCache[uid] = profile;
       return Success(profile);
     } catch (error) {
       if (error is ArgumentError) {
@@ -252,6 +328,186 @@ class ProfileRepositoryImpl implements IProfileRepository {
         );
       }
 
+      final mappedException = mapProfileFirestoreException(error);
+      final failure = _errorMapper.map(mappedException);
+      return Failure(failure);
+    }
+  }
+
+  @override
+  Future<Result<List<Profile>, ProfileFailure>> getFriends(String uid) async {
+    if (uid.trim().isEmpty) {
+      return const Failure(
+        ProfileFailure(
+          ProfileFailureType.invalidName,
+          message: ProfileValidationMessages.uidCannotBeEmpty,
+        ),
+      );
+    }
+
+    try {
+      final models = await _remoteDataSource.getFriends(uid);
+      final profiles = models.map((model) => model.toEntity()).toList();
+      for (final profile in profiles) {
+        profile.validate();
+        _profileCache[profile.uid] = profile;
+      }
+      _friendsCache[uid] = profiles;
+      return Success(profiles);
+    } catch (error) {
+      final cachedFriends = _friendsCache[uid];
+      if (cachedFriends != null) {
+        return Success(cachedFriends);
+      }
+      final mappedException = mapProfileFirestoreException(error);
+      final failure = _errorMapper.map(mappedException);
+      return Failure(failure);
+    }
+  }
+
+  @override
+  Stream<List<Profile>> watchFriends(String uid) {
+    return _remoteDataSource.watchFriends(uid).map((models) {
+      final friends = models
+          .map((model) => model.toEntity())
+          .toList(growable: false);
+      _friendsCache[uid] = friends;
+      for (final friend in friends) {
+        _profileCache[friend.uid] = friend;
+      }
+      return friends;
+    });
+  }
+
+  @override
+  Future<Result<List<Profile>, ProfileFailure>> getProfilesByIds(
+    List<String> uids,
+  ) async {
+    final normalized = uids.where((uid) => uid.trim().isNotEmpty).toSet();
+    if (normalized.isEmpty) {
+      return const Success(<Profile>[]);
+    }
+
+    try {
+      final models = await _remoteDataSource.getProfilesByIds(
+        normalized.toList(),
+      );
+      final profiles = models.map((model) => model.toEntity()).toList();
+      for (final profile in profiles) {
+        profile.validate();
+        _profileCache[profile.uid] = profile;
+      }
+      return Success(profiles);
+    } catch (error) {
+      final cached = normalized
+          .map((uid) => _profileCache[uid])
+          .whereType<Profile>()
+          .toList();
+      if (cached.isNotEmpty) {
+        return Success(cached);
+      }
+      final mappedException = mapProfileFirestoreException(error);
+      final failure = _errorMapper.map(mappedException);
+      return Failure(failure);
+    }
+  }
+
+  @override
+  Future<Result<void, ProfileFailure>> sendFriendRequest({
+    required String requesterUid,
+    required String recipientUid,
+  }) async {
+    if (requesterUid.trim().isEmpty || recipientUid.trim().isEmpty) {
+      return const Failure(
+        ProfileFailure(
+          ProfileFailureType.invalidName,
+          message: ProfileValidationMessages.uidCannotBeEmpty,
+        ),
+      );
+    }
+
+    try {
+      await _remoteDataSource.sendFriendRequest(
+        requesterUid: requesterUid,
+        recipientUid: recipientUid,
+      );
+      return const Success(null);
+    } catch (error) {
+      final mappedException = mapProfileFirestoreException(error);
+      final failure = _errorMapper.map(mappedException);
+      return Failure(failure);
+    }
+  }
+
+  @override
+  Future<Result<void, ProfileFailure>> acceptFriendRequest(
+    String requestId,
+  ) async {
+    if (requestId.trim().isEmpty) {
+      return const Failure(
+        ProfileFailure(
+          ProfileFailureType.invalidName,
+          message: ProfileValidationMessages.uidCannotBeEmpty,
+        ),
+      );
+    }
+
+    try {
+      await _remoteDataSource.acceptFriendRequest(requestId);
+      _friendsCache.clear();
+      return const Success(null);
+    } catch (error) {
+      final mappedException = mapProfileFirestoreException(error);
+      final failure = _errorMapper.map(mappedException);
+      return Failure(failure);
+    }
+  }
+
+  @override
+  Future<Result<void, ProfileFailure>> declineFriendRequest(
+    String requestId,
+  ) async {
+    if (requestId.trim().isEmpty) {
+      return const Failure(
+        ProfileFailure(
+          ProfileFailureType.invalidName,
+          message: ProfileValidationMessages.uidCannotBeEmpty,
+        ),
+      );
+    }
+
+    try {
+      await _remoteDataSource.declineFriendRequest(requestId);
+      return const Success(null);
+    } catch (error) {
+      final mappedException = mapProfileFirestoreException(error);
+      final failure = _errorMapper.map(mappedException);
+      return Failure(failure);
+    }
+  }
+
+  @override
+  Future<Result<void, ProfileFailure>> removeFriend({
+    required String userUid,
+    required String friendUid,
+  }) async {
+    if (userUid.trim().isEmpty || friendUid.trim().isEmpty) {
+      return const Failure(
+        ProfileFailure(
+          ProfileFailureType.invalidName,
+          message: ProfileValidationMessages.uidCannotBeEmpty,
+        ),
+      );
+    }
+
+    try {
+      await _remoteDataSource.removeFriend(
+        userUid: userUid,
+        friendUid: friendUid,
+      );
+      _friendsCache.clear();
+      return const Success(null);
+    } catch (error) {
       final mappedException = mapProfileFirestoreException(error);
       final failure = _errorMapper.map(mappedException);
       return Failure(failure);

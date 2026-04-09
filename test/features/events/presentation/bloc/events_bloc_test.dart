@@ -7,12 +7,42 @@ import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 
 class FakeEventsRepository implements IEventsRepository {
   Result<List<EventEntity>, EventFailure>? getEventsResult;
+
+  @override
+  Stream<List<EventEntity>> watchEvents() =>
+      const Stream<List<EventEntity>>.empty();
+
   @override
   Future<Result<void, EventFailure>> createEvent(EventEntity event) async =>
       throw UnimplementedError();
   @override
+  Future<Result<void, EventFailure>> requestJoinEvent({
+    required String eventId,
+    required String requesterId,
+  }) async => throw UnimplementedError();
+  @override
   Future<Result<void, EventFailure>> deleteEvent(String id) async =>
       throw UnimplementedError();
+  @override
+  Future<Result<void, EventFailure>> approveJoinRequest({
+    required String requestId,
+    required String organizerId,
+  }) async => throw UnimplementedError();
+  @override
+  Future<Result<void, EventFailure>> rejectJoinRequest({
+    required String requestId,
+    required String organizerId,
+  }) async => throw UnimplementedError();
+  @override
+  Future<Result<void, EventFailure>> leaveEvent({
+    required String eventId,
+    required String userId,
+  }) async => throw UnimplementedError();
+  @override
+  Future<Result<void, EventFailure>> removeParticipant({
+    required String eventId,
+    required String userId,
+  }) async => throw UnimplementedError();
   @override
   Future<Result<EventEntity, EventFailure>> getEventById(String id) async =>
       throw UnimplementedError();

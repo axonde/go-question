@@ -13,6 +13,10 @@ import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/events/data/repositories/events_repository_impl.dart';
 import 'package:go_question/features/events/data/source/events_remote_data_source.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
+import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
+import 'package:go_question/features/notifications/data/repositories/notifications_repository_impl.dart';
+import 'package:go_question/features/notifications/data/source/notifications_remote_data_source.dart';
+import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
 import 'package:go_question/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:go_question/features/profile/data/source/profile_remote_datasource.dart';
 import 'package:go_question/features/profile/domain/errors/profile_exception_to_failure_mapper.dart';
@@ -66,6 +70,7 @@ Future<void> init() async {
 
   //! Features - Events
 
+  sl.registerFactory(() => EventsBloc(sl()));
   sl.registerLazySingleton<IEventsRepository>(() => EventsRepositoryImpl(sl()));
 
   sl.registerLazySingleton<IEventsRemoteDataSource>(
@@ -74,7 +79,7 @@ Future<void> init() async {
 
   //! Router
 
-  sl.registerLazySingleton<AuthGuard>(() => AuthGuard(sl()));
+  sl.registerLazySingleton<AuthGuard>(() => const AuthGuard());
   sl.registerLazySingleton<GuestGuard>(() => GuestGuard(sl()));
   sl.registerLazySingleton<AppRouter>(
     () => AppRouter(authGuard: sl(), guestGuard: sl()),
@@ -85,17 +90,12 @@ Future<void> init() async {
   sl.registerFactory(() => ScoreBloc());
 
   //! Features - Notifications
-  // TODO: Раскомментируйте эти строки для подключения Firestore:
-  // sl.registerLazySingleton<INotificationsRemoteDataSource>(
-  //   () => NotificationsRemoteDataSourceImpl(sl()),
-  // );
-  // sl.registerLazySingleton<INotificationsRepository>(
-  //   () => NotificationsRepositoryImpl(sl()),
-  // );
-  // Не забудьте добавить импорты:
-  // import 'package:go_question/features/notifications/data/repositories/notifications_repository_impl.dart';
-  // import 'package:go_question/features/notifications/data/source/notifications_remote_data_source.dart';
-  // import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
+  sl.registerLazySingleton<INotificationsRemoteDataSource>(
+    () => NotificationsRemoteDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<INotificationsRepository>(
+    () => NotificationsRepositoryImpl(sl()),
+  );
 
   //! Core
 

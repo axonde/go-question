@@ -241,24 +241,68 @@ class _JoinAction extends StatelessWidget {
   const _JoinAction({required this.event});
 
   @override
-  Widget build(BuildContext context) => GQButton(
-    onPressed: () {
-      // TODO: запрос на участие через Cubit/Bloc.
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(EventTexts.snackBarJoinRequestSent)),
-      );
-    },
-    text: EventTexts.buttonJoin,
-    baseColor: const Color(0xFF2E7D32),
-    mainGradient: const LinearGradient(
-      colors: [Color(0xFF43A047), Color(0xFF388E3C)],
-    ),
-    outerGradient: const LinearGradient(
-      colors: [Color(0xFF1B5E20), Color(0xFF1B5E20)],
-    ),
-    width: UiConstants.boxUnit * 11,
-    height: UiConstants.boxUnit * 5,
-  );
+  Widget build(BuildContext context) {
+    final currentUserId = context.watch<ProfileBloc>().state.profile?.uid;
+    final isParticipant =
+        currentUserId != null && event.participantIds.contains(currentUserId);
+    final isPending =
+        currentUserId != null &&
+        event.pendingParticipantIds.contains(currentUserId);
+    final isFull = event.maxUsers > 0 && event.participants >= event.maxUsers;
+    final isBusy = context.watch<EventsBloc>().state.isLoading;
+
+    return GQButton(
+      onPressed: isParticipant || isPending || isBusy || isFull
+          ? () {}
+          : () {
+              if (currentUserId == null) {
+                sl<AppRouter>().push(const AuthFlowRoute());
+                return;
+              }
+
+              context.read<EventsBloc>().add(
+                EventsJoinRequested(
+                  eventId: event.id,
+                  requesterId: currentUserId,
+                ),
+              );
+              final currentProfile = context.read<ProfileBloc>().state.profile;
+              if (currentProfile != null) {
+                context.read<ProfileBloc>().add(
+                  EnsureProfileExistsRequested(
+                    uid: currentProfile.uid,
+                    initialEmail: currentProfile.email,
+                    initialName: currentProfile.name,
+                    initialNickname: currentProfile.nickname,
+                  ),
+                );
+              }
+            },
+      isLoading: isBusy && !isParticipant && !isPending,
+      text: isParticipant
+          ? EventTexts.buttonJoined
+          : isPending
+          ? EventTexts.buttonJoinPending
+          : isFull
+          ? EventTexts.buttonEventFull
+          : EventTexts.buttonJoin,
+      baseColor: isParticipant || isPending || isFull
+          ? const Color(0xFF78909C)
+          : const Color(0xFF2E7D32),
+      mainGradient: isParticipant || isPending || isFull
+          ? const LinearGradient(colors: [Color(0xFF90A4AE), Color(0xFF78909C)])
+          : const LinearGradient(
+              colors: [Color(0xFF43A047), Color(0xFF388E3C)],
+            ),
+      outerGradient: isParticipant || isPending || isFull
+          ? const LinearGradient(colors: [Color(0xFF546E7A), Color(0xFF546E7A)])
+          : const LinearGradient(
+              colors: [Color(0xFF1B5E20), Color(0xFF1B5E20)],
+            ),
+      width: UiConstants.boxUnit * 11,
+      height: UiConstants.boxUnit * 5,
+    );
+  }
 }
 
 class _MetaChip extends StatelessWidget {
@@ -356,16 +400,32 @@ class _OrganizerActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.select<EventsBloc, bool>(
+      (bloc) => bloc.state.isLoading,
+    );
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         GQButton(
           onPressed: () {
-            // TODO: открыть редактирование ивента.
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text(EventTexts.snackBarEditEvent)),
-            );
+            final currentProfile = context.read<ProfileBloc>().state.profile;
+            final organizerId = currentProfile?.uid ?? event.organizer;
+            EventEditorUtils.openEventEditorDialog(
+              context,
+              organizerAccountId: organizerId,
+              initialEvent: event,
+            ).then((updated) {
+              if (updated == null || !context.mounted) {
+                return;
+              }
+              context.read<EventsBloc>().add(EventsUpdateSubmitted(updated));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text(EventTexts.snackBarEventUpdated)),
+              );
+            });
           },
+          isLoading: isLoading,
           text: EventTexts.buttonEdit,
           baseColor: const Color(0xFF1565C0),
           mainGradient: const LinearGradient(
@@ -380,13 +440,12 @@ class _OrganizerActions extends StatelessWidget {
         const SizedBox(height: UiConstants.boxUnit * 0.75),
         GQButton(
           onPressed: () {
-            // TODO: открыть список участников.
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(EventTexts.snackBarParticipantsList),
-              ),
+            showDialog<void>(
+              context: context,
+              builder: (_) => EventParticipantsDialog(event: event),
             );
           },
+          isLoading: isLoading,
           text: EventTexts.buttonParticipants,
           baseColor: const Color(0xFF2E7D32),
           mainGradient: const LinearGradient(
@@ -395,6 +454,40 @@ class _OrganizerActions extends StatelessWidget {
           outerGradient: const LinearGradient(
             colors: [Color(0xFF1B5E20), Color(0xFF1B5E20)],
           ),
+          width: UiConstants.boxUnit * 13,
+          height: UiConstants.boxUnit * 4.5,
+        ),
+        const SizedBox(height: UiConstants.boxUnit * 0.75),
+        GQButton(
+          onPressed: () async {
+            final shouldDelete = await showDialog<bool>(
+              context: context,
+              builder: (dialogContext) => AlertDialog(
+                title: const Text(EventTexts.deleteEventTitle),
+                content: const Text(EventTexts.deleteEventMessage),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(false),
+                    child: const Text(EventTexts.buttonClose),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(true),
+                    child: const Text(EventTexts.buttonDeleteEvent),
+                  ),
+                ],
+              ),
+            );
+            if (shouldDelete != true || !context.mounted) {
+              return;
+            }
+            context.read<EventsBloc>().add(EventsDeleteRequested(event.id));
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text(EventTexts.snackBarEventDeleted)),
+            );
+          },
+          isLoading: isLoading,
+          text: EventTexts.buttonDeleteEvent,
+          baseColor: AppColors.error,
           width: UiConstants.boxUnit * 13,
           height: UiConstants.boxUnit * 4.5,
         ),
@@ -413,58 +506,78 @@ class _OrganizerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: UiConstants.boxUnit * 5,
-          height: UiConstants.boxUnit * 5,
-          decoration: BoxDecoration(
-            color: const Color(0xFFA5AEBB),
-            shape: BoxShape.circle,
-            border: Border.all(),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x44000000),
-                offset: Offset(0, UiConstants.shadowOffsetY),
+    return FutureBuilder<String?>(
+      future: _loadOrganizerName(),
+      builder: (context, snapshot) {
+        final organizerName = snapshot.data?.trim().isNotEmpty == true
+            ? snapshot.data!.trim()
+            : event.organizer;
+
+        return Row(
+          children: [
+            Container(
+              width: UiConstants.boxUnit * 5,
+              height: UiConstants.boxUnit * 5,
+              decoration: BoxDecoration(
+                color: const Color(0xFFA5AEBB),
+                shape: BoxShape.circle,
+                border: Border.all(),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x44000000),
+                    offset: Offset(0, UiConstants.shadowOffsetY),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: const Icon(
-            Icons.person,
-            color: Colors.white,
-            size: UiConstants.boxUnit * 3,
-          ),
-        ),
-        const SizedBox(width: UiConstants.boxUnit),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                event.organizer,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontFamily: EventTexts.fontClash,
-                  fontFamilyFallback: EventTexts.fontFallback,
-                  fontSize: UiConstants.textSize * 0.875,
-                  color: Color(0xFF3A4560),
-                ),
+              child: const Icon(
+                Icons.person,
+                color: Colors.white,
+                size: UiConstants.boxUnit * 3,
               ),
-              const Text(
-                EventTexts.organizerLabel,
-                style: TextStyle(
-                  fontFamily: EventTexts.fontRussoOne,
-                  fontFamilyFallback: EventTexts.fontFallback,
-                  fontSize: UiConstants.textSize * 0.62,
-                  color: Color(0xFF7187A8),
-                ),
+            ),
+            const SizedBox(width: UiConstants.boxUnit),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    organizerName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontFamily: EventTexts.fontClash,
+                      fontFamilyFallback: EventTexts.fontFallback,
+                      fontSize: UiConstants.textSize * 0.875,
+                      color: Color(0xFF3A4560),
+                    ),
+                  ),
+                  const Text(
+                    EventTexts.organizerLabel,
+                    style: TextStyle(
+                      fontFamily: EventTexts.fontRussoOne,
+                      fontFamilyFallback: EventTexts.fontFallback,
+                      fontSize: UiConstants.textSize * 0.62,
+                      color: Color(0xFF7187A8),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<String?> _loadOrganizerName() async {
+    final repository = sl<IProfileRepository>();
+    final result = await repository.getProfile(event.organizer);
+    return result.fold(
+      onSuccess: (profile) => profile.name.trim().isEmpty
+          ? (profile.nickname.trim().isEmpty ? null : profile.nickname)
+          : profile.name,
+      onFailure: (_) => null,
     );
   }
 }

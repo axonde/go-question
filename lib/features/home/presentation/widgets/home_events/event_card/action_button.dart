@@ -15,10 +15,15 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.select<EventsBloc, bool>(
+      (bloc) => bloc.state.isLoading,
+    );
+
     return SizedBox(
       width: double.infinity,
       child: GQButton(
         onPressed: onTap,
+        isLoading: isLoading,
         text: text,
         fontSize: _buttonFontSize,
         baseColor: baseColor,

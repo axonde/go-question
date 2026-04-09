@@ -11,9 +11,14 @@ class SignOutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.select<AuthBloc, bool>(
+      (bloc) => bloc.state.isLoading,
+    );
+
     return GQButton(
       onPressed: () =>
           context.read<AuthBloc>().add(const AuthSignOutRequested()),
+      isLoading: isLoading,
       text: SettingsTexts.signOut,
       widthFactor: 1,
       aspectRatio: 4.8,

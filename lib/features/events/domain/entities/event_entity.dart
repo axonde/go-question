@@ -18,6 +18,13 @@ class EventEntity with _$EventEntity {
     required int participants,
     required String organizer,
     required String status,
+    String? imageUrl,
+    @Default(<String>[]) List<String> participantIds,
+    @Default(<String>[]) List<String> pendingParticipantIds,
+    @Default(<String>[]) List<String> rejectedParticipantIds,
+    @Default(false) bool requiresApproval,
+    @Default('public') String visibility,
+    @Default('open') String joinMode,
     @TimestampConverter() required DateTime createdAt,
     @TimestampConverter() required DateTime updatedAt,
   }) = _EventEntity;

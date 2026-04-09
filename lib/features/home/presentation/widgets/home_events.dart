@@ -5,11 +5,15 @@ import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/constants/home_ui_constants.dart';
 import 'package:go_question/core/types/result.dart';
+import 'package:go_question/core/utils/city_utils.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
-import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
+import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
+import 'package:go_question/features/events/presentation/pages/event_participants_dialog.dart';
+import 'package:go_question/features/events/presentation/utils/event_editor_utils.dart';
 import 'package:go_question/features/events/presentation/utils/event_presentation_utils.dart';
+import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/injection_container/injection_container.dart';
 
@@ -45,49 +49,47 @@ class HomeEvents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.watch<ProfileBloc>().state.profile;
+    final eventsState = context.watch<EventsBloc>().state;
     final joinedIds = profile?.joinedEventIds ?? const <String>[];
     final createdIds = profile?.createdEventIds ?? const <String>[];
-
-    return FutureBuilder<List<_EventCardData>>(
-      future: _loadMyEvents(joinedIds: joinedIds, createdIds: createdIds),
-      builder: (context, snapshot) {
-        final events = snapshot.data ?? const <_EventCardData>[];
-        return _EventsList(events: events);
-      },
+    final currentCity = profile?.city;
+    final events = _buildMyEvents(
+      eventsState.events,
+      joinedIds: joinedIds,
+      createdIds: createdIds,
+      currentCity: currentCity,
     );
+
+    return _EventsList(events: events);
   }
 
-  Future<List<_EventCardData>> _loadMyEvents({
+  List<_EventCardData> _buildMyEvents(
+    List<EventEntity> events, {
     required List<String> joinedIds,
     required List<String> createdIds,
-  }) async {
+    required String? currentCity,
+  }) {
     final allMyIds = <String>{...joinedIds, ...createdIds};
     if (allMyIds.isEmpty) {
       return const <_EventCardData>[];
     }
 
-    final eventsRepository = sl<IEventsRepository>();
-    final eventsResult = await eventsRepository.getEvents();
-
-    return eventsResult.fold(
-      onSuccess: (events) {
-        final createdSet = createdIds.toSet();
-        final filtered =
-            events.where((event) => allMyIds.contains(event.id)).toList()
-              ..sort((a, b) => a.startTime.compareTo(b.startTime));
-
-        return filtered
-            .map(
-              (event) => _EventCardData(
-                event: event,
-                viewerRole: createdSet.contains(event.id)
-                    ? EventViewerRole.organizer
-                    : EventViewerRole.participant,
-              ),
-            )
-            .toList();
-      },
-      onFailure: (_) => const <_EventCardData>[],
+    final createdSet = createdIds.toSet();
+    final filtered = CityUtils.sortEventsByCityPriority(
+      items: events.where((event) => allMyIds.contains(event.id)).toList(),
+      city: currentCity,
+      locationOf: (event) => event.location,
+      startTimeOf: (event) => event.startTime,
     );
+    return filtered
+        .map(
+          (event) => _EventCardData(
+            event: event,
+            viewerRole: createdSet.contains(event.id)
+                ? EventViewerRole.organizer
+                : EventViewerRole.participant,
+          ),
+        )
+        .toList(growable: false);
   }
 }

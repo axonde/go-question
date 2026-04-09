@@ -7,7 +7,14 @@ class _EventDetailsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final event = eventCardData.event;
+    final event = context.select<EventsBloc, EventEntity>((bloc) {
+      for (final item in bloc.state.events) {
+        if (item.id == eventCardData.event.id) {
+          return item;
+        }
+      }
+      return eventCardData.event;
+    });
     final isOrganizer = eventCardData.viewerRole == EventViewerRole.organizer;
     final priceLabel = event.price == 0
         ? EventTexts.filterFree
@@ -77,6 +84,18 @@ class _EventDetailsDialog extends StatelessWidget {
                 label: EventTexts.createFieldPrice,
                 value: priceLabel,
               ),
+              FutureBuilder<String?>(
+                future: _loadOrganizerName(),
+                builder: (context, snapshot) {
+                  final organizerName = snapshot.data?.trim().isNotEmpty == true
+                      ? snapshot.data!.trim()
+                      : event.organizer;
+                  return _DetailLine(
+                    label: EventTexts.organizerLabel,
+                    value: organizerName,
+                  );
+                },
+              ),
               const SizedBox(height: UiConstants.boxUnit * 1.25),
               Text(
                 event.description,
@@ -96,12 +115,10 @@ class _EventDetailsDialog extends StatelessWidget {
                         text: EventTexts.buttonParticipants,
                         baseColor: AppColors.secondary,
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                EventTexts.snackBarParticipantsList,
-                              ),
-                            ),
+                          showDialog<void>(
+                            context: context,
+                            builder: (_) =>
+                                EventParticipantsDialog(event: event),
                           );
                         },
                       ),
@@ -111,26 +128,112 @@ class _EventDetailsDialog extends StatelessWidget {
                       child: _ActionButton(
                         text: EventTexts.buttonEdit,
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(EventTexts.snackBarEditEvent),
-                            ),
-                          );
+                          final currentProfile = context
+                              .read<ProfileBloc>()
+                              .state
+                              .profile;
+                          final updatedOrganizerId =
+                              currentProfile?.uid ?? event.organizer;
+                          EventEditorUtils.openEventEditorDialog(
+                            context,
+                            organizerAccountId: updatedOrganizerId,
+                            initialEvent: event,
+                          ).then((updated) {
+                            if (updated == null || !context.mounted) {
+                              return;
+                            }
+                            context.read<EventsBloc>().add(
+                              EventsUpdateSubmitted(updated),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(EventTexts.snackBarEventUpdated),
+                              ),
+                            );
+                          });
                         },
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: UiConstants.boxUnit),
+                _ActionButton(
+                  text: EventTexts.buttonDeleteEvent,
+                  baseColor: AppColors.error,
+                  onTap: () async {
+                    final shouldDelete = await showDialog<bool>(
+                      context: context,
+                      builder: (dialogContext) => AlertDialog(
+                        title: const Text(EventTexts.deleteEventTitle),
+                        content: const Text(EventTexts.deleteEventMessage),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.of(dialogContext).pop(false),
+                            child: const Text(EventTexts.buttonClose),
+                          ),
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.of(dialogContext).pop(true),
+                            child: const Text(EventTexts.buttonDeleteEvent),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (shouldDelete != true || !context.mounted) {
+                      return;
+                    }
+                    context.read<EventsBloc>().add(
+                      EventsDeleteRequested(event.id),
+                    );
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(EventTexts.snackBarEventDeleted),
+                      ),
+                    );
+                  },
                 ),
               ] else ...[
                 _ActionButton(
                   text: EventTexts.buttonLeaveEvent,
                   baseColor: HomeUiConstants.eventLeaveButton,
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(EventTexts.snackBarLeftEvent),
+                    final currentUserId = context
+                        .read<ProfileBloc>()
+                        .state
+                        .profile
+                        ?.uid;
+                    if (currentUserId == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(EventTexts.snackBarLeftEvent),
+                        ),
+                      );
+                      return;
+                    }
+
+                    context.read<EventsBloc>().add(
+                      EventsLeaveRequested(
+                        eventId: event.id,
+                        userId: currentUserId,
                       ),
                     );
+                    final currentProfile = context
+                        .read<ProfileBloc>()
+                        .state
+                        .profile;
+                    if (currentProfile != null) {
+                      context.read<ProfileBloc>().add(
+                        EnsureProfileExistsRequested(
+                          uid: currentProfile.uid,
+                          initialEmail: currentProfile.email,
+                          initialName: currentProfile.name,
+                          initialNickname: currentProfile.nickname,
+                        ),
+                      );
+                    }
+                    Navigator.of(context).pop();
                   },
                 ),
               ],
@@ -138,6 +241,17 @@ class _EventDetailsDialog extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<String?> _loadOrganizerName() async {
+    final repository = sl<IProfileRepository>();
+    final result = await repository.getProfile(eventCardData.event.organizer);
+    return result.fold(
+      onSuccess: (profile) => profile.name.trim().isEmpty
+          ? (profile.nickname.trim().isEmpty ? null : profile.nickname)
+          : profile.name,
+      onFailure: (_) => null,
     );
   }
 }

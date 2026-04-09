@@ -9,3 +9,5 @@ const String profileRetryMessage = 'Повторить попытку';
 const String profileInitializationErrorMessage = 'Ошибка инициализации профиля';
 
 const String profileCreationSuccessMessage = 'Профиль успешно создан!';
+
+const String profileDefaultInitialName = 'Пользователь';

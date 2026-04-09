@@ -7,6 +7,7 @@ part of '../go_button.dart';
 
 class GQButton extends StatelessWidget {
   final VoidCallback onPressed;
+  final bool isLoading;
 
   // Контент (одно из трёх обязательно)
   final String? text;
@@ -38,6 +39,7 @@ class GQButton extends StatelessWidget {
   const GQButton({
     super.key,
     required this.onPressed,
+    this.isLoading = false,
     this.text,
     this.icon,
     this.assetPath,
@@ -119,6 +121,17 @@ class GQButton extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      Pressable(onTap: onPressed, child: _sized(_buildColors()));
+  Widget build(BuildContext context) {
+    final child = FirebaseActionShimmer(
+      isLoading: isLoading,
+      borderRadius: LoadingUiConstants.buttonBorderRadius,
+      child: _sized(_buildColors()),
+    );
+
+    if (isLoading) {
+      return child;
+    }
+
+    return Pressable(onTap: onPressed, child: child);
+  }
 }

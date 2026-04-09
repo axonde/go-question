@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../../notifications/data/constants/notifications_constants.dart';
 import '../../constants/profile_firestore.dart';
 import '../../domain/errors/profile_exception.dart';
 import '../models/profile_model.dart';
@@ -14,6 +15,17 @@ abstract class IProfileRemoteDataSource {
   /// Throws ProfileNotFoundException if not found.
   /// Throws other Firestore exceptions on failure.
   Future<ProfileModel?> getProfile(String uid);
+  Stream<ProfileModel?> watchProfile(String uid);
+
+  /// Retrieves profile by numeric registration id.
+  Future<ProfileModel?> getProfileByRegistrationId(int registrationId);
+
+  /// Retrieves profiles by ids.
+  Future<List<ProfileModel>> getProfilesByIds(List<String> uids);
+
+  /// Retrieves a user's friend profiles.
+  Future<List<ProfileModel>> getFriends(String uid);
+  Stream<List<ProfileModel>> watchFriends(String uid);
 
   /// Creates initial profile, idempotent.
   /// Uses set(_, merge: false) or transaction to prevent overwrites.
@@ -44,6 +56,11 @@ abstract class IProfileRemoteDataSource {
     String? name,
     DateTime? birthDate,
     String? city,
+    String? bio,
+    String? avatarUrl,
+    String? gender,
+    int? age,
+    double? rating,
     int? trophies,
   });
 
@@ -58,6 +75,24 @@ abstract class IProfileRemoteDataSource {
   /// Throws ProfileNotFoundException if profile doesn't exist.
   /// Throws other Firestore exceptions on failure.
   Future<void> incrementCreatedEvents(String uid, {int by = 1});
+
+  /// Sends a friend request.
+  Future<void> sendFriendRequest({
+    required String requesterUid,
+    required String recipientUid,
+  });
+
+  /// Accepts a friend request.
+  Future<void> acceptFriendRequest(String requestId);
+
+  /// Declines a friend request.
+  Future<void> declineFriendRequest(String requestId);
+
+  /// Removes a friend on both sides.
+  Future<void> removeFriend({
+    required String userUid,
+    required String friendUid,
+  });
 }
 
 /// Implementation of [IProfileRemoteDataSource] using Cloud Firestore.
@@ -106,6 +141,94 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
   }
 
   @override
+  Stream<ProfileModel?> watchProfile(String uid) {
+    return _firestore
+        .collection(ProfileFirestoreConstants.usersCollection)
+        .doc(uid)
+        .snapshots()
+        .map((snapshot) {
+          if (!snapshot.exists || snapshot.data() == null) {
+            return null;
+          }
+          return ProfileModel.fromJson({...snapshot.data()!, 'uid': uid});
+        });
+  }
+
+  @override
+  Future<List<ProfileModel>> getProfilesByIds(List<String> uids) async {
+    try {
+      final ids = uids.where((id) => id.trim().isNotEmpty).toSet().toList();
+      if (ids.isEmpty) {
+        return const <ProfileModel>[];
+      }
+
+      final snapshots = await Future.wait(
+        ids.map(
+          (uid) => _firestore
+              .collection(ProfileFirestoreConstants.usersCollection)
+              .doc(uid)
+              .get(),
+        ),
+      );
+
+      return snapshots
+          .where((snapshot) => snapshot.exists && snapshot.data() != null)
+          .map(
+            (snapshot) => ProfileModel.fromJson({
+              ...snapshot.data()!,
+              'uid': snapshot.id,
+            }),
+          )
+          .toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<ProfileModel>> getFriends(String uid) async {
+    final profile = await getProfile(uid);
+    if (profile == null) {
+      throw ProfileNotFoundException(uid: uid);
+    }
+
+    return getProfilesByIds(profile.friendIds);
+  }
+
+  @override
+  Stream<List<ProfileModel>> watchFriends(String uid) {
+    return watchProfile(uid).asyncMap((profile) async {
+      if (profile == null) {
+        return const <ProfileModel>[];
+      }
+      return getProfilesByIds(profile.friendIds);
+    });
+  }
+
+  @override
+  Future<ProfileModel?> getProfileByRegistrationId(int registrationId) async {
+    try {
+      final snapshot = await _firestore
+          .collection(ProfileFirestoreConstants.usersCollection)
+          .where(
+            ProfileFirestoreConstants.fieldRegistrationId,
+            isEqualTo: registrationId,
+          )
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        return null;
+      }
+
+      final doc = snapshot.docs.first;
+      return ProfileModel.fromJson({...doc.data(), 'uid': doc.id});
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<void> createInitialProfile({
     required String uid,
     required String email,
@@ -121,6 +244,9 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
       final nicknameRef = _firestore
           .collection(ProfileFirestoreConstants.nicknamesCollection)
           .doc(nicknameKey);
+      final counterRef = _firestore
+          .collection(ProfileFirestoreConstants.countersCollection)
+          .doc(ProfileFirestoreConstants.userRegistrationCounterDoc);
 
       await _firestore.runTransaction((tx) async {
         final userSnapshot = await tx.get(userRef);
@@ -135,18 +261,38 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
           );
         }
 
+        final counterSnapshot = await tx.get(counterRef);
+        final currentCounter =
+            (counterSnapshot.data()?['value'] as num?)?.toInt() ?? 999;
+        final nextRegistrationId = currentCounter + 1;
+
         tx.set(nicknameRef, {'uid': uid, 'createdAt': now});
+        tx.set(counterRef, {
+          'value': nextRegistrationId,
+          'updatedAt': now,
+        }, SetOptions(merge: true));
         tx.set(userRef, {
+          'registrationId': nextRegistrationId,
           'email': email,
           'name': name,
           'nickname': nickname,
           'birthDate': null,
           'city': null,
+          'bio': null,
+          'avatarUrl': null,
+          'gender': null,
+          'age': null,
+          'rating': 0.0,
           'trophies': 0,
           'visitedEventsCount': 0,
           'createdEventsCount': 0,
           'joinedEventIds': const <String>[],
           'createdEventIds': const <String>[],
+          'friendIds': const <String>[],
+          'incomingFriendRequestIds': const <String>[],
+          'outgoingFriendRequestIds': const <String>[],
+          'blockedUserIds': const <String>[],
+          'lastSeenAt': null,
           'createdAt': now,
           'updatedAt': now,
         }, SetOptions(merge: false));
@@ -184,6 +330,11 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
     String? name,
     DateTime? birthDate,
     String? city,
+    String? bio,
+    String? avatarUrl,
+    String? gender,
+    int? age,
+    double? rating,
     int? trophies,
   }) async {
     try {
@@ -200,6 +351,21 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
       }
       if (city != null) {
         updates['city'] = city;
+      }
+      if (bio != null) {
+        updates['bio'] = bio;
+      }
+      if (avatarUrl != null) {
+        updates['avatarUrl'] = avatarUrl;
+      }
+      if (gender != null) {
+        updates['gender'] = gender;
+      }
+      if (age != null) {
+        updates['age'] = age;
+      }
+      if (rating != null) {
+        updates['rating'] = rating;
       }
       if (trophies != null) {
         updates['trophies'] = trophies;
@@ -239,6 +405,329 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
             'createdEventsCount': FieldValue.increment(by),
             'updatedAt': FieldValue.serverTimestamp(),
           });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> sendFriendRequest({
+    required String requesterUid,
+    required String recipientUid,
+  }) async {
+    try {
+      final requestId = '${requesterUid}_$recipientUid';
+      final requestRef = _firestore
+          .collection(ProfileFirestoreConstants.friendRequestsCollection)
+          .doc(requestId);
+      final requesterRef = _firestore
+          .collection(ProfileFirestoreConstants.usersCollection)
+          .doc(requesterUid);
+      final recipientRef = _firestore
+          .collection(ProfileFirestoreConstants.usersCollection)
+          .doc(recipientUid);
+
+      await _firestore.runTransaction((tx) async {
+        final requesterSnapshot = await tx.get(requesterRef);
+        final recipientSnapshot = await tx.get(recipientRef);
+        if (!requesterSnapshot.exists || !recipientSnapshot.exists) {
+          throw ProfileNotFoundException(uid: requesterUid);
+        }
+
+        final requesterData = requesterSnapshot.data() ?? <String, dynamic>{};
+        final recipientData = recipientSnapshot.data() ?? <String, dynamic>{};
+        final requesterFriends = List<String>.from(
+          requesterData[ProfileFirestoreConstants.fieldFriendIds] ??
+              const <String>[],
+        );
+        final requesterOutgoing = List<String>.from(
+          requesterData[ProfileFirestoreConstants
+                  .fieldOutgoingFriendRequestIds] ??
+              const <String>[],
+        );
+        final recipientIncoming = List<String>.from(
+          recipientData[ProfileFirestoreConstants
+                  .fieldIncomingFriendRequestIds] ??
+              const <String>[],
+        );
+
+        if (requesterFriends.contains(recipientUid) ||
+            requesterOutgoing.contains(requestId) ||
+            recipientIncoming.contains(requestId)) {
+          return;
+        }
+
+        tx.set(requestRef, {
+          ProfileFirestoreConstants.friendRequestFieldId: requestId,
+          ProfileFirestoreConstants.friendRequestFieldRequesterId: requesterUid,
+          ProfileFirestoreConstants.friendRequestFieldRecipientId: recipientUid,
+          ProfileFirestoreConstants.friendRequestFieldStatus: 'pending',
+          ProfileFirestoreConstants.friendRequestFieldMessage: null,
+          ProfileFirestoreConstants.friendRequestFieldCreatedAt:
+              FieldValue.serverTimestamp(),
+          ProfileFirestoreConstants.friendRequestFieldUpdatedAt:
+              FieldValue.serverTimestamp(),
+          ProfileFirestoreConstants.friendRequestFieldReviewedAt: null,
+          ProfileFirestoreConstants.friendRequestFieldReviewedBy: null,
+        }, SetOptions(merge: true));
+
+        tx.update(requesterRef, {
+          ProfileFirestoreConstants.fieldOutgoingFriendRequestIds:
+              FieldValue.arrayUnion([requestId]),
+          ProfileFirestoreConstants.fieldUpdatedAt:
+              FieldValue.serverTimestamp(),
+        });
+        tx.update(recipientRef, {
+          ProfileFirestoreConstants.fieldIncomingFriendRequestIds:
+              FieldValue.arrayUnion([requestId]),
+          ProfileFirestoreConstants.fieldUpdatedAt:
+              FieldValue.serverTimestamp(),
+        });
+
+        tx.set(
+          _firestore
+              .collection(NotificationsConstants.notificationsCollection)
+              .doc(requestId),
+          {
+            NotificationsConstants.fieldId: requestId,
+            NotificationsConstants.fieldUserId: recipientUid,
+            NotificationsConstants.fieldTitle: 'Новая заявка в друзья',
+            NotificationsConstants.fieldBody:
+                'Пользователь ${requesterData[ProfileFirestoreConstants.fieldName] ?? requesterData[ProfileFirestoreConstants.fieldNickname] ?? requesterUid}'
+                ' (ID: ${requesterData[ProfileFirestoreConstants.fieldRegistrationId] ?? requesterUid})'
+                ' хочет добавить вас в друзья',
+            NotificationsConstants.fieldType: 'friend_request',
+            NotificationsConstants.fieldIsRead: false,
+            NotificationsConstants.fieldCreatedAt: FieldValue.serverTimestamp(),
+            NotificationsConstants.fieldRequestUserId: requesterUid,
+            NotificationsConstants.fieldRequestUserName:
+                requesterData[ProfileFirestoreConstants.fieldName],
+            NotificationsConstants.fieldRequestUserRegistrationId:
+                requesterData[ProfileFirestoreConstants.fieldRegistrationId]
+                    ?.toString(),
+            NotificationsConstants.fieldRequestUserRating:
+                requesterData[ProfileFirestoreConstants.fieldRating]
+                    ?.toString(),
+            NotificationsConstants.fieldRequestUserAge:
+                requesterData[ProfileFirestoreConstants.fieldAge]?.toString(),
+            NotificationsConstants.fieldRequestUserGender:
+                requesterData[ProfileFirestoreConstants.fieldGender],
+            NotificationsConstants.fieldRequestUserCity:
+                requesterData[ProfileFirestoreConstants.fieldCity],
+            NotificationsConstants.fieldRequestUserBio:
+                requesterData[ProfileFirestoreConstants.fieldBio],
+            NotificationsConstants.fieldRequestUserEventsAttended:
+                requesterData[ProfileFirestoreConstants
+                    .fieldVisitedEventsCount],
+            NotificationsConstants.fieldRequestUserEventsOrganized:
+                requesterData[ProfileFirestoreConstants
+                    .fieldCreatedEventsCount],
+          },
+          SetOptions(merge: true),
+        );
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> acceptFriendRequest(String requestId) async {
+    try {
+      final requestRef = _firestore
+          .collection(ProfileFirestoreConstants.friendRequestsCollection)
+          .doc(requestId);
+
+      await _firestore.runTransaction((tx) async {
+        final requestSnapshot = await tx.get(requestRef);
+        if (!requestSnapshot.exists) {
+          throw ProfileNotFoundException(uid: requestId);
+        }
+
+        final requestData = requestSnapshot.data() ?? {};
+        final status =
+            requestData[ProfileFirestoreConstants.friendRequestFieldStatus]
+                as String?;
+        if (status != 'pending') {
+          return;
+        }
+        final requesterId =
+            requestData[ProfileFirestoreConstants.friendRequestFieldRequesterId]
+                as String?;
+        final recipientId =
+            requestData[ProfileFirestoreConstants.friendRequestFieldRecipientId]
+                as String?;
+        if (requesterId == null || recipientId == null) {
+          throw ProfileNotFoundException(uid: requestId);
+        }
+
+        final requesterRef = _firestore
+            .collection(ProfileFirestoreConstants.usersCollection)
+            .doc(requesterId);
+        final recipientRef = _firestore
+            .collection(ProfileFirestoreConstants.usersCollection)
+            .doc(recipientId);
+
+        tx.update(requesterRef, {
+          ProfileFirestoreConstants.fieldFriendIds: FieldValue.arrayUnion([
+            recipientId,
+          ]),
+          ProfileFirestoreConstants.fieldOutgoingFriendRequestIds:
+              FieldValue.arrayRemove([requestId]),
+          ProfileFirestoreConstants.fieldUpdatedAt:
+              FieldValue.serverTimestamp(),
+        });
+        tx.update(recipientRef, {
+          ProfileFirestoreConstants.fieldFriendIds: FieldValue.arrayUnion([
+            requesterId,
+          ]),
+          ProfileFirestoreConstants.fieldIncomingFriendRequestIds:
+              FieldValue.arrayRemove([requestId]),
+          ProfileFirestoreConstants.fieldUpdatedAt:
+              FieldValue.serverTimestamp(),
+        });
+        tx.update(requestRef, {
+          ProfileFirestoreConstants.friendRequestFieldStatus: 'accepted',
+          ProfileFirestoreConstants.friendRequestFieldReviewedAt:
+              FieldValue.serverTimestamp(),
+          ProfileFirestoreConstants.friendRequestFieldUpdatedAt:
+              FieldValue.serverTimestamp(),
+        });
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> declineFriendRequest(String requestId) async {
+    try {
+      final requestRef = _firestore
+          .collection(ProfileFirestoreConstants.friendRequestsCollection)
+          .doc(requestId);
+
+      await _firestore.runTransaction((tx) async {
+        final requestSnapshot = await tx.get(requestRef);
+        if (!requestSnapshot.exists) {
+          throw ProfileNotFoundException(uid: requestId);
+        }
+
+        final requestData = requestSnapshot.data() ?? {};
+        final status =
+            requestData[ProfileFirestoreConstants.friendRequestFieldStatus]
+                as String?;
+        if (status != 'pending') {
+          return;
+        }
+        final requesterId =
+            requestData[ProfileFirestoreConstants.friendRequestFieldRequesterId]
+                as String?;
+        final recipientId =
+            requestData[ProfileFirestoreConstants.friendRequestFieldRecipientId]
+                as String?;
+        if (requesterId == null || recipientId == null) {
+          throw ProfileNotFoundException(uid: requestId);
+        }
+
+        final requesterRef = _firestore
+            .collection(ProfileFirestoreConstants.usersCollection)
+            .doc(requesterId);
+        final recipientRef = _firestore
+            .collection(ProfileFirestoreConstants.usersCollection)
+            .doc(recipientId);
+
+        tx.update(requesterRef, {
+          ProfileFirestoreConstants.fieldOutgoingFriendRequestIds:
+              FieldValue.arrayRemove([requestId]),
+          ProfileFirestoreConstants.fieldUpdatedAt:
+              FieldValue.serverTimestamp(),
+        });
+        tx.update(recipientRef, {
+          ProfileFirestoreConstants.fieldIncomingFriendRequestIds:
+              FieldValue.arrayRemove([requestId]),
+          ProfileFirestoreConstants.fieldUpdatedAt:
+              FieldValue.serverTimestamp(),
+        });
+        tx.update(requestRef, {
+          ProfileFirestoreConstants.friendRequestFieldStatus: 'rejected',
+          ProfileFirestoreConstants.friendRequestFieldReviewedAt:
+              FieldValue.serverTimestamp(),
+          ProfileFirestoreConstants.friendRequestFieldUpdatedAt:
+              FieldValue.serverTimestamp(),
+        });
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> removeFriend({
+    required String userUid,
+    required String friendUid,
+  }) async {
+    try {
+      final userRef = _firestore
+          .collection(ProfileFirestoreConstants.usersCollection)
+          .doc(userUid);
+      final friendRef = _firestore
+          .collection(ProfileFirestoreConstants.usersCollection)
+          .doc(friendUid);
+      final notificationRef = _firestore
+          .collection(NotificationsConstants.notificationsCollection)
+          .doc('${userUid}_${friendUid}_friend_removed');
+
+      await _firestore.runTransaction((tx) async {
+        final userSnapshot = await tx.get(userRef);
+        final userData = userSnapshot.data() ?? <String, dynamic>{};
+
+        tx.update(userRef, {
+          ProfileFirestoreConstants.fieldFriendIds: FieldValue.arrayRemove([
+            friendUid,
+          ]),
+          ProfileFirestoreConstants.fieldUpdatedAt:
+              FieldValue.serverTimestamp(),
+        });
+        tx.update(friendRef, {
+          ProfileFirestoreConstants.fieldFriendIds: FieldValue.arrayRemove([
+            userUid,
+          ]),
+          ProfileFirestoreConstants.fieldUpdatedAt:
+              FieldValue.serverTimestamp(),
+        });
+        tx.set(notificationRef, {
+          NotificationsConstants.fieldId:
+              '${userUid}_${friendUid}_friend_removed',
+          NotificationsConstants.fieldUserId: friendUid,
+          NotificationsConstants.fieldTitle: 'Удаление из друзей',
+          NotificationsConstants.fieldBody:
+              'Пользователь ${userData[ProfileFirestoreConstants.fieldName] ?? userData[ProfileFirestoreConstants.fieldNickname] ?? userUid} удалил вас из друзей',
+          NotificationsConstants.fieldType: 'system',
+          NotificationsConstants.fieldIsRead: false,
+          NotificationsConstants.fieldCreatedAt: FieldValue.serverTimestamp(),
+          NotificationsConstants.fieldRequestUserId: userUid,
+          NotificationsConstants.fieldRequestUserName:
+              userData[ProfileFirestoreConstants.fieldName] ??
+              userData[ProfileFirestoreConstants.fieldNickname],
+          NotificationsConstants.fieldRequestUserRegistrationId:
+              userData[ProfileFirestoreConstants.fieldRegistrationId]
+                  ?.toString(),
+          NotificationsConstants.fieldRequestUserRating:
+              userData[ProfileFirestoreConstants.fieldRating]?.toString(),
+          NotificationsConstants.fieldRequestUserAge:
+              userData[ProfileFirestoreConstants.fieldAge]?.toString(),
+          NotificationsConstants.fieldRequestUserGender:
+              userData[ProfileFirestoreConstants.fieldGender],
+          NotificationsConstants.fieldRequestUserCity:
+              userData[ProfileFirestoreConstants.fieldCity],
+          NotificationsConstants.fieldRequestUserBio:
+              userData[ProfileFirestoreConstants.fieldBio],
+          NotificationsConstants.fieldRequestUserEventsAttended:
+              userData[ProfileFirestoreConstants.fieldVisitedEventsCount],
+          NotificationsConstants.fieldRequestUserEventsOrganized:
+              userData[ProfileFirestoreConstants.fieldCreatedEventsCount],
+        }, SetOptions(merge: true));
+      });
     } catch (e) {
       rethrow;
     }

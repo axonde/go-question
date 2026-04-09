@@ -19,6 +19,25 @@ _$EventEntityImpl _$$EventEntityImplFromJson(Map<String, dynamic> json) =>
       participants: (json['participants'] as num).toInt(),
       organizer: json['organizer'] as String,
       status: json['status'] as String,
+      imageUrl: json['imageUrl'] as String?,
+      participantIds:
+          (json['participantIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
+      pendingParticipantIds:
+          (json['pendingParticipantIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
+      rejectedParticipantIds:
+          (json['rejectedParticipantIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
+      requiresApproval: json['requiresApproval'] as bool? ?? false,
+      visibility: json['visibility'] as String? ?? 'public',
+      joinMode: json['joinMode'] as String? ?? 'open',
       createdAt: const TimestampConverter().fromJson(json['createdAt']),
       updatedAt: const TimestampConverter().fromJson(json['updatedAt']),
     );
@@ -36,6 +55,13 @@ Map<String, dynamic> _$$EventEntityImplToJson(_$EventEntityImpl instance) =>
       'participants': instance.participants,
       'organizer': instance.organizer,
       'status': instance.status,
+      'imageUrl': instance.imageUrl,
+      'participantIds': instance.participantIds,
+      'pendingParticipantIds': instance.pendingParticipantIds,
+      'rejectedParticipantIds': instance.rejectedParticipantIds,
+      'requiresApproval': instance.requiresApproval,
+      'visibility': instance.visibility,
+      'joinMode': instance.joinMode,
       'createdAt': const TimestampConverter().toJson(instance.createdAt),
       'updatedAt': const TimestampConverter().toJson(instance.updatedAt),
     };

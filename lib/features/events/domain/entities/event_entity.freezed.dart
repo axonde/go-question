@@ -33,6 +33,13 @@ mixin _$EventEntity {
   int get participants => throw _privateConstructorUsedError;
   String get organizer => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
+  String? get imageUrl => throw _privateConstructorUsedError;
+  List<String> get participantIds => throw _privateConstructorUsedError;
+  List<String> get pendingParticipantIds => throw _privateConstructorUsedError;
+  List<String> get rejectedParticipantIds => throw _privateConstructorUsedError;
+  bool get requiresApproval => throw _privateConstructorUsedError;
+  String get visibility => throw _privateConstructorUsedError;
+  String get joinMode => throw _privateConstructorUsedError;
   @TimestampConverter()
   DateTime get createdAt => throw _privateConstructorUsedError;
   @TimestampConverter()
@@ -67,6 +74,13 @@ abstract class $EventEntityCopyWith<$Res> {
     int participants,
     String organizer,
     String status,
+    String? imageUrl,
+    List<String> participantIds,
+    List<String> pendingParticipantIds,
+    List<String> rejectedParticipantIds,
+    bool requiresApproval,
+    String visibility,
+    String joinMode,
     @TimestampConverter() DateTime createdAt,
     @TimestampConverter() DateTime updatedAt,
   });
@@ -98,6 +112,13 @@ class _$EventEntityCopyWithImpl<$Res, $Val extends EventEntity>
     Object? participants = null,
     Object? organizer = null,
     Object? status = null,
+    Object? imageUrl = freezed,
+    Object? participantIds = null,
+    Object? pendingParticipantIds = null,
+    Object? rejectedParticipantIds = null,
+    Object? requiresApproval = null,
+    Object? visibility = null,
+    Object? joinMode = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -147,6 +168,34 @@ class _$EventEntityCopyWithImpl<$Res, $Val extends EventEntity>
                 ? _value.status
                 : status // ignore: cast_nullable_to_non_nullable
                       as String,
+            imageUrl: freezed == imageUrl
+                ? _value.imageUrl
+                : imageUrl // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            participantIds: null == participantIds
+                ? _value.participantIds
+                : participantIds // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            pendingParticipantIds: null == pendingParticipantIds
+                ? _value.pendingParticipantIds
+                : pendingParticipantIds // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            rejectedParticipantIds: null == rejectedParticipantIds
+                ? _value.rejectedParticipantIds
+                : rejectedParticipantIds // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            requiresApproval: null == requiresApproval
+                ? _value.requiresApproval
+                : requiresApproval // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            visibility: null == visibility
+                ? _value.visibility
+                : visibility // ignore: cast_nullable_to_non_nullable
+                      as String,
+            joinMode: null == joinMode
+                ? _value.joinMode
+                : joinMode // ignore: cast_nullable_to_non_nullable
+                      as String,
             createdAt: null == createdAt
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
@@ -182,6 +231,13 @@ abstract class _$$EventEntityImplCopyWith<$Res>
     int participants,
     String organizer,
     String status,
+    String? imageUrl,
+    List<String> participantIds,
+    List<String> pendingParticipantIds,
+    List<String> rejectedParticipantIds,
+    bool requiresApproval,
+    String visibility,
+    String joinMode,
     @TimestampConverter() DateTime createdAt,
     @TimestampConverter() DateTime updatedAt,
   });
@@ -212,6 +268,13 @@ class __$$EventEntityImplCopyWithImpl<$Res>
     Object? participants = null,
     Object? organizer = null,
     Object? status = null,
+    Object? imageUrl = freezed,
+    Object? participantIds = null,
+    Object? pendingParticipantIds = null,
+    Object? rejectedParticipantIds = null,
+    Object? requiresApproval = null,
+    Object? visibility = null,
+    Object? joinMode = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -261,6 +324,34 @@ class __$$EventEntityImplCopyWithImpl<$Res>
             ? _value.status
             : status // ignore: cast_nullable_to_non_nullable
                   as String,
+        imageUrl: freezed == imageUrl
+            ? _value.imageUrl
+            : imageUrl // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        participantIds: null == participantIds
+            ? _value._participantIds
+            : participantIds // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        pendingParticipantIds: null == pendingParticipantIds
+            ? _value._pendingParticipantIds
+            : pendingParticipantIds // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        rejectedParticipantIds: null == rejectedParticipantIds
+            ? _value._rejectedParticipantIds
+            : rejectedParticipantIds // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        requiresApproval: null == requiresApproval
+            ? _value.requiresApproval
+            : requiresApproval // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        visibility: null == visibility
+            ? _value.visibility
+            : visibility // ignore: cast_nullable_to_non_nullable
+                  as String,
+        joinMode: null == joinMode
+            ? _value.joinMode
+            : joinMode // ignore: cast_nullable_to_non_nullable
+                  as String,
         createdAt: null == createdAt
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
@@ -289,9 +380,18 @@ class _$EventEntityImpl implements _EventEntity {
     required this.participants,
     required this.organizer,
     required this.status,
+    this.imageUrl,
+    final List<String> participantIds = const <String>[],
+    final List<String> pendingParticipantIds = const <String>[],
+    final List<String> rejectedParticipantIds = const <String>[],
+    this.requiresApproval = false,
+    this.visibility = 'public',
+    this.joinMode = 'open',
     @TimestampConverter() required this.createdAt,
     @TimestampConverter() required this.updatedAt,
-  });
+  }) : _participantIds = participantIds,
+       _pendingParticipantIds = pendingParticipantIds,
+       _rejectedParticipantIds = rejectedParticipantIds;
 
   factory _$EventEntityImpl.fromJson(Map<String, dynamic> json) =>
       _$$EventEntityImplFromJson(json);
@@ -320,6 +420,46 @@ class _$EventEntityImpl implements _EventEntity {
   @override
   final String status;
   @override
+  final String? imageUrl;
+  final List<String> _participantIds;
+  @override
+  @JsonKey()
+  List<String> get participantIds {
+    if (_participantIds is EqualUnmodifiableListView) return _participantIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_participantIds);
+  }
+
+  final List<String> _pendingParticipantIds;
+  @override
+  @JsonKey()
+  List<String> get pendingParticipantIds {
+    if (_pendingParticipantIds is EqualUnmodifiableListView)
+      return _pendingParticipantIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_pendingParticipantIds);
+  }
+
+  final List<String> _rejectedParticipantIds;
+  @override
+  @JsonKey()
+  List<String> get rejectedParticipantIds {
+    if (_rejectedParticipantIds is EqualUnmodifiableListView)
+      return _rejectedParticipantIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_rejectedParticipantIds);
+  }
+
+  @override
+  @JsonKey()
+  final bool requiresApproval;
+  @override
+  @JsonKey()
+  final String visibility;
+  @override
+  @JsonKey()
+  final String joinMode;
+  @override
   @TimestampConverter()
   final DateTime createdAt;
   @override
@@ -328,7 +468,7 @@ class _$EventEntityImpl implements _EventEntity {
 
   @override
   String toString() {
-    return 'EventEntity(id: $id, title: $title, description: $description, startTime: $startTime, location: $location, category: $category, price: $price, maxUsers: $maxUsers, participants: $participants, organizer: $organizer, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'EventEntity(id: $id, title: $title, description: $description, startTime: $startTime, location: $location, category: $category, price: $price, maxUsers: $maxUsers, participants: $participants, organizer: $organizer, status: $status, imageUrl: $imageUrl, participantIds: $participantIds, pendingParticipantIds: $pendingParticipantIds, rejectedParticipantIds: $rejectedParticipantIds, requiresApproval: $requiresApproval, visibility: $visibility, joinMode: $joinMode, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -354,6 +494,26 @@ class _$EventEntityImpl implements _EventEntity {
             (identical(other.organizer, organizer) ||
                 other.organizer == organizer) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.imageUrl, imageUrl) ||
+                other.imageUrl == imageUrl) &&
+            const DeepCollectionEquality().equals(
+              other._participantIds,
+              _participantIds,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._pendingParticipantIds,
+              _pendingParticipantIds,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._rejectedParticipantIds,
+              _rejectedParticipantIds,
+            ) &&
+            (identical(other.requiresApproval, requiresApproval) ||
+                other.requiresApproval == requiresApproval) &&
+            (identical(other.visibility, visibility) ||
+                other.visibility == visibility) &&
+            (identical(other.joinMode, joinMode) ||
+                other.joinMode == joinMode) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -362,7 +522,7 @@ class _$EventEntityImpl implements _EventEntity {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     runtimeType,
     id,
     title,
@@ -375,9 +535,16 @@ class _$EventEntityImpl implements _EventEntity {
     participants,
     organizer,
     status,
+    imageUrl,
+    const DeepCollectionEquality().hash(_participantIds),
+    const DeepCollectionEquality().hash(_pendingParticipantIds),
+    const DeepCollectionEquality().hash(_rejectedParticipantIds),
+    requiresApproval,
+    visibility,
+    joinMode,
     createdAt,
     updatedAt,
-  );
+  ]);
 
   /// Create a copy of EventEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -406,6 +573,13 @@ abstract class _EventEntity implements EventEntity {
     required final int participants,
     required final String organizer,
     required final String status,
+    final String? imageUrl,
+    final List<String> participantIds,
+    final List<String> pendingParticipantIds,
+    final List<String> rejectedParticipantIds,
+    final bool requiresApproval,
+    final String visibility,
+    final String joinMode,
     @TimestampConverter() required final DateTime createdAt,
     @TimestampConverter() required final DateTime updatedAt,
   }) = _$EventEntityImpl;
@@ -436,6 +610,20 @@ abstract class _EventEntity implements EventEntity {
   String get organizer;
   @override
   String get status;
+  @override
+  String? get imageUrl;
+  @override
+  List<String> get participantIds;
+  @override
+  List<String> get pendingParticipantIds;
+  @override
+  List<String> get rejectedParticipantIds;
+  @override
+  bool get requiresApproval;
+  @override
+  String get visibility;
+  @override
+  String get joinMode;
   @override
   @TimestampConverter()
   DateTime get createdAt;

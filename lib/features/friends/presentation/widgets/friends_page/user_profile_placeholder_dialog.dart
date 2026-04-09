@@ -45,7 +45,7 @@ class _UserProfilePlaceholderDialog extends StatelessWidget {
               ),
               const SizedBox(height: UiConstants.boxUnit),
               Text(
-                '${FriendsTexts.friendIdPrefix}: ${user.id}',
+                '${FriendsTexts.friendIdPrefix}: ${user.registrationId}',
                 style: const TextStyle(
                   color: AppColors.textSecondary,
                   fontSize: UiConstants.textSize * 0.8,
