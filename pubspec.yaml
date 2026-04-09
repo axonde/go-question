@@ -113,9 +113,13 @@ flutter_native_splash:
     image: assets/images/splash_logo.png
 
 flutter_launcher_icons:
-  android: "launcher_icon"
+  android: true
   ios: true
-  image_path: "assets/icons/png/app_icon.png"
-  min_sdk_android: 21 # Optional: defaults to 21 if not provided
-  adaptive_icon_background: "#000000"
-  adaptive_icon_foreground: "assets/icons/png/app_icon.png"
+  remove_alpha_ios: true
+  # Separate paths for each platform
+  image_path_android: "assets/icons/png/app_icon_android.png"
+  image_path_ios: "assets/icons/png/app_icon_ios.png"
+  
+  # Optional: For Android adaptive icons
+  adaptive_icon_background: "#00A3FF" # or "assets/icon/background.png"
+  adaptive_icon_foreground: "assets/icons/png/app_icon_android.png"
