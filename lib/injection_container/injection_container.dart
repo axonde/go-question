@@ -35,6 +35,11 @@ import 'package:go_question/features/profile/domain/errors/profile_exception_to_
 import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/score/presentation/bloc/score_bloc.dart';
+import 'package:go_question/features/settings/data/repositories/settings_repository_impl.dart';
+import 'package:go_question/features/settings/data/source/settings_local_data_source.dart';
+import 'package:go_question/features/settings/domain/errors/settings_exception_to_failure_mapper.dart';
+import 'package:go_question/features/settings/domain/repositories/i_settings_repository.dart';
+import 'package:go_question/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:just_audio/just_audio.dart';
@@ -134,6 +139,18 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<INotificationsRepository>(
     () => NotificationsRepositoryImpl(sl()),
+  );
+
+  //! Features - Settings
+  sl.registerFactory(() => SettingsBloc(sl()));
+  sl.registerLazySingleton<SettingsExceptionToFailureMapper>(
+    () => const SettingsExceptionToFailureMapperImpl(),
+  );
+  sl.registerLazySingleton<ISettingsRepository>(
+    () => SettingsRepositoryImpl(sl(), sl()),
+  );
+  sl.registerLazySingleton<SettingsLocalDataSource>(
+    () => SharedPrefsSettingsLocalDataSource(sl()),
   );
 
   //! Core

@@ -17,15 +17,20 @@ void main() {
   const onboardingKey = 'is_onboarding_completed';
 
   group('getOnboardingStatus', () {
-    test('should return true when onboarding is completed in SharedPreferences', () {
-      // arrange
-      when(() => mockSharedPreferences.getBool(onboardingKey)).thenReturn(true);
-      // act
-      final result = dataSource.getOnboardingStatus();
-      // assert
-      expect(result, true);
-      verify(() => mockSharedPreferences.getBool(onboardingKey)).called(1);
-    });
+    test(
+      'should return true when onboarding is completed in SharedPreferences',
+      () {
+        // arrange
+        when(
+          () => mockSharedPreferences.getBool(onboardingKey),
+        ).thenReturn(true);
+        // act
+        final result = dataSource.getOnboardingStatus();
+        // assert
+        expect(result, true);
+        verify(() => mockSharedPreferences.getBool(onboardingKey)).called(1);
+      },
+    );
 
     test('should return false when onboarding is not in SharedPreferences', () {
       // arrange
@@ -40,12 +45,15 @@ void main() {
   group('setOnboardingCompleted', () {
     test('should call setBool with the correct key and value', () async {
       // arrange
-      when(() => mockSharedPreferences.setBool(onboardingKey, true))
-          .thenAnswer((_) async => true);
+      when(
+        () => mockSharedPreferences.setBool(onboardingKey, true),
+      ).thenAnswer((_) async => true);
       // act
       await dataSource.setOnboardingCompleted();
       // assert
-      verify(() => mockSharedPreferences.setBool(onboardingKey, true)).called(1);
+      verify(
+        () => mockSharedPreferences.setBool(onboardingKey, true),
+      ).called(1);
     });
   });
 }
