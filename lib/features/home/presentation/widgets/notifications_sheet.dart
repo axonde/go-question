@@ -9,7 +9,7 @@ import 'package:go_question/core/widgets/loading/firebase_action_shimmer.dart';
 import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
 import 'package:go_question/features/notifications/domain/entities/notification_entity.dart';
-import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
+import 'package:go_question/features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'package:go_question/features/profile/constants/profile_presentation.dart';
 import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
@@ -103,7 +103,7 @@ class NotificationsSheet extends StatefulWidget {
 }
 
 class _NotificationsSheetState extends State<NotificationsSheet> {
-  int? _expandedIndex;
+  String? _expandedNotificationId;
   final Set<String> _processingIds = <String>{};
 
   Future<void> _acceptRequest(NotificationData data) async {
@@ -119,7 +119,10 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
           organizerId: profile.uid,
         );
       }
-      await sl<INotificationsRepository>().markAsRead(data.id);
+      if (!mounted) return;
+      context.read<NotificationsBloc>().add(
+        NotificationsMarkAsReadRequested(data.id),
+      );
       if (!mounted) return;
       context.read<ProfileBloc>().add(ProfileRefreshRequested(profile.uid));
     } finally {
@@ -142,7 +145,10 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
           organizerId: profile.uid,
         );
       }
-      await sl<INotificationsRepository>().markAsRead(data.id);
+      if (!mounted) return;
+      context.read<NotificationsBloc>().add(
+        NotificationsMarkAsReadRequested(data.id),
+      );
       if (!mounted) return;
       context.read<ProfileBloc>().add(ProfileRefreshRequested(profile.uid));
     } finally {
@@ -179,39 +185,68 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
           Expanded(
             child: profile == null
                 ? const Center(child: Text(EventTexts.notificationsEmptyState))
-                : StreamBuilder<List<NotificationEntity>>(
-                    stream: sl<INotificationsRepository>().watchNotifications(
-                      profile.uid,
-                    ),
-                    builder: (context, snapshot) {
-                      final notifications = (snapshot.data ?? const [])
+                : BlocBuilder<NotificationsBloc, NotificationsState>(
+                    builder: (context, state) {
+                      final notifications = state.notifications
                           .map(NotificationData.fromEntity)
                           .toList(growable: false);
-                      if (snapshot.hasError && notifications.isEmpty) {
-                        return const Center(
-                          child: Text(EventTexts.notificationsEmptyState),
-                        );
-                      }
-                      if (snapshot.connectionState == ConnectionState.waiting &&
+                      final hasReadNotifications = notifications.any(
+                        (notification) => notification.isRead,
+                      );
+
+                      if (state.status == NotificationsStatus.loading &&
                           notifications.isEmpty) {
                         return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state.status == NotificationsStatus.failure &&
+                          notifications.isEmpty) {
+                        return Center(
+                          child: Text(
+                            state.errorMessage ??
+                                EventTexts.notificationsEmptyState,
+                          ),
+                        );
                       }
                       if (notifications.isEmpty) {
                         return const Center(
                           child: Text(EventTexts.notificationsEmptyState),
                         );
                       }
+
                       return _NotificationsList(
                         notifications: notifications,
                         processingIds: _processingIds,
-                        expandedIndex: _expandedIndex,
-                        onToggle: (index) => setState(() {
-                          _expandedIndex = _expandedIndex == index
-                              ? null
-                              : index;
-                        }),
+                        expandedNotificationId: _expandedNotificationId,
+                        onToggle: (notification) {
+                          setState(() {
+                            _expandedNotificationId =
+                                _expandedNotificationId == notification.id
+                                ? null
+                                : notification.id;
+                          });
+
+                          if (!notification.isRead) {
+                            context.read<NotificationsBloc>().add(
+                              NotificationsMarkAsReadRequested(notification.id),
+                            );
+                          }
+                        },
                         onAccept: _acceptRequest,
                         onReject: _rejectRequest,
+                        onClearRead: hasReadNotifications
+                            ? () {
+                                context.read<NotificationsBloc>().add(
+                                  const NotificationsClearReadRequested(),
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      EventTexts.notificationsSnackReadCleared,
+                                    ),
+                                  ),
+                                );
+                              }
+                            : null,
                       );
                     },
                   ),
@@ -242,7 +277,8 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            const Center(
+            const Align(
+              alignment: Alignment.center,
               child: _StrokeTitle(text: EventTexts.notificationsHeaderTitle),
             ),
             Align(

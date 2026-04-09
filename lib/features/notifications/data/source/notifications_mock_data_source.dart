@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:go_question/features/notifications/data/source/notifications_remote_data_source.dart';
 import 'package:go_question/features/notifications/domain/entities/notification_entity.dart';
 
@@ -5,6 +7,9 @@ import 'package:go_question/features/notifications/domain/entities/notification_
 /// Чтобы переключиться на Firestore, замените в injection_container.dart:
 /// NotificationsMockDataSource() -> NotificationsRemoteDataSourceImpl(sl())
 class NotificationsMockDataSource implements INotificationsRemoteDataSource {
+  final StreamController<List<NotificationEntity>> _notificationsController =
+      StreamController<List<NotificationEntity>>.broadcast();
+
   final List<NotificationEntity> _mockNotifications = [
     NotificationEntity(
       id: '1',
@@ -72,6 +77,16 @@ class NotificationsMockDataSource implements INotificationsRemoteDataSource {
     ),
   ];
 
+  NotificationsMockDataSource() {
+    _emitNotifications();
+  }
+
+  void _emitNotifications() {
+    _notificationsController.add(
+      List<NotificationEntity>.from(_mockNotifications),
+    );
+  }
+
   @override
   Future<List<NotificationEntity>> getNotifications(String userId) async {
     // Имитация задержки сети
@@ -81,7 +96,7 @@ class NotificationsMockDataSource implements INotificationsRemoteDataSource {
 
   @override
   Stream<List<NotificationEntity>> watchNotifications(String userId) {
-    return Stream.value(List<NotificationEntity>.from(_mockNotifications));
+    return _notificationsController.stream;
   }
 
   @override
@@ -92,6 +107,7 @@ class NotificationsMockDataSource implements INotificationsRemoteDataSource {
       _mockNotifications[index] = _mockNotifications[index].copyWith(
         isRead: true,
       );
+      _emitNotifications();
     }
   }
 
@@ -101,5 +117,13 @@ class NotificationsMockDataSource implements INotificationsRemoteDataSource {
     for (var i = 0; i < _mockNotifications.length; i++) {
       _mockNotifications[i] = _mockNotifications[i].copyWith(isRead: true);
     }
+    _emitNotifications();
+  }
+
+  @override
+  Future<void> clearRead(String userId) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    _mockNotifications.removeWhere((notification) => notification.isRead);
+    _emitNotifications();
   }
 }

@@ -7,6 +7,7 @@ import 'package:go_question/core/widgets/app_background.dart';
 import 'package:go_question/features/achievements/presentation/bloc/achievements_bloc.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
+import 'package:go_question/features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/startup/presentation/widgets/startup_video_gate.dart';
 import 'package:go_question/injection_container/injection_container.dart';
@@ -27,6 +28,9 @@ class GoQuestionApp extends StatelessWidget {
         BlocProvider<AchievementsBloc>(create: (_) => sl<AchievementsBloc>()),
         BlocProvider<EventsBloc>(
           create: (_) => sl<EventsBloc>()..add(const EventsSearchStarted()),
+        ),
+        BlocProvider<NotificationsBloc>(
+          create: (_) => sl<NotificationsBloc>(),
         ),
       ],
       child: BlocListener<AuthBloc, AuthState>(

@@ -11,6 +11,7 @@ import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 import 'package:go_question/features/events/presentation/pages/create_event_dialog.dart';
 import 'package:go_question/features/events/presentation/pages/search_events_page.dart';
 import 'package:go_question/features/home/presentation/widgets/city_selector_sheet.dart';
+import 'package:go_question/features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'package:go_question/features/profile/constants/profile_presentation.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/profile/presentation/widgets/profile_screen.dart';
@@ -172,51 +173,103 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.watch<ProfileBloc>().state.profile;
+    final notificationsState = context.watch<NotificationsBloc>().state;
     final hasUnreadAchievements =
         profile?.unseenAchievementIds.isNotEmpty == true;
+    final hasUnreadNotifications = notificationsState.hasUnread;
     final currentCity = profile?.city?.trim().isNotEmpty == true
         ? profile!.city!.trim()
         : ProfilePresentationConstants.completionCityOptions.first;
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: ClipRect(
-        child: SafeArea(
-          child: CustomMultiChildLayout(
-            delegate: _HomeLayoutDelegate(),
-            children: [
-              LayoutId(
-                id: _HomeSlot.topBar,
-                child: HomeTopBar(
-                  onAchievementsTap: () => _showAchievementsDialog(context),
-                  onCityTap: () => _showCitySelector(context),
-                  onNotificationsTap: () => _showNotifications(context),
-                  hasUnreadAchievements: hasUnreadAchievements,
-                  city: currentCity,
+    if (profile != null && notificationsState.activeUserId != profile.uid) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) {
+          return;
+        }
+
+        context.read<NotificationsBloc>().add(
+          NotificationsStarted(profile.uid),
+        );
+      });
+    }
+
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ProfileBloc, ProfileState>(
+          listenWhen: (previous, current) =>
+              previous.profile?.uid != current.profile?.uid,
+          listener: (context, state) {
+            final uid = state.profile?.uid;
+            if (uid == null || uid.trim().isEmpty) {
+              return;
+            }
+
+            context.read<NotificationsBloc>().add(NotificationsStarted(uid));
+          },
+        ),
+        BlocListener<NotificationsBloc, NotificationsState>(
+          listenWhen: (previous, current) =>
+              previous.popupNotification != current.popupNotification,
+          listener: (context, state) {
+            final popupNotification = state.popupNotification;
+            if (popupNotification == null) {
+              return;
+            }
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  '${EventTexts.notificationsSnackNewPrefix} ${popupNotification.title}',
                 ),
               ),
-              LayoutId(
-                id: _HomeSlot.profile,
-                child: ProfileButton(
-                  onPressed: () => _showProfileScreen(context),
+            );
+            context.read<NotificationsBloc>().add(
+              const NotificationsPopupConsumed(),
+            );
+          },
+        ),
+      ],
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: ClipRect(
+          child: SafeArea(
+            child: CustomMultiChildLayout(
+              delegate: _HomeLayoutDelegate(),
+              children: [
+                LayoutId(
+                  id: _HomeSlot.topBar,
+                  child: HomeTopBar(
+                    onAchievementsTap: () => _showAchievementsDialog(context),
+                    onCityTap: () => _showCitySelector(context),
+                    onNotificationsTap: () => _showNotifications(context),
+                    hasUnreadAchievements: hasUnreadAchievements,
+                    hasUnreadNotifications: hasUnreadNotifications,
+                    city: currentCity,
+                  ),
                 ),
-              ),
-              LayoutId(
-                id: _HomeSlot.placeholder,
-                child: HomePlaceholder(
-                  hintsEnabled: hintsEnabled,
-                  compactModeEnabled: compactModeEnabled,
+                LayoutId(
+                  id: _HomeSlot.profile,
+                  child: ProfileButton(
+                    onPressed: () => _showProfileScreen(context),
+                  ),
                 ),
-              ),
-              LayoutId(
-                id: _HomeSlot.actions,
-                child: HomeActionButtons(
-                  onBattleSheetTap: () => _showSearchEvents(context),
-                  onCreateEventTap: () => _showCreateEventDialog(context),
+                LayoutId(
+                  id: _HomeSlot.placeholder,
+                  child: HomePlaceholder(
+                    hintsEnabled: hintsEnabled,
+                    compactModeEnabled: compactModeEnabled,
+                  ),
                 ),
-              ),
-              LayoutId(id: _HomeSlot.events, child: const HomeEvents()),
-            ],
+                LayoutId(
+                  id: _HomeSlot.actions,
+                  child: HomeActionButtons(
+                    onBattleSheetTap: () => _showSearchEvents(context),
+                    onCreateEventTap: () => _showCreateEventDialog(context),
+                  ),
+                ),
+                LayoutId(id: _HomeSlot.events, child: const HomeEvents()),
+              ],
+            ),
           ),
         ),
       ),

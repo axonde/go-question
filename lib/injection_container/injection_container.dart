@@ -23,6 +23,7 @@ import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 import 'package:go_question/features/notifications/data/repositories/notifications_repository_impl.dart';
 import 'package:go_question/features/notifications/data/source/notifications_remote_data_source.dart';
 import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
+import 'package:go_question/features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'package:go_question/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:go_question/features/onboarding/data/source/onboarding_local_data_source.dart';
 import 'package:go_question/features/onboarding/domain/repositories/i_onboarding_repository.dart';
@@ -134,6 +135,7 @@ Future<void> init() async {
   sl.registerFactory(() => ScoreBloc());
 
   //! Features - Notifications
+  sl.registerFactory(() => NotificationsBloc(sl()));
   sl.registerLazySingleton<INotificationsRemoteDataSource>(
     () => NotificationsRemoteDataSourceImpl(sl()),
   );
