@@ -12,13 +12,19 @@ class BackgroundMusicService {
     required String assetPath,
     double volume = 1.0,
     bool loop = true,
+    Duration? startTime,
   }) async {
     if (_isPlaying) return;
 
     try {
-      await _player.setReleaseMode(loop ? ReleaseMode.loop : ReleaseMode.stop);
       await _player.setVolume(volume);
+      await _player.setReleaseMode(loop ? ReleaseMode.loop : ReleaseMode.stop);
       await _player.play(AssetSource(assetPath));
+      
+      if (startTime != null) {
+        await _player.seek(startTime);
+      }
+      
       _isPlaying = true;
     } catch (e) {
       // ignore

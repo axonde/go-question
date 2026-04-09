@@ -25,6 +25,7 @@ class _StartupVideoGateState extends State<StartupVideoGate> {
     await sl<BackgroundMusicService>().start(
       assetPath: StartupConstants.backgroundMusicAssetPath,
       volume: StartupConstants.backgroundMusicVolume,
+      startTime: Duration(milliseconds: StartupConstants.backgroundMusicStartOffsetMs),
     );
 
     if (!mounted) {
