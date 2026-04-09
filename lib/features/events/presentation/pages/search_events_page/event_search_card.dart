@@ -241,40 +241,64 @@ class _JoinAction extends StatelessWidget {
   const _JoinAction({required this.event});
 
   @override
-  Widget build(BuildContext context) => GQButton(
-    onPressed: () {
-      final currentUserId = context.read<ProfileBloc>().state.profile?.uid;
-      if (currentUserId == null) {
-        sl<AppRouter>().push(const AuthFlowRoute());
-        return;
-      }
+  Widget build(BuildContext context) {
+    final currentUserId = context.watch<ProfileBloc>().state.profile?.uid;
+    final isParticipant =
+        currentUserId != null && event.participantIds.contains(currentUserId);
+    final isPending =
+        currentUserId != null &&
+        event.pendingParticipantIds.contains(currentUserId);
+    final isBusy = context.watch<EventsBloc>().state.isLoading;
 
-      context.read<EventsBloc>().add(
-        EventsJoinRequested(eventId: event.id, requesterId: currentUserId),
-      );
-      final currentProfile = context.read<ProfileBloc>().state.profile;
-      if (currentProfile != null) {
-        context.read<ProfileBloc>().add(
-          EnsureProfileExistsRequested(
-            uid: currentProfile.uid,
-            initialEmail: currentProfile.email,
-            initialName: currentProfile.name,
-            initialNickname: currentProfile.nickname,
-          ),
-        );
-      }
-    },
-    text: EventTexts.buttonJoin,
-    baseColor: const Color(0xFF2E7D32),
-    mainGradient: const LinearGradient(
-      colors: [Color(0xFF43A047), Color(0xFF388E3C)],
-    ),
-    outerGradient: const LinearGradient(
-      colors: [Color(0xFF1B5E20), Color(0xFF1B5E20)],
-    ),
-    width: UiConstants.boxUnit * 11,
-    height: UiConstants.boxUnit * 5,
-  );
+    return GQButton(
+      onPressed: isParticipant || isPending || isBusy
+          ? () {}
+          : () {
+              if (currentUserId == null) {
+                sl<AppRouter>().push(const AuthFlowRoute());
+                return;
+              }
+
+              context.read<EventsBloc>().add(
+                EventsJoinRequested(
+                  eventId: event.id,
+                  requesterId: currentUserId,
+                ),
+              );
+              final currentProfile = context.read<ProfileBloc>().state.profile;
+              if (currentProfile != null) {
+                context.read<ProfileBloc>().add(
+                  EnsureProfileExistsRequested(
+                    uid: currentProfile.uid,
+                    initialEmail: currentProfile.email,
+                    initialName: currentProfile.name,
+                    initialNickname: currentProfile.nickname,
+                  ),
+                );
+              }
+            },
+      text: isParticipant
+          ? EventTexts.buttonJoined
+          : isPending
+          ? EventTexts.buttonJoinPending
+          : EventTexts.buttonJoin,
+      baseColor: isParticipant || isPending
+          ? const Color(0xFF78909C)
+          : const Color(0xFF2E7D32),
+      mainGradient: isParticipant || isPending
+          ? const LinearGradient(colors: [Color(0xFF90A4AE), Color(0xFF78909C)])
+          : const LinearGradient(
+              colors: [Color(0xFF43A047), Color(0xFF388E3C)],
+            ),
+      outerGradient: isParticipant || isPending
+          ? const LinearGradient(colors: [Color(0xFF546E7A), Color(0xFF546E7A)])
+          : const LinearGradient(
+              colors: [Color(0xFF1B5E20), Color(0xFF1B5E20)],
+            ),
+      width: UiConstants.boxUnit * 11,
+      height: UiConstants.boxUnit * 5,
+    );
+  }
 }
 
 class _MetaChip extends StatelessWidget {

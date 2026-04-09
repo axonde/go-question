@@ -76,70 +76,104 @@ class _ProfileContent extends StatelessWidget {
 
     return DecoratedBox(
       decoration: const BoxDecoration(color: AppColors.popupOutBackground),
-      child: Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
-        ),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            border: BoxBorder.all(
-              color: AppColors.lightStroke,
-              width: UiConstants.strokeWidth * 2,
-            ),
+      child: AnimatedPadding(
+        duration: const Duration(milliseconds: 180),
+        padding: MediaQuery.viewInsetsOf(context),
+        child: Dialog(
+          insetPadding: const EdgeInsets.all(UiConstants.boxUnit * 2),
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
-            image: const DecorationImage(
-              image: AssetImage(
-                ProfilePresentationConstants.backgroundImagePath,
-              ),
-              fit: BoxFit.cover,
-            ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.only(
-              top: UiConstants.topPadding * 2,
-              right: UiConstants.rightPadding * 2,
-              bottom: UiConstants.bottomPadding * 2,
-              left: UiConstants.leftPadding * 2,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 560,
+              maxHeight: MediaQuery.sizeOf(context).height * 0.82,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border: BoxBorder.all(
+                  color: AppColors.lightStroke,
+                  width: UiConstants.strokeWidth * 2,
+                ),
+                borderRadius: BorderRadius.circular(
+                  UiConstants.borderRadius * 4,
+                ),
+                image: const DecorationImage(
+                  image: AssetImage(
+                    ProfilePresentationConstants.backgroundImagePath,
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(
+                  top: UiConstants.topPadding * 2,
+                  right: UiConstants.rightPadding * 2,
+                  bottom: UiConstants.bottomPadding * 2,
+                  left: UiConstants.leftPadding * 2,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    GqCloseButton(onTap: () => Navigator.of(context).pop()),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GqCloseButton(onTap: () => Navigator.of(context).pop()),
+                      ],
+                    ),
+                    const _Avatar(),
+                    _Profile(name: profileName, registrationId: registrationId),
+                    _Characteristics(
+                      birthDate: birthDateText,
+                      isBirthDatePlaceholder: isBirthDatePlaceholder,
+                      city: city,
+                      isCityPlaceholder: isCityPlaceholder,
+                      name: profileName,
+                      isNamePlaceholder: isNamePlaceholder,
+                      onNameChanged: (updatedName) {
+                        context.read<ProfileBloc>().add(
+                          ProfileUpdateRequested(
+                            profile.copyWith(name: updatedName),
+                          ),
+                        );
+                      },
+                      onBirthDateChanged: (updatedBirthDate) {
+                        final now = DateTime.now();
+                        var age = now.year - updatedBirthDate.year;
+                        final hadBirthdayThisYear =
+                            now.month > updatedBirthDate.month ||
+                            (now.month == updatedBirthDate.month &&
+                                now.day >= updatedBirthDate.day);
+                        if (!hadBirthdayThisYear) {
+                          age -= 1;
+                        }
+                        context.read<ProfileBloc>().add(
+                          ProfileUpdateRequested(
+                            profile.copyWith(
+                              birthDate: updatedBirthDate,
+                              age: age < 0 ? 0 : age,
+                            ),
+                          ),
+                        );
+                      },
+                      onCityChanged: (selectedCity) {
+                        context.read<ProfileBloc>().add(
+                          ProfileUpdateRequested(
+                            profile.copyWith(city: selectedCity),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      ProfilePresentationConstants.editHintText,
+                      style: AppTextStyles.labelMedium.merge(
+                        const TextStyle(color: AppColors.textSecondary),
+                      ),
+                    ),
                   ],
                 ),
-
-                const _Avatar(),
-
-                _Profile(name: profileName, registrationId: registrationId),
-
-                _Characteristics(
-                  birthDate: birthDateText,
-                  isBirthDatePlaceholder: isBirthDatePlaceholder,
-                  city: city,
-                  isCityPlaceholder: isCityPlaceholder,
-                  name: profileName,
-                  isNamePlaceholder: isNamePlaceholder,
-                  onCityChanged: (selectedCity) {
-                    context.read<ProfileBloc>().add(
-                      ProfileUpdateRequested(
-                        profile.copyWith(city: selectedCity),
-                      ),
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 24),
-
-                Text(
-                  ProfilePresentationConstants.editHintText,
-                  style: AppTextStyles.labelMedium.merge(
-                    const TextStyle(color: AppColors.textSecondary),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),

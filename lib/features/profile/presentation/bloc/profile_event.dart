@@ -4,6 +4,12 @@ sealed class ProfileEvent {
   const ProfileEvent();
 }
 
+final class _ProfileStreamUpdated extends ProfileEvent {
+  final Profile profile;
+
+  const _ProfileStreamUpdated(this.profile);
+}
+
 /// Request to ensure profile exists. Idempotent operation.
 ///
 /// **Context:** Called immediately after successful auth to guarantee

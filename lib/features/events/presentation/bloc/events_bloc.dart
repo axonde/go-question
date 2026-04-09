@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/core/types/result.dart';
 
@@ -9,8 +11,10 @@ part 'events_state.dart';
 
 class EventsBloc extends Bloc<EventsEvent, EventsState> {
   final IEventsRepository _repository;
+  StreamSubscription<List<EventEntity>>? _eventsSubscription;
 
   EventsBloc(this._repository) : super(const EventsState.initial()) {
+    on<_EventsStreamUpdated>(_onEventsStreamUpdated);
     on<EventsSearchStarted>(_onSearchStarted);
     on<EventsSearchRefreshed>(_onSearchRefreshed);
     on<EventsDetailRequested>(_onDetailRequested);
@@ -30,6 +34,10 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     Emitter<EventsState> emit,
   ) async {
     emit(_loadingState());
+    await _eventsSubscription?.cancel();
+    _eventsSubscription = _repository.watchEvents().listen(
+      (events) => add(_EventsStreamUpdated(events)),
+    );
 
     final result = await _repository.getEvents();
 
@@ -60,8 +68,6 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     EventsSearchRefreshed event,
     Emitter<EventsState> emit,
   ) async {
-    emit(_loadingState());
-
     final result = await _repository.getEvents();
 
     result.fold(
@@ -84,6 +90,20 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
           ),
         );
       },
+    );
+  }
+
+  void _onEventsStreamUpdated(
+    _EventsStreamUpdated event,
+    Emitter<EventsState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        status: EventsStatus.success,
+        events: event.events,
+        clearError: true,
+        clearHint: true,
+      ),
     );
   }
 
@@ -356,5 +376,11 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
         );
       },
     );
+  }
+
+  @override
+  Future<void> close() async {
+    await _eventsSubscription?.cancel();
+    return super.close();
   }
 }

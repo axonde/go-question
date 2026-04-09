@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
-import 'package:go_question/core/types/result.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
@@ -104,80 +103,57 @@ class NotificationsSheet extends StatefulWidget {
 
 class _NotificationsSheetState extends State<NotificationsSheet> {
   int? _expandedIndex;
-  bool _isLoading = true;
-  List<NotificationData> _notifications = const <NotificationData>[];
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadNotifications());
-  }
-
-  Future<void> _loadNotifications() async {
-    final profile = context.read<ProfileBloc>().state.profile;
-    if (profile == null || !mounted) {
-      setState(() => _isLoading = false);
-      return;
-    }
-
-    final repository = sl<INotificationsRepository>();
-    final result = await repository.getNotifications(profile.uid);
-    if (!mounted) return;
-
-    result.fold(
-      onSuccess: (notifications) {
-        setState(() {
-          _notifications = notifications
-              .map(NotificationData.fromEntity)
-              .toList(growable: false);
-          _isLoading = false;
-        });
-      },
-      onFailure: (_) {
-        setState(() {
-          _notifications = const <NotificationData>[];
-          _isLoading = false;
-        });
-      },
-    );
-  }
+  final Set<String> _processingIds = <String>{};
 
   Future<void> _acceptRequest(NotificationData data) async {
     final profile = context.read<ProfileBloc>().state.profile;
-    if (profile == null) return;
-    if (data.type == NotificationType.friendRequest) {
-      await sl<IProfileRepository>().acceptFriendRequest(data.id);
-    } else {
-      await sl<IEventsRepository>().approveJoinRequest(
-        requestId: data.id,
-        organizerId: profile.uid,
-      );
+    if (profile == null || _processingIds.contains(data.id)) return;
+    setState(() => _processingIds.add(data.id));
+    try {
+      if (data.type == NotificationType.friendRequest) {
+        await sl<IProfileRepository>().acceptFriendRequest(data.id);
+      } else {
+        await sl<IEventsRepository>().approveJoinRequest(
+          requestId: data.id,
+          organizerId: profile.uid,
+        );
+      }
+      await sl<INotificationsRepository>().markAsRead(data.id);
+      if (!mounted) return;
+      context.read<ProfileBloc>().add(ProfileRefreshRequested(profile.uid));
+    } finally {
+      if (mounted) {
+        setState(() => _processingIds.remove(data.id));
+      }
     }
-    await sl<INotificationsRepository>().markAsRead(data.id);
-    if (!mounted) return;
-    context.read<ProfileBloc>().add(ProfileRefreshRequested(profile.uid));
-    await _loadNotifications();
   }
 
   Future<void> _rejectRequest(NotificationData data) async {
     final profile = context.read<ProfileBloc>().state.profile;
-    if (profile == null) return;
-    if (data.type == NotificationType.friendRequest) {
-      await sl<IProfileRepository>().declineFriendRequest(data.id);
-    } else {
-      await sl<IEventsRepository>().rejectJoinRequest(
-        requestId: data.id,
-        organizerId: profile.uid,
-      );
+    if (profile == null || _processingIds.contains(data.id)) return;
+    setState(() => _processingIds.add(data.id));
+    try {
+      if (data.type == NotificationType.friendRequest) {
+        await sl<IProfileRepository>().declineFriendRequest(data.id);
+      } else {
+        await sl<IEventsRepository>().rejectJoinRequest(
+          requestId: data.id,
+          organizerId: profile.uid,
+        );
+      }
+      await sl<INotificationsRepository>().markAsRead(data.id);
+      if (!mounted) return;
+      context.read<ProfileBloc>().add(ProfileRefreshRequested(profile.uid));
+    } finally {
+      if (mounted) {
+        setState(() => _processingIds.remove(data.id));
+      }
     }
-    await sl<INotificationsRepository>().markAsRead(data.id);
-    if (!mounted) return;
-    context.read<ProfileBloc>().add(ProfileRefreshRequested(profile.uid));
-    await _loadNotifications();
   }
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.watch<ProfileBloc>().state.profile;
     return DecoratedBox(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -200,18 +176,37 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         children: [
           _buildHeader(context),
           Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _notifications.isEmpty
+            child: profile == null
                 ? const Center(child: Text(EventTexts.notificationsEmptyState))
-                : _NotificationsList(
-                    notifications: _notifications,
-                    expandedIndex: _expandedIndex,
-                    onToggle: (index) => setState(() {
-                      _expandedIndex = _expandedIndex == index ? null : index;
-                    }),
-                    onAccept: _acceptRequest,
-                    onReject: _rejectRequest,
+                : StreamBuilder<List<NotificationEntity>>(
+                    stream: sl<INotificationsRepository>().watchNotifications(
+                      profile.uid,
+                    ),
+                    builder: (context, snapshot) {
+                      final notifications = (snapshot.data ?? const [])
+                          .map(NotificationData.fromEntity)
+                          .toList(growable: false);
+                      if (snapshot.connectionState == ConnectionState.waiting &&
+                          notifications.isEmpty) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (notifications.isEmpty) {
+                        return const Center(
+                          child: Text(EventTexts.notificationsEmptyState),
+                        );
+                      }
+                      return _NotificationsList(
+                        notifications: notifications,
+                        expandedIndex: _expandedIndex,
+                        onToggle: (index) => setState(() {
+                          _expandedIndex = _expandedIndex == index
+                              ? null
+                              : index;
+                        }),
+                        onAccept: _acceptRequest,
+                        onReject: _rejectRequest,
+                      );
+                    },
                   ),
           ),
         ],

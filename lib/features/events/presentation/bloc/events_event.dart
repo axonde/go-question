@@ -4,6 +4,12 @@ sealed class EventsEvent {
   const EventsEvent();
 }
 
+final class _EventsStreamUpdated extends EventsEvent {
+  final List<EventEntity> events;
+
+  const _EventsStreamUpdated(this.events);
+}
+
 final class EventsSearchStarted extends EventsEvent {
   const EventsSearchStarted();
 }

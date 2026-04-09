@@ -11,6 +11,8 @@ class EventTexts {
   static const participantsWord = 'участников';
 
   static const buttonJoin = 'Записаться';
+  static const buttonJoinPending = 'Заявка отправлена';
+  static const buttonJoined = 'Вы участвуете';
   static const buttonEdit = 'Редактировать';
   static const buttonParticipants = 'Участники';
   static const buttonApply = 'Применить';

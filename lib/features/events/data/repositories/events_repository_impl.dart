@@ -35,6 +35,17 @@ class EventsRepositoryImpl implements IEventsRepository {
   }
 
   @override
+  Stream<List<EventEntity>> watchEvents() {
+    return _remoteDataSource.watchEvents().map((events) {
+      _eventsCache = events;
+      for (final event in events) {
+        _eventCache[event.id] = event;
+      }
+      return events;
+    });
+  }
+
+  @override
   Future<Result<EventEntity, EventFailure>> getEventById(String id) async {
     try {
       final event = await _remoteDataSource.getEventById(id);

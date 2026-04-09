@@ -7,6 +7,11 @@ import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 
 class FakeEventsRepository implements IEventsRepository {
   Result<List<EventEntity>, EventFailure>? getEventsResult;
+
+  @override
+  Stream<List<EventEntity>> watchEvents() =>
+      const Stream<List<EventEntity>>.empty();
+
   @override
   Future<Result<void, EventFailure>> createEvent(EventEntity event) async =>
       throw UnimplementedError();

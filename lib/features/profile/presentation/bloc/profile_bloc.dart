@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/core/constants/profile_messages.dart';
 import 'package:go_question/core/types/result.dart';
@@ -20,8 +22,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   static const String _defaultInitialName = profileDefaultInitialName;
   static const String _defaultInitialEmail = 'unknown@goquestion.local';
   final IProfileRepository _repository;
+  StreamSubscription<Profile?>? _profileSubscription;
 
   ProfileBloc(this._repository) : super(const ProfileState.initial()) {
+    on<_ProfileStreamUpdated>(_onProfileStreamUpdated);
     on<EnsureProfileExistsRequested>(_onEnsureProfileExistsRequested);
     on<ProfileRetryRequested>(_onRetryRequested);
     on<ProfileUpdateRequested>(_onUpdateRequested);
@@ -36,7 +40,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     EnsureProfileExistsRequested event,
     Emitter<ProfileState> emit,
   ) async {
-    emit(const ProfileState.loading());
+    emit(state.copyWith(status: ProfileStatus.loading));
 
     final result = await _ensureProfileExists(
       uid: event.uid,
@@ -47,6 +51,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     result.fold(
       onSuccess: (profile) {
+        _watchProfile(profile.uid);
         emit(ProfileState.success(profile));
       },
       onFailure: (failure) {
@@ -68,7 +73,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     ProfileRetryRequested event,
     Emitter<ProfileState> emit,
   ) async {
-    emit(const ProfileState.loading());
+    emit(state.copyWith(status: ProfileStatus.loading));
 
     final result = await _ensureProfileExists(
       uid: event.uid,
@@ -79,6 +84,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     result.fold(
       onSuccess: (profile) {
+        _watchProfile(profile.uid);
         emit(ProfileState.success(profile));
       },
       onFailure: (failure) {
@@ -97,7 +103,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     ProfileUpdateRequested event,
     Emitter<ProfileState> emit,
   ) async {
-    emit(const ProfileState.loading());
+    emit(state.copyWith(status: ProfileStatus.loading));
 
     final result = await _repository.updateProfile(event.profile);
     result.fold(
@@ -122,11 +128,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return;
     }
 
+    _watchProfile(event.uid);
+
     final result = await _repository.getProfile(event.uid);
     result.fold(
       onSuccess: (profile) => emit(ProfileState.success(profile)),
       onFailure: (_) {},
     );
+  }
+
+  void _onProfileStreamUpdated(
+    _ProfileStreamUpdated event,
+    Emitter<ProfileState> emit,
+  ) {
+    emit(ProfileState.success(event.profile));
   }
 
   Future<Result<Profile, ProfileFailure>> _ensureProfileExists({
@@ -171,5 +186,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         return Failure(failure);
       },
     );
+  }
+
+  void _watchProfile(String uid) {
+    _profileSubscription?.cancel();
+    _profileSubscription = _repository.watchProfile(uid).listen((profile) {
+      if (profile != null) {
+        add(_ProfileStreamUpdated(profile));
+      }
+    });
+  }
+
+  @override
+  Future<void> close() async {
+    await _profileSubscription?.cancel();
+    return super.close();
   }
 }

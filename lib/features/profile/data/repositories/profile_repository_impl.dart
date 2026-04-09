@@ -68,6 +68,19 @@ class ProfileRepositoryImpl implements IProfileRepository {
   }
 
   @override
+  Stream<Profile?> watchProfile(String uid) {
+    return _remoteDataSource.watchProfile(uid).map((modelOrNull) {
+      if (modelOrNull == null) {
+        return null;
+      }
+      final profile = modelOrNull.toEntity();
+      profile.validate();
+      _profileCache[uid] = profile;
+      return profile;
+    });
+  }
+
+  @override
   Future<Result<Profile, ProfileFailure>> getProfileByRegistrationId(
     int registrationId,
   ) async {
@@ -350,6 +363,20 @@ class ProfileRepositoryImpl implements IProfileRepository {
       final failure = _errorMapper.map(mappedException);
       return Failure(failure);
     }
+  }
+
+  @override
+  Stream<List<Profile>> watchFriends(String uid) {
+    return _remoteDataSource.watchFriends(uid).map((models) {
+      final friends = models
+          .map((model) => model.toEntity())
+          .toList(growable: false);
+      _friendsCache[uid] = friends;
+      for (final friend in friends) {
+        _profileCache[friend.uid] = friend;
+      }
+      return friends;
+    });
   }
 
   @override

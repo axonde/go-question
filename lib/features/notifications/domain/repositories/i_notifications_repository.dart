@@ -5,6 +5,7 @@ import 'package:go_question/features/notifications/domain/errors/notification_fa
 abstract interface class INotificationsRepository {
   Future<Result<List<NotificationEntity>, NotificationFailure>>
   getNotifications(String userId);
+  Stream<List<NotificationEntity>> watchNotifications(String userId);
   Future<Result<void, NotificationFailure>> markAsRead(String notificationId);
   Future<Result<void, NotificationFailure>> markAllAsRead(String userId);
 }

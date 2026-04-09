@@ -15,6 +15,7 @@ abstract class IProfileRemoteDataSource {
   /// Throws ProfileNotFoundException if not found.
   /// Throws other Firestore exceptions on failure.
   Future<ProfileModel?> getProfile(String uid);
+  Stream<ProfileModel?> watchProfile(String uid);
 
   /// Retrieves profile by numeric registration id.
   Future<ProfileModel?> getProfileByRegistrationId(int registrationId);
@@ -24,6 +25,7 @@ abstract class IProfileRemoteDataSource {
 
   /// Retrieves a user's friend profiles.
   Future<List<ProfileModel>> getFriends(String uid);
+  Stream<List<ProfileModel>> watchFriends(String uid);
 
   /// Creates initial profile, idempotent.
   /// Uses set(_, merge: false) or transaction to prevent overwrites.
@@ -139,6 +141,20 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
   }
 
   @override
+  Stream<ProfileModel?> watchProfile(String uid) {
+    return _firestore
+        .collection(ProfileFirestoreConstants.usersCollection)
+        .doc(uid)
+        .snapshots()
+        .map((snapshot) {
+          if (!snapshot.exists || snapshot.data() == null) {
+            return null;
+          }
+          return ProfileModel.fromJson({...snapshot.data()!, 'uid': uid});
+        });
+  }
+
+  @override
   Future<List<ProfileModel>> getProfilesByIds(List<String> uids) async {
     try {
       final ids = uids.where((id) => id.trim().isNotEmpty).toSet().toList();
@@ -177,6 +193,16 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
     }
 
     return getProfilesByIds(profile.friendIds);
+  }
+
+  @override
+  Stream<List<ProfileModel>> watchFriends(String uid) {
+    return watchProfile(uid).asyncMap((profile) async {
+      if (profile == null) {
+        return const <ProfileModel>[];
+      }
+      return getProfilesByIds(profile.friendIds);
+    });
   }
 
   @override
@@ -519,6 +545,12 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
         }
 
         final requestData = requestSnapshot.data() ?? {};
+        final status =
+            requestData[ProfileFirestoreConstants.friendRequestFieldStatus]
+                as String?;
+        if (status != 'pending') {
+          return;
+        }
         final requesterId =
             requestData[ProfileFirestoreConstants.friendRequestFieldRequesterId]
                 as String?;
@@ -581,6 +613,12 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
         }
 
         final requestData = requestSnapshot.data() ?? {};
+        final status =
+            requestData[ProfileFirestoreConstants.friendRequestFieldStatus]
+                as String?;
+        if (status != 'pending') {
+          return;
+        }
         final requesterId =
             requestData[ProfileFirestoreConstants.friendRequestFieldRequesterId]
                 as String?;

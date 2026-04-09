@@ -4,6 +4,7 @@ import 'package:go_question/features/events/domain/errors/event_failures.dart';
 
 abstract interface class IEventsRepository {
   Future<Result<List<EventEntity>, EventFailure>> getEvents();
+  Stream<List<EventEntity>> watchEvents();
   Future<Result<EventEntity, EventFailure>> getEventById(String id);
   Future<Result<void, EventFailure>> createEvent(EventEntity event);
   Future<Result<void, EventFailure>> updateEvent(EventEntity event);

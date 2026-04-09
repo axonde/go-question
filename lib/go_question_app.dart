@@ -23,7 +23,9 @@ class GoQuestionApp extends StatelessWidget {
           create: (_) => sl<AuthBloc>()..add(const AuthStarted()),
         ),
         BlocProvider<ProfileBloc>(create: (_) => sl<ProfileBloc>()),
-        BlocProvider<EventsBloc>(create: (_) => sl<EventsBloc>()),
+        BlocProvider<EventsBloc>(
+          create: (_) => sl<EventsBloc>()..add(const EventsSearchStarted()),
+        ),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listenWhen: (previous, current) => previous.status != current.status,

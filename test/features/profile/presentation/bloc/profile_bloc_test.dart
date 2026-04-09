@@ -7,6 +7,13 @@ import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart
 
 class FakeProfileRepository implements IProfileRepository {
   @override
+  Stream<Profile?> watchProfile(String uid) => const Stream<Profile?>.empty();
+
+  @override
+  Stream<List<Profile>> watchFriends(String uid) =>
+      const Stream<List<Profile>>.empty();
+
+  @override
   Future<Result<Profile, ProfileFailure>> createInitialProfile({
     required String uid,
     required String initialEmail,

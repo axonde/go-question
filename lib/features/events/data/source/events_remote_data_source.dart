@@ -8,6 +8,7 @@ import 'package:go_question/features/profile/constants/profile_firestore.dart';
 
 abstract interface class IEventsRemoteDataSource {
   Future<List<EventEntity>> getEvents();
+  Stream<List<EventEntity>> watchEvents();
   Future<EventEntity> getEventById(String id);
   Future<void> createEvent(EventEntity event);
   Future<void> updateEvent(EventEntity event);
@@ -62,6 +63,18 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
     } catch (_) {
       throw const EventFetchException();
     }
+  }
+
+  @override
+  Stream<List<EventEntity>> watchEvents() {
+    return _eventsRef
+        .orderBy(EventsConstants.fieldStartTime)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => EventModelX.fromFirestore(doc))
+              .toList(growable: false),
+        );
   }
 
   @override
@@ -281,6 +294,11 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
         }
 
         final requestData = requestSnapshot.data() ?? <String, dynamic>{};
+        final status =
+            requestData[EventsConstants.joinRequestFieldStatus] as String?;
+        if (status != EventsConstants.joinRequestStatusPending) {
+          return;
+        }
         if (requestData[EventsConstants.joinRequestFieldOrganizerId] !=
             organizerId) {
           throw const EventUpdateException();
@@ -301,6 +319,21 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
           throw const EventNotFoundException();
         }
         final eventData = eventSnapshot.data() ?? <String, dynamic>{};
+        final participants = List<String>.from(
+          eventData[EventsConstants.fieldParticipantIds] ?? const <String>[],
+        );
+        if (participants.contains(requesterId)) {
+          tx.update(requestRef, {
+            EventsConstants.joinRequestFieldStatus:
+                EventsConstants.joinRequestStatusApproved,
+            EventsConstants.joinRequestFieldReviewedAt:
+                FieldValue.serverTimestamp(),
+            EventsConstants.joinRequestFieldReviewedBy: organizerId,
+            EventsConstants.joinRequestFieldUpdatedAt:
+                FieldValue.serverTimestamp(),
+          });
+          return;
+        }
 
         tx.update(eventRef, {
           EventsConstants.fieldParticipantIds: FieldValue.arrayUnion([
@@ -369,6 +402,11 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
         }
 
         final requestData = requestSnapshot.data() ?? <String, dynamic>{};
+        final status =
+            requestData[EventsConstants.joinRequestFieldStatus] as String?;
+        if (status != EventsConstants.joinRequestStatusPending) {
+          return;
+        }
         if (requestData[EventsConstants.joinRequestFieldOrganizerId] !=
             organizerId) {
           throw const EventUpdateException();
@@ -386,6 +424,23 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
         final requesterRef = _usersRef.doc(requesterId);
         final eventSnapshot = await tx.get(eventRef);
         final eventData = eventSnapshot.data() ?? <String, dynamic>{};
+        final pendingParticipants = List<String>.from(
+          eventData[EventsConstants.fieldPendingParticipantIds] ??
+              const <String>[],
+        );
+
+        if (!pendingParticipants.contains(requesterId)) {
+          tx.update(requestRef, {
+            EventsConstants.joinRequestFieldStatus:
+                EventsConstants.joinRequestStatusRejected,
+            EventsConstants.joinRequestFieldReviewedAt:
+                FieldValue.serverTimestamp(),
+            EventsConstants.joinRequestFieldReviewedBy: organizerId,
+            EventsConstants.joinRequestFieldUpdatedAt:
+                FieldValue.serverTimestamp(),
+          });
+          return;
+        }
 
         tx.update(eventRef, {
           EventsConstants.fieldPendingParticipantIds: FieldValue.arrayRemove([
@@ -447,6 +502,13 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
         if (!eventSnapshot.exists) {
           throw const EventNotFoundException();
         }
+        final eventData = eventSnapshot.data() ?? <String, dynamic>{};
+        final participants = List<String>.from(
+          eventData[EventsConstants.fieldParticipantIds] ?? const <String>[],
+        );
+        if (!participants.contains(userId)) {
+          return;
+        }
 
         tx.update(eventRef, {
           EventsConstants.fieldParticipantIds: FieldValue.arrayRemove([userId]),
@@ -457,8 +519,6 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
           ProfileFirestoreConstants.fieldJoinedEventIds: FieldValue.arrayRemove(
             [eventId],
           ),
-          ProfileFirestoreConstants.fieldVisitedEventsCount:
-              FieldValue.increment(1),
           ProfileFirestoreConstants.fieldUpdatedAt:
               FieldValue.serverTimestamp(),
         });

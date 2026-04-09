@@ -80,6 +80,11 @@ class NotificationsMockDataSource implements INotificationsRemoteDataSource {
   }
 
   @override
+  Stream<List<NotificationEntity>> watchNotifications(String userId) {
+    return Stream.value(List<NotificationEntity>.from(_mockNotifications));
+  }
+
+  @override
   Future<void> markAsRead(String notificationId) async {
     await Future.delayed(const Duration(milliseconds: 100));
     final index = _mockNotifications.indexWhere((n) => n.id == notificationId);

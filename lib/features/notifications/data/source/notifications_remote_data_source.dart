@@ -6,6 +6,7 @@ import 'package:go_question/features/notifications/domain/errors/notification_ex
 
 abstract interface class INotificationsRemoteDataSource {
   Future<List<NotificationEntity>> getNotifications(String userId);
+  Stream<List<NotificationEntity>> watchNotifications(String userId);
   Future<void> markAsRead(String notificationId);
   Future<void> markAllAsRead(String userId);
 }
@@ -34,6 +35,19 @@ class NotificationsRemoteDataSourceImpl
     } catch (_) {
       throw const NotificationFetchException();
     }
+  }
+
+  @override
+  Stream<List<NotificationEntity>> watchNotifications(String userId) {
+    return _notificationsRef
+        .where(NotificationsConstants.fieldUserId, isEqualTo: userId)
+        .orderBy(NotificationsConstants.fieldCreatedAt, descending: true)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => NotificationModelX.fromFirestore(doc))
+              .toList(growable: false),
+        );
   }
 
   @override

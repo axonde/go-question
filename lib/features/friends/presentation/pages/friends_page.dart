@@ -40,45 +40,12 @@ class FriendsPage extends StatefulWidget {
 class _FriendsPageState extends State<FriendsPage> {
   final TextEditingController _searchController = TextEditingController();
   final IProfileRepository _profileRepository = sl<IProfileRepository>();
-  List<_FriendUserData> _friends = [];
   _FriendUserData? _searchResult;
   String? _currentUserId;
-  bool _isLoadingFriends = true;
+  final Set<String> _pendingFriendRequestIds = <String>{};
+  final Set<String> _pendingFriendRemovalIds = <String>{};
 
   String get _query => _searchController.text.trim();
-
-  bool _isFriend(String userId) =>
-      _friends.any((friend) => friend.id == userId);
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadFriends());
-  }
-
-  Future<void> _loadFriends() async {
-    final profile = context.read<ProfileBloc>().state.profile;
-    if (profile == null || !mounted) {
-      setState(() => _isLoadingFriends = false);
-      return;
-    }
-
-    _currentUserId = profile.uid;
-    final result = await _profileRepository.getFriends(profile.uid);
-    if (!mounted) return;
-
-    result.fold(
-      onSuccess: (friends) {
-        setState(() {
-          _friends = friends.map(_FriendUserData.fromProfile).toList();
-          _isLoadingFriends = false;
-        });
-      },
-      onFailure: (_) {
-        setState(() => _isLoadingFriends = false);
-      },
-    );
-  }
 
   Future<void> _searchUser(String query) async {
     if (query.trim().isEmpty) {
@@ -109,12 +76,14 @@ class _FriendsPageState extends State<FriendsPage> {
 
   Future<void> _addFriend(_FriendUserData user) async {
     final currentUserId = _currentUserId;
-    if (currentUserId == null || _isFriend(user.id)) {
+    if (currentUserId == null || _pendingFriendRequestIds.contains(user.id)) {
       if (currentUserId == null) {
         sl<AppRouter>().push(const AuthFlowRoute());
       }
       return;
     }
+
+    setState(() => _pendingFriendRequestIds.add(user.id));
 
     final result = await _profileRepository.sendFriendRequest(
       requesterUid: currentUserId,
@@ -122,6 +91,7 @@ class _FriendsPageState extends State<FriendsPage> {
     );
 
     if (!mounted) return;
+    setState(() => _pendingFriendRequestIds.remove(user.id));
 
     result.fold(
       onSuccess: (_) {
@@ -133,21 +103,21 @@ class _FriendsPageState extends State<FriendsPage> {
 
   Future<void> _removeFriend(String userId) async {
     final currentUserId = _currentUserId;
-    if (currentUserId == null) {
+    if (currentUserId == null || _pendingFriendRemovalIds.contains(userId)) {
       return;
     }
+
+    setState(() => _pendingFriendRemovalIds.add(userId));
 
     final result = await _profileRepository.removeFriend(
       userUid: currentUserId,
       friendUid: userId,
     );
     if (!mounted) return;
+    setState(() => _pendingFriendRemovalIds.remove(userId));
 
     result.fold(
       onSuccess: (_) {
-        setState(() {
-          _friends.removeWhere((friend) => friend.id == userId);
-        });
         context.read<ProfileBloc>().add(ProfileRefreshRequested(currentUserId));
       },
       onFailure: (_) {},
@@ -170,27 +140,43 @@ class _FriendsPageState extends State<FriendsPage> {
   @override
   Widget build(BuildContext context) {
     final currentProfile = context.watch<ProfileBloc>().state.profile;
+    _currentUserId = currentProfile?.uid;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
       body: SafeArea(
-        child: _FriendsPageContent(
-          hintsEnabled: widget.hintsEnabled,
-          compactModeEnabled: widget.compactModeEnabled,
-          searchController: _searchController,
-          searchResult: _searchResult,
-          hasQuery: _query.isNotEmpty,
-          currentProfile: currentProfile,
-          friends: _friends,
-          isLoadingFriends: _isLoadingFriends,
-          onSearchChanged: (value) {
-            setState(() {});
-            _searchUser(value);
+        child: StreamBuilder<List<Profile>>(
+          stream: currentProfile == null
+              ? null
+              : _profileRepository.watchFriends(currentProfile.uid),
+          builder: (context, snapshot) {
+            final friends = (snapshot.data ?? const <Profile>[])
+                .map(_FriendUserData.fromProfile)
+                .toList(growable: false);
+            final isLoadingFriends =
+                currentProfile != null &&
+                snapshot.connectionState == ConnectionState.waiting &&
+                friends.isEmpty;
+
+            return _FriendsPageContent(
+              hintsEnabled: widget.hintsEnabled,
+              compactModeEnabled: widget.compactModeEnabled,
+              searchController: _searchController,
+              searchResult: _searchResult,
+              hasQuery: _query.isNotEmpty,
+              currentProfile: currentProfile,
+              friends: friends,
+              isLoadingFriends: isLoadingFriends,
+              onSearchChanged: (value) {
+                setState(() {});
+                _searchUser(value);
+              },
+              onAddFriend: _addFriend,
+              onRemoveFriend: _removeFriend,
+              onOpenProfile: _openProfilePreview,
+            );
           },
-          onAddFriend: _addFriend,
-          onRemoveFriend: _removeFriend,
-          onOpenProfile: _openProfilePreview,
         ),
       ),
     );

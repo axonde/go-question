@@ -7,6 +7,8 @@ class _Characteristics extends StatelessWidget {
   final bool isCityPlaceholder;
   final String name;
   final bool isNamePlaceholder;
+  final ValueChanged<String> onNameChanged;
+  final ValueChanged<DateTime> onBirthDateChanged;
   final ValueChanged<String> onCityChanged;
 
   const _Characteristics({
@@ -16,6 +18,8 @@ class _Characteristics extends StatelessWidget {
     required this.isCityPlaceholder,
     required this.name,
     required this.isNamePlaceholder,
+    required this.onNameChanged,
+    required this.onBirthDateChanged,
     required this.onCityChanged,
   });
 
@@ -25,7 +29,11 @@ class _Characteristics extends StatelessWidget {
       spacing: UiConstants.gap * 2,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _Field(defaultValue: name, isPlaceholder: isNamePlaceholder),
+        _Field(
+          defaultValue: name,
+          isPlaceholder: isNamePlaceholder,
+          onChanged: onNameChanged,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           spacing: UiConstants.gap,
@@ -34,6 +42,7 @@ class _Characteristics extends StatelessWidget {
               child: _DateField(
                 defaultValue: birthDate,
                 isPlaceholder: isBirthDatePlaceholder,
+                onChanged: onBirthDateChanged,
               ),
             ),
             Expanded(
@@ -54,8 +63,13 @@ class _Characteristics extends StatelessWidget {
 class _DateField extends StatefulWidget {
   final String defaultValue;
   final bool isPlaceholder;
+  final ValueChanged<DateTime> onChanged;
 
-  const _DateField({required this.defaultValue, required this.isPlaceholder});
+  const _DateField({
+    required this.defaultValue,
+    required this.isPlaceholder,
+    required this.onChanged,
+  });
 
   @override
   State<StatefulWidget> createState() => _DateFieldState();
@@ -77,6 +91,7 @@ class _DateFieldState extends State<_DateField> {
     final result = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
+        scrollable: true,
         title: const Text('Дата рождения'),
         content: TextField(
           controller: controller,
@@ -119,9 +134,12 @@ class _DateFieldState extends State<_DateField> {
 
     final normalized = result.trim();
     if (_isValidDate(normalized)) {
+      final parts = normalized.split('.');
+      final parsed = DateTime.parse('${parts[2]}-${parts[1]}-${parts[0]}');
       setState(() {
         value = normalized;
       });
+      widget.onChanged(parsed);
       return;
     }
 
@@ -212,8 +230,13 @@ class _DateInputFormatter extends TextInputFormatter {
 class _Field extends StatefulWidget {
   final String defaultValue;
   final bool isPlaceholder;
+  final ValueChanged<String> onChanged;
 
-  const _Field({required this.defaultValue, required this.isPlaceholder});
+  const _Field({
+    required this.defaultValue,
+    required this.isPlaceholder,
+    required this.onChanged,
+  });
 
   @override
   State<StatefulWidget> createState() => _FieldState();
@@ -234,6 +257,7 @@ class _FieldState extends State<_Field> {
     showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
+        scrollable: true,
         title: const Text(ProfilePresentationConstants.dialogTitle),
         content: TextField(
           controller: controller,
@@ -262,6 +286,7 @@ class _FieldState extends State<_Field> {
         setState(() {
           value = result;
         });
+        widget.onChanged(result.trim());
       }
     });
   }

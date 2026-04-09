@@ -9,6 +9,7 @@ abstract class IProfileRepository {
   /// Retrieves profile by uid.
   /// Returns Success(profile) if found, Failure(profileNotFound) if not.
   Future<Result<Profile, ProfileFailure>> getProfile(String uid);
+  Stream<Profile?> watchProfile(String uid);
 
   /// Retrieves profile by numeric registration id.
   Future<Result<Profile, ProfileFailure>> getProfileByRegistrationId(
@@ -40,6 +41,7 @@ abstract class IProfileRepository {
 
   /// Returns full friend profiles for a user.
   Future<Result<List<Profile>, ProfileFailure>> getFriends(String uid);
+  Stream<List<Profile>> watchFriends(String uid);
 
   /// Returns profile documents by id list.
   Future<Result<List<Profile>, ProfileFailure>> getProfilesByIds(
