@@ -41,15 +41,15 @@ class LoginPage extends StatelessWidget {
     }
 
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.asset(
-              'assets/images/background/background.webp',
-              fit: BoxFit.cover,
-            ),
-            Padding(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'assets/images/background/background.webp',
+            fit: BoxFit.cover,
+          ),
+          SafeArea(
+            child: Padding(
               padding: const EdgeInsets.only(
                 left: UiConstants.leftPadding,
                 right: UiConstants.rightPadding,
@@ -94,8 +94,8 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
