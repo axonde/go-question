@@ -118,20 +118,8 @@ class GQButton extends StatelessWidget {
     return AspectRatio(aspectRatio: aspectRatio, child: content);
   }
 
-  // Используем статический плеер для всех кнопок в режиме низкой задержки
-  static final AudioPlayer _tapPlayer = AudioPlayer(playerId: 'gq_tap_player')
-    ..setReleaseMode(ReleaseMode.stop);
-
   void _handleTap() {
-    try {
-      _tapPlayer.play(
-        AssetSource('audio/tap.mp3'),
-        mode: PlayerMode.lowLatency,
-        volume: 1.0,
-      );
-    } catch (e) {
-      print('GQButton tap sound error: $e');
-    }
+    sl<SfxService>().playTap();
     onPressed();
   }
 

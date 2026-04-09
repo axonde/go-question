@@ -1,10 +1,10 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_question/config/router/router.dart';
 import 'package:go_question/core/network/network_info.dart';
 import 'package:go_question/core/services/background_music_service.dart';
+import 'package:go_question/core/services/sfx_service.dart';
 import 'package:go_question/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:go_question/features/auth/data/source/auth_page_memory.dart';
 import 'package:go_question/features/auth/data/source/datasource.dart';
@@ -29,6 +29,7 @@ import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart
 import 'package:go_question/features/score/presentation/bloc/score_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
@@ -121,8 +122,9 @@ Future<void> init() async {
   // import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
 
   //! Core
+  sl.registerLazySingleton<SfxService>(() => SfxService());
   sl.registerLazySingleton<BackgroundMusicService>(
-    () => BackgroundMusicService(AudioPlayer(playerId: 'gq_bg_music_player')),
+    () => BackgroundMusicService(AudioPlayer()),
   );
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 

@@ -56,7 +56,7 @@ class OnboardingSlidePage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          const Spacer(flex: 1),
+          const Spacer(),
         ],
       ),
     );

@@ -1,8 +1,10 @@
-import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
+import 'package:just_audio/just_audio.dart';
 
 class BackgroundMusicService {
   final AudioPlayer _player;
   bool _isPlaying = false;
+  String? _currentAsset;
 
   BackgroundMusicService(this._player);
 
@@ -14,49 +16,31 @@ class BackgroundMusicService {
     bool loop = true,
     Duration? startTime,
   }) async {
-    if (_isPlaying) return;
+    // Если уже играет тот же ассет — ничего не делаем
+    if (_isPlaying && _currentAsset == assetPath) return;
 
     try {
-      // 0. Настраиваем глобальный контекст для микширования звука
-      await AudioPlayer.global.setAudioContext(
-        AudioContext(
-          android: AudioContextAndroid(
-            isMusicStream: true,
-            audioFocus: AndroidAudioFocus.none, // Не перехватываем фокус
-            usageType: AndroidUsageType.assistanceSonification,
-            contentType: AndroidContentType.music,
-            stayAwake: true,
-          ),
-          iOS: AudioContextIOS(
-            category: AVAudioSessionCategory.ambient, // Позволяет микшировать
-            options: {
-              AVAudioSessionOptions.mixWithOthers,
-              AVAudioSessionOptions.defaultToSpeaker,
-            },
-          ),
-        ),
-      );
+      final fullPath = 'assets/$assetPath';
 
-      // 1. Устанавливаем источник
-      await _player.setSource(AssetSource(assetPath));
-      
-      // 2. Базовые настройки
+      // Если плеер занят — останавливаем
+      if (_player.processingState != ProcessingState.idle) {
+        await _player.stop();
+      }
+
+      await _player.setAsset(fullPath);
+      _currentAsset = assetPath;
+
       await _player.setVolume(volume);
-      await _player.setReleaseMode(loop ? ReleaseMode.loop : ReleaseMode.stop);
-      
-      // 3. Небольшая пауза для Android MediaPlayer (чтобы успел подготовиться)
-      // Это критично для избежания IllegalStateException при вызове seek/resume
-      await Future.delayed(const Duration(milliseconds: 200));
+      await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
 
-      // 4. Перемотка и старт
       if (startTime != null && startTime > Duration.zero) {
         await _player.seek(startTime);
       }
-      
-      await _player.resume();
+
+      await _player.play();
       _isPlaying = true;
     } catch (e) {
-      print('BackgroundMusicService Error starting: $e');
+      debugPrint('BackgroundMusicService Error starting: $e');
       _isPlaying = false;
     }
   }
@@ -66,7 +50,7 @@ class BackgroundMusicService {
       await _player.stop();
       _isPlaying = false;
     } catch (e) {
-      print('BackgroundMusicService Error stopping: $e');
+      debugPrint('BackgroundMusicService Error stopping: $e');
     }
   }
 
@@ -76,5 +60,9 @@ class BackgroundMusicService {
     } catch (e) {
       // ignore
     }
+  }
+
+  void dispose() {
+    _player.dispose();
   }
 }

@@ -21,20 +21,18 @@ class _StartupVideoGateState extends State<StartupVideoGate> {
       return;
     }
 
-    // Запускаем глобальную музыку
-    await sl<BackgroundMusicService>().start(
-      assetPath: StartupConstants.backgroundMusicAssetPath,
-      volume: StartupConstants.backgroundMusicVolume,
-      startTime: Duration(milliseconds: StartupConstants.backgroundMusicStartOffsetMs),
-    );
-
-    if (!mounted) {
-      return;
-    }
+    // Сначала делаем переход, затем фоном запускаем музыку.
+    // Переход не должен зависеть от успешности загрузки аудио.
+    if (!mounted) return;
 
     setState(() {
       _startupCompleted = true;
     });
+
+    // Fire-and-forget: ошибки музыки не блокируют UI
+    sl<BackgroundMusicService>()
+        .start(assetPath: StartupConstants.backgroundMusicAssetPath)
+        .catchError((_) {});
   }
 
   @override

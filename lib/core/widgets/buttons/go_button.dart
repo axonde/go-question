@@ -1,7 +1,7 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:go_question/core/constants/startup_constants.dart';
+import 'package:go_question/core/services/sfx_service.dart';
 import 'package:go_question/core/widgets/pressable.dart';
+import 'package:go_question/injection_container/injection_container.dart';
 
 part 'go_button/go_button_hsl.dart';
 part 'go_button/go_button_colors.dart';

@@ -2,9 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/router/router.dart';
+import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:go_question/injection_container/injection_container.dart';
-import 'package:go_question/core/widgets/buttons/go_button.dart';
 
 @RoutePage()
 class OnboardingPage extends StatefulWidget {

@@ -22,6 +22,7 @@ class _StartupVideoPageState extends State<StartupVideoPage> {
   VideoPlayerController? _controller;
   bool _isReady = false;
   bool _hasError = false;
+  bool _onCompleteCalled = false;
 
   @override
   void initState() {
@@ -74,7 +75,10 @@ class _StartupVideoPageState extends State<StartupVideoPage> {
     final duration = controller.value.duration;
 
     if (duration > Duration.zero && position >= duration) {
-      widget.onComplete();
+      if (!_onCompleteCalled) {
+        _onCompleteCalled = true;
+        widget.onComplete();
+      }
     }
   }
 
