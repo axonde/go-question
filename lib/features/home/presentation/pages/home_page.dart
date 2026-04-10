@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/router/router.dart';
 import 'package:go_question/core/constants/event_texts.dart';
-import 'package:go_question/core/constants/home_texts.dart';
 import 'package:go_question/features/achievements/presentation/bloc/achievements_bloc.dart';
 import 'package:go_question/features/achievements/presentation/widgets/achievements_dialog.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
@@ -67,13 +66,6 @@ class HomePage extends StatelessWidget {
   }
 
   void _showNotifications(BuildContext context) {
-    if (!notificationsEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(HomeTexts.notificationsDisabled)),
-      );
-      return;
-    }
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -227,6 +219,13 @@ class HomePage extends StatelessWidget {
           listener: (context, state) {
             final popupNotification = state.popupNotification;
             if (popupNotification == null) {
+              return;
+            }
+
+            if (!notificationsEnabled) {
+              context.read<NotificationsBloc>().add(
+                const NotificationsPopupConsumed(),
+              );
               return;
             }
 
