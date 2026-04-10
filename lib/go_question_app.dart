@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_theme.dart';
+import 'package:go_question/config/theme/no_overscroll_scroll_behavior.dart';
 import 'package:go_question/core/constants/profile_messages.dart';
 import 'package:go_question/core/widgets/app_background.dart';
 import 'package:go_question/features/achievements/presentation/bloc/achievements_bloc.dart';
@@ -29,9 +30,7 @@ class GoQuestionApp extends StatelessWidget {
         BlocProvider<EventsBloc>(
           create: (_) => sl<EventsBloc>()..add(const EventsSearchStarted()),
         ),
-        BlocProvider<NotificationsBloc>(
-          create: (_) => sl<NotificationsBloc>(),
-        ),
+        BlocProvider<NotificationsBloc>(create: (_) => sl<NotificationsBloc>()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listenWhen: (previous, current) => previous.status != current.status,
@@ -82,6 +81,7 @@ class GoQuestionApp extends StatelessWidget {
               title: 'Go Question',
               debugShowCheckedModeBanner: false,
               theme: AppTheme.main(),
+              scrollBehavior: const NoOverscrollScrollBehavior(),
               builder: (context, child) {
                 return StartupVideoGate(
                   child: AppBackground(child: child ?? const SizedBox.shrink()),
