@@ -7,10 +7,7 @@ import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
 class ShakeWarningOverlay extends StatelessWidget {
   final VoidCallback onClose;
 
-  const ShakeWarningOverlay({
-    super.key,
-    required this.onClose,
-  });
+  const ShakeWarningOverlay({super.key, required this.onClose});
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +26,15 @@ class ShakeWarningOverlay extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.surface,
                   border: Border.all(color: AppColors.stroke, width: 2),
-                  borderRadius: BorderRadius.circular(UiConstants.borderRadius * 2),
+                  borderRadius: BorderRadius.circular(
+                    UiConstants.borderRadius * 2,
+                  ),
                 ),
                 padding: const EdgeInsets.all(UiConstants.gap * 2),
                 child: const Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ClashStrokeText(
-                      'Братишка не тряси)',
-                      fontSize: 28,
-                    ),
+                    ClashStrokeText('Братишка не тряси)', fontSize: 28),
                     SizedBox(height: UiConstants.gap),
                     ClashStrokeText(
                       'Причина тряски???',

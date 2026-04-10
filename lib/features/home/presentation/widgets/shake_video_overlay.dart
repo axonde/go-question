@@ -33,8 +33,8 @@ class _ShakeVideoOverlayState extends State<ShakeVideoOverlay> {
           _controller.setLooping(true);
         });
       });
-    
-    // Initial random position will be set in didChangeDependencies or build 
+
+    // Initial random position will be set in didChangeDependencies or build
     // because we need screen size.
   }
 
@@ -81,7 +81,7 @@ class _ShakeVideoOverlayState extends State<ShakeVideoOverlay> {
             ),
           ),
         ),
-        
+
         // Random Close Button
         Positioned(
           top: _closeButtonTop,

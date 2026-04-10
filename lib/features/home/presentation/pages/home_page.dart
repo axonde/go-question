@@ -303,7 +303,8 @@ class _HomePageState extends State<HomePage> {
                     LayoutId(
                       id: _HomeSlot.topBar,
                       child: HomeTopBar(
-                        onAchievementsTap: () => _showAchievementsDialog(context),
+                        onAchievementsTap: () =>
+                            _showAchievementsDialog(context),
                         onCityTap: () => _showCitySelector(context),
                         onNotificationsTap: () => _showNotifications(context),
                         onLeaderboardTap: () => _showLeaderboard(context),
@@ -338,7 +339,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            
+
             // GQ ЗАГЛУШКА ПРИ ПЕРВОЙ ТРЯСКЕ
             if (_showShakeWarning)
               ShakeWarningOverlay(
