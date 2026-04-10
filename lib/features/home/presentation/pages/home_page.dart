@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/router/router.dart';
+import 'package:go_question/core/constants/city_constants.dart';
 import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 import 'package:go_question/features/achievements/presentation/bloc/achievements_bloc.dart';
 import 'package:go_question/features/achievements/presentation/widgets/achievements_dialog.dart';
@@ -11,8 +12,8 @@ import 'package:go_question/features/events/presentation/pages/create_event_dial
 import 'package:go_question/features/events/presentation/pages/search_events_page.dart';
 import 'package:go_question/features/home/presentation/widgets/city_selector_sheet.dart';
 import 'package:go_question/features/leaderboard/presentation/pages/leaderboard_page.dart';
+import 'package:go_question/features/notifications/domain/entities/notification_entity.dart';
 import 'package:go_question/features/notifications/presentation/bloc/notifications_bloc.dart';
-import 'package:go_question/features/profile/constants/profile_presentation.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/profile/presentation/widgets/profile_screen.dart';
 import 'package:go_question/injection_container/injection_container.dart';
@@ -185,7 +186,7 @@ class HomePage extends StatelessWidget {
     final trophies = profile?.trophies ?? 0;
     final currentCity = profile?.city?.trim().isNotEmpty == true
         ? profile!.city!.trim()
-        : ProfilePresentationConstants.completionCityOptions.first;
+        : CityConstants.fallbackLegacyCity();
 
     if (profile != null && notificationsState.activeUserId != profile.uid) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -232,7 +233,8 @@ class HomePage extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  '${context.l10n.homeSnackNewNotificationPrefix} ${popupNotification.title}',
+                  '${context.l10n.homeSnackNewNotificationPrefix} '
+                  '${_localizedPopupTitle(context, popupNotification.type)}',
                 ),
               ),
             );
@@ -289,5 +291,16 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _localizedPopupTitle(BuildContext context, NotificationType type) {
+    final l10n = context.l10n;
+    return switch (type) {
+      NotificationType.friendRequest => l10n.notificationsTitleFriendRequest,
+      NotificationType.joinRequest => l10n.notificationsTitleJoinRequest,
+      NotificationType.eventReminder => l10n.notificationsTitleEventReminder,
+      NotificationType.message => l10n.notificationsTitleMessage,
+      NotificationType.system => l10n.notificationsTitleSystem,
+    };
   }
 }

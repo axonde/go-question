@@ -81,6 +81,31 @@ class AppStrings {
       'notifications.visitedLabel': 'Visited',
       'notifications.organizedLabel': 'Organized',
       'notifications.aboutLabel': 'About me',
+      'notifications.titleFriendRequest': 'Friend request',
+      'notifications.titleJoinRequest': 'Join request',
+      'notifications.titleEventReminder': 'Event reminder',
+      'notifications.titleMessage': 'New message',
+      'notifications.titleSystem': 'System message',
+      'notifications.bodyFriendRequest':
+          'User {user} sent you a friend request.',
+      'notifications.bodyJoinRequest':
+          'User {user} requested to join event {event}.',
+      'notifications.bodyEventReminder': 'Event {event} starts soon.',
+      'notifications.bodyMessage': 'You have a new message.',
+      'notifications.bodySystem': 'System update.',
+      'achievements.dialogTitle': 'Achievements',
+      'achievements.loadError': 'Failed to load achievements',
+      'leaderboard.title': 'Top players',
+      'leaderboard.empty': 'No players with trophies yet.',
+      'city.moscow': 'Moscow',
+      'city.saintPetersburg': 'Saint Petersburg',
+      'city.kazan': 'Kazan',
+      'city.ekaterinburg': 'Yekaterinburg',
+      'city.novosibirsk': 'Novosibirsk',
+      'city.nizhnyNovgorod': 'Nizhny Novgorod',
+      'city.krasnodar': 'Krasnodar',
+      'city.sochi': 'Sochi',
+      'city.other': 'Other city',
       'friends.pageTitle': 'Friends',
       'friends.searchSectionTitle': 'Search user by ID',
       'friends.searchHint': 'Enter user ID',
@@ -153,6 +178,31 @@ class AppStrings {
       'notifications.visitedLabel': 'Посетил',
       'notifications.organizedLabel': 'Организовал',
       'notifications.aboutLabel': 'О себе',
+      'notifications.titleFriendRequest': 'Заявка в друзья',
+      'notifications.titleJoinRequest': 'Заявка на участие',
+      'notifications.titleEventReminder': 'Напоминание о событии',
+      'notifications.titleMessage': 'Новое сообщение',
+      'notifications.titleSystem': 'Системное сообщение',
+      'notifications.bodyFriendRequest':
+          'Пользователь {user} отправил вам заявку в друзья.',
+      'notifications.bodyJoinRequest':
+          'Пользователь {user} запросил участие в событии {event}.',
+      'notifications.bodyEventReminder': 'Событие {event} скоро начнется.',
+      'notifications.bodyMessage': 'У вас новое сообщение.',
+      'notifications.bodySystem': 'Системное обновление.',
+      'achievements.dialogTitle': 'Достижения',
+      'achievements.loadError': 'Не удалось загрузить достижения',
+      'leaderboard.title': 'Топ игроков',
+      'leaderboard.empty': 'Пока нет игроков с кубками.',
+      'city.moscow': 'Москва',
+      'city.saintPetersburg': 'Санкт-Петербург',
+      'city.kazan': 'Казань',
+      'city.ekaterinburg': 'Екатеринбург',
+      'city.novosibirsk': 'Новосибирск',
+      'city.nizhnyNovgorod': 'Нижний Новгород',
+      'city.krasnodar': 'Краснодар',
+      'city.sochi': 'Сочи',
+      'city.other': 'Другой город',
       'friends.pageTitle': 'Друзья',
       'friends.searchSectionTitle': 'Поиск пользователя по ID',
       'friends.searchHint': 'Введите ID пользователя',
@@ -243,6 +293,35 @@ class AppStrings {
   String get notificationsOrganizedLabel =>
       value('notifications.organizedLabel');
   String get notificationsAboutLabel => value('notifications.aboutLabel');
+  String get notificationsTitleFriendRequest =>
+      value('notifications.titleFriendRequest');
+  String get notificationsTitleJoinRequest =>
+      value('notifications.titleJoinRequest');
+  String get notificationsTitleEventReminder =>
+      value('notifications.titleEventReminder');
+  String get notificationsTitleMessage => value('notifications.titleMessage');
+  String get notificationsTitleSystem => value('notifications.titleSystem');
+  String notificationsBodyFriendRequest({required String user}) =>
+      _format(value('notifications.bodyFriendRequest'), {'user': user});
+  String notificationsBodyJoinRequest({
+    required String user,
+    required String event,
+  }) => _format(value('notifications.bodyJoinRequest'), {
+    'user': user,
+    'event': event,
+  });
+  String notificationsBodyEventReminder({required String event}) =>
+      _format(value('notifications.bodyEventReminder'), {'event': event});
+  String get notificationsBodyMessage => value('notifications.bodyMessage');
+  String get notificationsBodySystem => value('notifications.bodySystem');
+
+  String get achievementsDialogTitle => value('achievements.dialogTitle');
+  String get achievementsLoadError => value('achievements.loadError');
+
+  String get leaderboardTitle => value('leaderboard.title');
+  String get leaderboardEmpty => value('leaderboard.empty');
+
+  String cityLabel(String cityKey) => value(cityKey);
 
   String get friendsPageTitle => value('friends.pageTitle');
   String get friendsSearchSectionTitle => value('friends.searchSectionTitle');
@@ -266,4 +345,12 @@ class AppStrings {
   String get friendsCityPrefix => value('friends.cityPrefix');
   String get friendsLevelPrefix => value('friends.levelPrefix');
   String get friendsCityFallback => value('friends.friendCityFallback');
+
+  String _format(String template, Map<String, String> params) {
+    var result = template;
+    params.forEach((key, value) {
+      result = result.replaceAll('{$key}', value);
+    });
+    return result;
+  }
 }

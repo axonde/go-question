@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/core/constants/achievement_constants.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
 import 'package:go_question/core/widgets/dialogs/gq_dialog_panel.dart';
 import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
@@ -43,12 +44,12 @@ class AchievementsDialog extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Center(
                       child: ClashStrokeText(
-                        'Достижения',
+                        context.l10n.achievementsDialogTitle,
                         fontSize: 24,
-                        shadows: [
+                        shadows: const [
                           Shadow(
                             offset: Offset(0, 2),
                             color: Color(0x99000000),
@@ -73,7 +74,7 @@ class AchievementsDialog extends StatelessWidget {
                       return Center(
                         child: ClashStrokeText(
                           state.errorMessage ??
-                              'Не удалось загрузить достижения',
+                              context.l10n.achievementsLoadError,
                           fontSize: 16,
                           maxLines: 2,
                         ),

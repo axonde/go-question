@@ -20,6 +20,9 @@ class NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizedTitle = _resolveNotificationTitle(context, data);
+    final localizedBody = _resolveNotificationBody(context, data);
+
     return GestureDetector(
       onTap: onToggle,
       child: AnimatedSize(
@@ -47,13 +50,13 @@ class NotificationCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               _StrokeTitle(
-                text: data.title,
+                text: localizedTitle,
                 fontSize: UiConstants.textSize * 1.05,
                 maxLines: 2,
               ),
               const SizedBox(height: 8),
               Text(
-                data.body,
+                localizedBody,
                 maxLines: isExpanded ? null : 3,
                 overflow: isExpanded ? null : TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -127,6 +130,43 @@ class NotificationCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String _resolveNotificationTitle(BuildContext context, NotificationData data) {
+  final l10n = context.l10n;
+
+  return switch (data.type) {
+    NotificationType.friendRequest => l10n.notificationsTitleFriendRequest,
+    NotificationType.joinRequest => l10n.notificationsTitleJoinRequest,
+    NotificationType.eventReminder => l10n.notificationsTitleEventReminder,
+    NotificationType.message => l10n.notificationsTitleMessage,
+    NotificationType.system => l10n.notificationsTitleSystem,
+  };
+}
+
+String _resolveNotificationBody(BuildContext context, NotificationData data) {
+  final l10n = context.l10n;
+  final user = (data.userName?.trim().isNotEmpty ?? false)
+      ? data.userName!.trim()
+      : ProfilePresentationConstants.displayNameFallback;
+  final event = (data.eventTitle?.trim().isNotEmpty ?? false)
+      ? data.eventTitle!.trim()
+      : l10n.notificationsTitleSystem;
+
+  return switch (data.type) {
+    NotificationType.friendRequest => l10n.notificationsBodyFriendRequest(
+      user: user,
+    ),
+    NotificationType.joinRequest => l10n.notificationsBodyJoinRequest(
+      user: user,
+      event: event,
+    ),
+    NotificationType.eventReminder => l10n.notificationsBodyEventReminder(
+      event: event,
+    ),
+    NotificationType.message => l10n.notificationsBodyMessage,
+    NotificationType.system => l10n.notificationsBodySystem,
+  };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -27,25 +27,28 @@ class CitySelectorSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: UiConstants.boxUnit * 2),
-          ...CityConstants.cityOptions.map(
-            (city) => ListTile(
+          ...CityConstants.cityOptionKeys.map((cityKey) {
+            final city = context.l10n.cityLabel(cityKey);
+            final isSelected = CityConstants.matchesSelectedValue(
+              cityKey: cityKey,
+              localizedLabel: city,
+              selectedValue: selectedCity,
+            );
+
+            return ListTile(
               title: Text(
                 city,
                 style: TextStyle(
-                  color: city == selectedCity
-                      ? AppColors.primary
-                      : AppColors.textPrimary,
-                  fontWeight: city == selectedCity
-                      ? FontWeight.w800
-                      : FontWeight.w600,
+                  color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                 ),
               ),
-              trailing: city == selectedCity
+              trailing: isSelected
                   ? const Icon(Icons.check, color: AppColors.primary)
                   : null,
               onTap: () => Navigator.pop(context, city),
-            ),
-          ),
+            );
+          }),
         ],
       ),
     );
