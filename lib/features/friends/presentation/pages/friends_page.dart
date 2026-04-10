@@ -7,7 +7,7 @@ import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/friends_texts.dart';
 import 'package:go_question/core/constants/friends_ui_constants.dart';
 import 'package:go_question/core/types/result.dart';
-import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
+import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
 import 'package:go_question/core/widgets/loading/firebase_action_shimmer.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/features/auth/domain/entities/auth_page.dart';
@@ -18,12 +18,12 @@ import 'package:go_question/features/profile/domain/repositories/i_profile_repos
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/injection_container/injection_container.dart';
 
+part '../widgets/friends_page/friend_card.dart';
+part '../widgets/friends_page/friends_empty_state.dart';
+part '../widgets/friends_page/friends_list.dart';
 part '../widgets/friends_page/friends_page_content.dart';
 part '../widgets/friends_page/friends_search_panel.dart';
 part '../widgets/friends_page/friends_search_result.dart';
-part '../widgets/friends_page/friends_list.dart';
-part '../widgets/friends_page/friend_card.dart';
-part '../widgets/friends_page/friends_empty_state.dart';
 part '../widgets/friends_page/user_profile_placeholder_dialog.dart';
 
 class FriendsPage extends StatefulWidget {

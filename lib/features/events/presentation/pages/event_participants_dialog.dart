@@ -5,7 +5,7 @@ import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/types/result.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
-import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
+import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
 import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 import 'package:go_question/features/profile/domain/entities/profile.dart';

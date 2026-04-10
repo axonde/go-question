@@ -5,15 +5,15 @@ import 'package:go_question/core/constants/city_constants.dart';
 import 'package:go_question/core/constants/event_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
-import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
+import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
 import 'package:go_question/core/widgets/dialogs/gq_dialog_panel.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
 import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 import 'package:go_question/features/events/presentation/utils/event_presentation_utils.dart';
 
-part 'create_event_dialog/form_input.dart';
-part 'create_event_dialog/form_dropdown_input.dart';
 part 'create_event_dialog/form_date_time_input.dart';
+part 'create_event_dialog/form_dropdown_input.dart';
+part 'create_event_dialog/form_input.dart';
 part 'create_event_dialog/form_status_input.dart';
 part 'create_event_dialog/stroke_title.dart';
 
