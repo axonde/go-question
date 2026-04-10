@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_question/core/constants/achievement_constants.dart';
 import 'package:go_question/features/events/data/constants/events_constants.dart';
@@ -35,8 +37,9 @@ abstract interface class IEventsRemoteDataSource {
 
 class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
   final FirebaseFirestore _firestore;
+  DateTime? _lastExpiredProcessingAt;
 
-  const EventsRemoteDataSourceImpl(this._firestore);
+  EventsRemoteDataSourceImpl(this._firestore);
 
   CollectionReference<Map<String, dynamic>> get _eventsRef =>
       _firestore.collection(EventsConstants.eventsCollection);
@@ -53,6 +56,7 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
   @override
   Future<List<EventEntity>> getEvents() async {
     try {
+      await _processExpiredEventsIfNeeded();
       final snapshot = await _eventsRef
           .orderBy(EventsConstants.fieldStartTime)
           .get();
@@ -159,18 +163,52 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
       final participantIds = List<String>.from(
         data[EventsConstants.fieldParticipantIds] ?? const <String>[],
       );
+      final startTime = _toDateTime(data[EventsConstants.fieldStartTime]);
+      final durationMinutes =
+          (data[EventsConstants.fieldDurationMinutes] as num?)?.toInt() ??
+          EventsConstants.defaultDurationMinutes;
+      final hasParticipants = participantIds.isNotEmpty;
+      final isCancelledEarly =
+          startTime != null &&
+          DateTime.now().isBefore(
+            startTime.add(Duration(minutes: durationMinutes)),
+          );
+      int? organizerPenaltyTrophies;
 
       await _firestore.runTransaction((tx) async {
+        if (organizerId != null &&
+            organizerId.isNotEmpty &&
+            hasParticipants &&
+            isCancelledEarly) {
+          final organizerRef = _usersRef.doc(organizerId);
+          final organizerSnapshot = await tx.get(organizerRef);
+          if (organizerSnapshot.exists) {
+            final organizerData =
+                organizerSnapshot.data() ?? <String, dynamic>{};
+            final currentTrophies =
+                (organizerData[ProfileFirestoreConstants.fieldTrophies] as num?)
+                    ?.toInt() ??
+                0;
+            organizerPenaltyTrophies = max(0, currentTrophies - 10);
+          }
+        }
+
         tx.delete(docRef);
+
         if (organizerId != null && organizerId.isNotEmpty) {
-          tx.update(_usersRef.doc(organizerId), {
+          final organizerUpdates = <String, dynamic>{
             ProfileFirestoreConstants.fieldCreatedEventIds:
                 FieldValue.arrayRemove([id]),
             ProfileFirestoreConstants.fieldCreatedEventsCount:
                 FieldValue.increment(-1),
             ProfileFirestoreConstants.fieldUpdatedAt:
                 FieldValue.serverTimestamp(),
-          });
+          };
+          if (organizerPenaltyTrophies != null) {
+            organizerUpdates[ProfileFirestoreConstants.fieldTrophies] =
+                organizerPenaltyTrophies;
+          }
+          tx.update(_usersRef.doc(organizerId), organizerUpdates);
         }
         for (final participantId in participantIds) {
           if (participantId.trim().isEmpty) {
@@ -191,6 +229,152 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
     } catch (_) {
       throw const EventDeletionException();
     }
+  }
+
+  Future<void> _processExpiredEventsIfNeeded() async {
+    final now = DateTime.now();
+    final lastRun = _lastExpiredProcessingAt;
+    if (lastRun != null && now.difference(lastRun).inSeconds < 30) {
+      return;
+    }
+    _lastExpiredProcessingAt = now;
+
+    final snapshot = await _eventsRef.get();
+    for (final doc in snapshot.docs) {
+      final data = doc.data();
+      final startTime = _toDateTime(data[EventsConstants.fieldStartTime]);
+      if (startTime == null) {
+        continue;
+      }
+      final durationMinutes =
+          (data[EventsConstants.fieldDurationMinutes] as num?)?.toInt() ??
+          EventsConstants.defaultDurationMinutes;
+      final endedAt = startTime.add(Duration(minutes: durationMinutes));
+      if (now.isBefore(endedAt)) {
+        continue;
+      }
+      await _completeAndDeleteExpiredEvent(doc.id);
+    }
+  }
+
+  Future<void> _completeAndDeleteExpiredEvent(String eventId) async {
+    final eventRef = _eventsRef.doc(eventId);
+    await _firestore.runTransaction((tx) async {
+      final eventSnapshot = await tx.get(eventRef);
+      if (!eventSnapshot.exists) {
+        return;
+      }
+
+      final data = eventSnapshot.data() ?? <String, dynamic>{};
+      final status = data[EventsConstants.fieldStatus] as String?;
+      final organizerId = data[EventsConstants.fieldOrganizer] as String?;
+      if (organizerId == null || organizerId.trim().isEmpty) {
+        tx.delete(eventRef);
+        return;
+      }
+
+      final participantIds = List<String>.from(
+        data[EventsConstants.fieldParticipantIds] ?? const <String>[],
+      ).where((id) => id.trim().isNotEmpty).toSet().toList();
+      final hasParticipants = participantIds.isNotEmpty;
+      final shouldReward =
+          hasParticipants && status != EventsConstants.statusCancelled;
+
+      final participantRewardTrophies = <String, int>{};
+      int? organizerRewardTrophies;
+
+      if (shouldReward) {
+        for (final participantId in participantIds) {
+          final userRef = _usersRef.doc(participantId);
+          final userSnapshot = await tx.get(userRef);
+          if (!userSnapshot.exists) {
+            continue;
+          }
+          final reward = _deterministicReward(
+            seed: '${eventId}_$participantId',
+            min: 20,
+            max: 40,
+          );
+          final userData = userSnapshot.data() ?? <String, dynamic>{};
+          final currentTrophies =
+              (userData[ProfileFirestoreConstants.fieldTrophies] as num?)
+                  ?.toInt() ??
+              0;
+          participantRewardTrophies[participantId] = max(
+            0,
+            currentTrophies + reward,
+          );
+        }
+
+        final organizerRef = _usersRef.doc(organizerId);
+        final organizerSnapshot = await tx.get(organizerRef);
+        if (organizerSnapshot.exists) {
+          final organizerReward = _deterministicReward(
+            seed: '${eventId}_organizer_$organizerId',
+            min: 30,
+            max: 50,
+          );
+          final organizerData = organizerSnapshot.data() ?? <String, dynamic>{};
+          final currentTrophies =
+              (organizerData[ProfileFirestoreConstants.fieldTrophies] as num?)
+                  ?.toInt() ??
+              0;
+          organizerRewardTrophies = max(0, currentTrophies + organizerReward);
+        }
+      }
+
+      tx.delete(eventRef);
+      final organizerUpdates = <String, dynamic>{
+        ProfileFirestoreConstants.fieldCreatedEventIds: FieldValue.arrayRemove([
+          eventId,
+        ]),
+        ProfileFirestoreConstants.fieldCreatedEventsCount: FieldValue.increment(
+          -1,
+        ),
+        ProfileFirestoreConstants.fieldUpdatedAt: FieldValue.serverTimestamp(),
+      };
+      if (organizerRewardTrophies != null) {
+        organizerUpdates[ProfileFirestoreConstants.fieldTrophies] =
+            organizerRewardTrophies;
+      }
+      tx.update(_usersRef.doc(organizerId), organizerUpdates);
+
+      for (final participantId in participantIds) {
+        final participantUpdates = <String, dynamic>{
+          ProfileFirestoreConstants.fieldJoinedEventIds: FieldValue.arrayRemove(
+            [eventId],
+          ),
+          ProfileFirestoreConstants.fieldUpdatedAt:
+              FieldValue.serverTimestamp(),
+        };
+        final nextTrophies = participantRewardTrophies[participantId];
+        if (nextTrophies != null) {
+          participantUpdates[ProfileFirestoreConstants.fieldTrophies] =
+              nextTrophies;
+        }
+        tx.update(_usersRef.doc(participantId), participantUpdates);
+      }
+    });
+  }
+
+  int _deterministicReward({
+    required String seed,
+    required int min,
+    required int max,
+  }) {
+    final spread = max - min + 1;
+    final hash = seed.codeUnits.fold<int>(0, (acc, unit) => acc * 31 + unit);
+    return min + Random(hash).nextInt(spread);
+  }
+
+  DateTime? _toDateTime(Object? rawValue) {
+    if (rawValue is Timestamp) {
+      return rawValue.toDate();
+    }
+    if (rawValue is DateTime) {
+      return rawValue;
+    }
+    return null;
   }
 
   @override
@@ -273,6 +457,8 @@ class EventsRemoteDataSourceImpl implements IEventsRemoteDataSource {
           NotificationsConstants.fieldRequestUserId: requesterId,
           NotificationsConstants.fieldRequestUserName:
               requesterData[ProfileFirestoreConstants.fieldName],
+          NotificationsConstants.fieldRequestUserAvatarUrl:
+              requesterData[ProfileFirestoreConstants.fieldAvatarUrl],
           NotificationsConstants.fieldRequestUserRegistrationId:
               requesterData[ProfileFirestoreConstants.fieldRegistrationId]
                   ?.toString(),

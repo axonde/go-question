@@ -10,6 +10,7 @@ abstract interface class INotificationsRemoteDataSource {
   Future<void> markAsRead(String notificationId);
   Future<void> markAllAsRead(String userId);
   Future<void> clearRead(String userId);
+  Future<void> clearAll(String userId);
 }
 
 class NotificationsRemoteDataSourceImpl
@@ -105,6 +106,33 @@ class NotificationsRemoteDataSourceImpl
         batch.delete(doc.reference);
       }
       await batch.commit();
+    } on FirebaseException catch (_) {
+      throw const NotificationUpdateException();
+    } catch (_) {
+      throw const NotificationUpdateException();
+    }
+  }
+
+  @override
+  Future<void> clearAll(String userId) async {
+    try {
+      final snapshot = await _notificationsRef
+          .where(NotificationsConstants.fieldUserId, isEqualTo: userId)
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        return;
+      }
+
+      final docs = snapshot.docs;
+      for (var i = 0; i < docs.length; i += 450) {
+        final batch = _firestore.batch();
+        final end = (i + 450 < docs.length) ? i + 450 : docs.length;
+        for (var j = i; j < end; j++) {
+          batch.delete(docs[j].reference);
+        }
+        await batch.commit();
+      }
     } on FirebaseException catch (_) {
       throw const NotificationUpdateException();
     } catch (_) {

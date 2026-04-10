@@ -30,6 +30,16 @@ class _UserProfilePlaceholderDialog extends StatelessWidget {
             children: [
               Row(
                 children: [
+                  AvatarSquare(
+                    size: UiConstants.boxUnit * 7,
+                    imagePathOrUrl: user.avatarUrl,
+                    backgroundColor: user.avatarColor,
+                    borderRadius: UiConstants.borderRadius * 3,
+                    borderColor: AppColors.lightStroke,
+                    fallbackText: user.name,
+                    fallbackTextWeight: FontWeight.w900,
+                  ),
+                  const SizedBox(width: UiConstants.boxUnit),
                   Expanded(
                     child: Text(
                       user.name,

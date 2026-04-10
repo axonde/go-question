@@ -9,4 +9,5 @@ abstract interface class INotificationsRepository {
   Future<Result<void, NotificationFailure>> markAsRead(String notificationId);
   Future<Result<void, NotificationFailure>> markAllAsRead(String userId);
   Future<Result<void, NotificationFailure>> clearRead(String userId);
+  Future<Result<void, NotificationFailure>> clearAll(String userId);
 }

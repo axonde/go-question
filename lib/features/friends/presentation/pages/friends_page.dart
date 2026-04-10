@@ -7,6 +7,7 @@ import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/friends_texts.dart';
 import 'package:go_question/core/constants/friends_ui_constants.dart';
 import 'package:go_question/core/types/result.dart';
+import 'package:go_question/core/widgets/avatar_square.dart';
 import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
 import 'package:go_question/core/widgets/loading/firebase_action_shimmer.dart';
 import 'package:go_question/core/widgets/pressable.dart';
@@ -207,6 +208,7 @@ class _FriendUserData {
   final String city;
   final int level;
   final Color avatarColor;
+  final String? avatarUrl;
 
   const _FriendUserData({
     required this.id,
@@ -215,6 +217,7 @@ class _FriendUserData {
     required this.city,
     required this.level,
     required this.avatarColor,
+    required this.avatarUrl,
   });
 
   factory _FriendUserData.fromProfile(Profile profile) {
@@ -233,6 +236,7 @@ class _FriendUserData {
       city: profile.city ?? FriendsTexts.friendCityFallback,
       level: profile.trophies,
       avatarColor: palette[hash % palette.length],
+      avatarUrl: profile.avatarUrl,
     );
   }
 }

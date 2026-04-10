@@ -7,6 +7,7 @@ import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
 import 'package:go_question/core/widgets/dialogs/gq_dialog_panel.dart';
+import 'package:go_question/features/events/data/constants/events_constants.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
 import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 import 'package:go_question/features/events/presentation/utils/event_presentation_utils.dart';
@@ -46,6 +47,7 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
   DateTime _startTime = DateTime.now();
   String _status = EventConstants.statusOpen;
   String? _selectedLocation;
+  EventDurationOption? _selectedDuration;
 
   int get _currentParticipantsCount =>
       widget.initialEvent?.participantIds.length ??
@@ -65,7 +67,12 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
       _startTime = event.startTime;
       _status = event.status;
       _selectedLocation = event.location;
+      _selectedDuration = EventConstants.durationOptions.firstWhere(
+        (option) => option.minutes == event.durationMinutes,
+        orElse: () => EventDurationOption.hour1,
+      );
     }
+    _selectedDuration ??= EventDurationOption.hour1;
     _locationOptions = _buildOptions(
       CityConstants.cityOptions,
       _selectedLocation,
@@ -129,6 +136,8 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
         widget.organizerAccountId ?? event?.organizer,
       ),
       status: _status,
+      durationMinutes:
+          _selectedDuration?.minutes ?? EventsConstants.defaultDurationMinutes,
       imageUrl: event?.imageUrl,
       participantIds: event?.participantIds ?? const <String>[],
       pendingParticipantIds: event?.pendingParticipantIds ?? const <String>[],
@@ -187,6 +196,15 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
                       _startTime,
                     ),
                     onTap: _pickStartTime,
+                  ),
+                  _FormDropdownInput<EventDurationOption>(
+                    label: EventTexts.createFieldDuration,
+                    hint: EventTexts.createHintDuration,
+                    value: _selectedDuration,
+                    items: EventConstants.durationOptions,
+                    itemLabelBuilder: (item) => item.label,
+                    onChanged: (value) =>
+                        setState(() => _selectedDuration = value),
                   ),
                   _FormDropdownInput<String>(
                     label: EventTexts.createFieldLocation,

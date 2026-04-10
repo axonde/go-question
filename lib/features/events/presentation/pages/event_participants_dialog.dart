@@ -4,10 +4,12 @@ import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
 import 'package:go_question/core/types/result.dart';
+import 'package:go_question/core/widgets/avatar_square.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
 import 'package:go_question/features/events/domain/entities/event_entity.dart';
 import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
+import 'package:go_question/features/profile/constants/profile_presentation.dart';
 import 'package:go_question/features/profile/domain/entities/profile.dart';
 import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
@@ -310,9 +312,13 @@ class _ParticipantTile extends StatelessWidget {
         padding: const EdgeInsets.all(UiConstants.boxUnit * 1.25),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: UiConstants.boxUnit * 2,
-              child: Text(profile.name.isEmpty ? '?' : profile.name[0]),
+            AvatarSquare(
+              size: UiConstants.boxUnit * 4,
+              imagePathOrUrl: profile.avatarUrl,
+              borderRadius: UiConstants.borderRadius * 2.5,
+              borderColor: Colors.white.withValues(alpha: 0.45),
+              fallbackAssetPath: ProfilePresentationConstants.defaultAvatarPath,
+              fallbackText: profile.name.isEmpty ? '?' : profile.name[0],
             ),
             const SizedBox(width: UiConstants.boxUnit),
             Expanded(

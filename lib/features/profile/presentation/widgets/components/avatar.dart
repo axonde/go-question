@@ -1,19 +1,23 @@
 part of '../profile_screen.dart';
 
 class _Avatar extends StatelessWidget {
-  const _Avatar();
+  final String? avatarUrl;
+  final VoidCallback onTap;
+
+  const _Avatar({required this.avatarUrl, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Image.asset(ProfilePresentationConstants.defaultAvatarPath),
-        const Positioned.fill(
-          right: -15,
-          child: Align(alignment: Alignment.centerRight, child: GqEditIcon()),
-        ),
-      ],
+    return Pressable(
+      onTap: onTap,
+      child: AvatarSquare(
+        size: UiConstants.boxUnit * 13,
+        imagePathOrUrl: avatarUrl,
+        borderRadius: UiConstants.borderRadius * 3.5,
+        borderColor: AppColors.lightStroke,
+        borderWidth: UiConstants.strokeWidth * 1.5,
+        fallbackAssetPath: ProfilePresentationConstants.defaultAvatarPath,
+      ),
     );
   }
 }

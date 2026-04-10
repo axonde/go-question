@@ -126,4 +126,10 @@ class NotificationsMockDataSource implements INotificationsRemoteDataSource {
     _mockNotifications.removeWhere((notification) => notification.isRead);
     _emitNotifications();
   }
+
+  @override
+  Future<void> clearAll(String userId) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    _mockNotifications.removeWhere((n) => n.userId == userId);
+  }
 }
