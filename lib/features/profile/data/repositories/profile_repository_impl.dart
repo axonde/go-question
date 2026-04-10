@@ -413,6 +413,50 @@ class ProfileRepositoryImpl implements IProfileRepository {
   }
 
   @override
+  Future<Result<List<Profile>, ProfileFailure>> getTopProfilesByTrophies({
+    int limit = 100,
+  }) async {
+    if (limit <= 0) {
+      return const Success(<Profile>[]);
+    }
+
+    try {
+      final models = await _remoteDataSource.getTopProfilesByTrophies(
+        limit: limit,
+      );
+      final profiles = models
+          .map((model) => model.toEntity())
+          .where((profile) => profile.trophies > 0)
+          .toList(growable: false);
+      for (final profile in profiles) {
+        profile.validate();
+        _profileCache[profile.uid] = profile;
+      }
+      return Success(profiles);
+    } catch (error) {
+      final mappedException = mapProfileFirestoreException(error);
+      final failure = _errorMapper.map(mappedException);
+      return Failure(failure);
+    }
+  }
+
+  @override
+  Stream<List<Profile>> watchTopProfilesByTrophies({int limit = 100}) {
+    return _remoteDataSource.watchTopProfilesByTrophies(limit: limit).map((
+      models,
+    ) {
+      final profiles = models
+          .map((model) => model.toEntity())
+          .where((profile) => profile.trophies > 0)
+          .toList(growable: false);
+      for (final profile in profiles) {
+        _profileCache[profile.uid] = profile;
+      }
+      return profiles;
+    });
+  }
+
+  @override
   Future<Result<void, ProfileFailure>> sendFriendRequest({
     required String requesterUid,
     required String recipientUid,

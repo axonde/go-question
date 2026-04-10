@@ -11,6 +11,7 @@ import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 import 'package:go_question/features/events/presentation/pages/create_event_dialog.dart';
 import 'package:go_question/features/events/presentation/pages/search_events_page.dart';
 import 'package:go_question/features/home/presentation/widgets/city_selector_sheet.dart';
+import 'package:go_question/features/leaderboard/presentation/pages/leaderboard_page.dart';
 import 'package:go_question/features/profile/constants/profile_presentation.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/profile/presentation/widgets/profile_screen.dart';
@@ -80,6 +81,14 @@ class HomePage extends StatelessWidget {
         heightFactor: 0.9,
         child: NotificationsSheet(),
       ),
+    );
+  }
+
+  Future<void> _showLeaderboard(BuildContext context) async {
+    await showDialog<void>(
+      context: context,
+      useSafeArea: false,
+      builder: (_) => const LeaderboardPage(),
     );
   }
 
@@ -196,6 +205,7 @@ class HomePage extends StatelessWidget {
                   onAchievementsTap: () => _showAchievementsDialog(context),
                   onCityTap: () => _showCitySelector(context),
                   onNotificationsTap: () => _showNotifications(context),
+                  onLeaderboardTap: () => _showLeaderboard(context),
                   hasUnreadAchievements: hasUnreadAchievements,
                   city: currentCity,
                 ),
