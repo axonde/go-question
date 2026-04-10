@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
-import 'package:go_question/core/constants/event_texts.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 import 'package:go_question/core/widgets/avatar_square.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
@@ -182,7 +182,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         _processingIds.clear();
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(EventTexts.notificationsSnackReadCleared)),
+        SnackBar(content: Text(context.l10n.notificationsSnackReadCleared)),
       );
     } finally {
       if (mounted) {
@@ -217,7 +217,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
           _buildHeader(context),
           Expanded(
             child: profile == null
-                ? const Center(child: Text(EventTexts.notificationsEmptyState))
+                ? Center(child: Text(context.l10n.notificationsEmptyState))
                 : BlocBuilder<NotificationsBloc, NotificationsState>(
                     builder: (context, state) {
                       final notifications = state.notifications
@@ -233,13 +233,13 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
                         return Center(
                           child: Text(
                             state.errorMessage ??
-                                EventTexts.notificationsEmptyState,
+                                context.l10n.notificationsEmptyState,
                           ),
                         );
                       }
                       if (notifications.isEmpty) {
-                        return const Center(
-                          child: Text(EventTexts.notificationsEmptyState),
+                        return Center(
+                          child: Text(context.l10n.notificationsEmptyState),
                         );
                       }
 
@@ -293,8 +293,8 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            const Align(
-              child: _StrokeTitle(text: EventTexts.notificationsHeaderTitle),
+            Align(
+              child: _StrokeTitle(text: context.l10n.notificationsHeaderTitle),
             ),
             Align(
               alignment: Alignment.centerLeft,

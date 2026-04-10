@@ -21,33 +21,36 @@ class _SettingsToggleTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
         border: Border.all(color: SettingsUiConstants.tileBorder),
       ),
-      child: SwitchListTile(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: UiConstants.horizontalPadding * 1.5,
-          vertical: UiConstants.verticalPadding * 0.5,
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: UiConstants.textSize * 0.86,
-            fontWeight: FontWeight.w800,
+      child: Material(
+        color: Colors.transparent,
+        child: SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: UiConstants.horizontalPadding * 1.5,
+            vertical: UiConstants.verticalPadding * 0.5,
           ),
-        ),
-        subtitle: Text(
-          subtitle,
-          style: const TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: UiConstants.textSize * 0.68,
-            fontWeight: FontWeight.w600,
+          title: Text(
+            title,
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: UiConstants.textSize * 0.86,
+              fontWeight: FontWeight.w800,
+            ),
           ),
+          subtitle: Text(
+            subtitle,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: UiConstants.textSize * 0.68,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          value: value,
+          onChanged: onChanged,
+          activeThumbColor: AppColors.secondary,
+          activeTrackColor: AppColors.secondary.withValues(alpha: 0.35),
+          inactiveThumbColor: AppColors.textSecondary,
+          inactiveTrackColor: SettingsUiConstants.inactiveTrack,
         ),
-        value: value,
-        onChanged: onChanged,
-        activeThumbColor: AppColors.secondary,
-        activeTrackColor: AppColors.secondary.withValues(alpha: 0.35),
-        inactiveThumbColor: AppColors.textSecondary,
-        inactiveTrackColor: SettingsUiConstants.inactiveTrack,
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 import 'package:go_question/core/types/result.dart';
 import 'package:go_question/core/widgets/avatar_square.dart';
 import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
@@ -75,10 +76,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 children: [
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Топ игроков',
-                          style: TextStyle(
+                          context.l10n.leaderboardTitle,
+                          style: const TextStyle(
                             color: AppColors.textPrimary,
                             fontSize: UiConstants.textSize * 1.3,
                             fontWeight: FontWeight.w900,
@@ -105,10 +106,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             .where((profile) => profile.trophies > 0)
                             .toList(growable: false);
                         if (players.isEmpty) {
-                          return const Center(
+                          return Center(
                             child: Text(
-                              'Пока нет игроков с кубками.',
-                              style: TextStyle(
+                              context.l10n.leaderboardEmpty,
+                              style: const TextStyle(
                                 color: AppColors.textSecondary,
                                 fontSize: UiConstants.textSize * 0.8,
                                 fontWeight: FontWeight.w700,

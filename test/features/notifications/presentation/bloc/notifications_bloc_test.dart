@@ -77,6 +77,13 @@ class FakeNotificationsRepository implements INotificationsRepository {
     return const Success(null);
   }
 
+  @override
+  Future<Result<void, NotificationFailure>> clearAll(String userId) async {
+    notifications = const <NotificationEntity>[];
+    _controller.add(notifications);
+    return const Success(null);
+  }
+
   void emit(List<NotificationEntity> nextNotifications) {
     notifications = nextNotifications;
     _controller.add(notifications);
@@ -99,7 +106,7 @@ NotificationEntity _notification({
     body: 'Body',
     type: NotificationType.system,
     isRead: isRead,
-    createdAt: DateTime.utc(2026, 1, 1),
+    createdAt: DateTime.utc(2026),
   );
 }
 

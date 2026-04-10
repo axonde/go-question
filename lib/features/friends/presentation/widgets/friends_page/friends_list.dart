@@ -39,10 +39,10 @@ class _FriendsRealtimeSection extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
-                    FriendsTexts.friendsSectionTitle,
-                    style: TextStyle(
+                    context.l10n.friendsSectionTitle,
+                    style: const TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: UiConstants.textSize,
                       fontWeight: FontWeight.w800,
@@ -50,7 +50,7 @@ class _FriendsRealtimeSection extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${friends.length} ${FriendsTexts.friendCountLabel}',
+                  '${friends.length} ${context.l10n.friendsCountLabel}',
                   style: const TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: UiConstants.textSize * 0.8,

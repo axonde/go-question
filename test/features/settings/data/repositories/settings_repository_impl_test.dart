@@ -63,6 +63,7 @@ void main() {
           SettingsConstants.notificationsJsonKey: false,
           SettingsConstants.hintsJsonKey: true,
           SettingsConstants.compactModeJsonKey: true,
+          SettingsConstants.languageJsonKey: null,
         }),
       );
     },
@@ -103,6 +104,7 @@ void main() {
           settings.compactModeEnabled,
           SettingsConstants.defaultCompactModeEnabled,
         );
+        expect(settings.selectedLanguageCode, isNull);
       },
       onFailure: (_) {
         fail('Expected loadSettings to return defaults');

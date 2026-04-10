@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/navigation_constants.dart';
-import 'package:go_question/core/constants/navigation_texts.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 
 part 'bottom_nav_bar/_nav_background.dart';
@@ -25,6 +25,7 @@ class ClashNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final bottomPad = MediaQuery.paddingOf(context).bottom;
 
     return SizedBox(
@@ -39,7 +40,7 @@ class ClashNavBar extends StatelessWidget {
               Expanded(
                 child: _NavItem(
                   index: 0,
-                  label: NavigationTexts.friends,
+                  label: l10n.navFriends,
                   assetPath: _kFriendsAsset,
                   fallbackIcon: Icons.people_outline,
                   currentIndex: currentIndex,
@@ -51,7 +52,7 @@ class ClashNavBar extends StatelessWidget {
               Expanded(
                 child: _NavItem(
                   index: 1,
-                  label: NavigationTexts.home,
+                  label: l10n.navHome,
                   assetPath: _kBattleAsset,
                   fallbackIcon: Icons.sports_martial_arts,
                   currentIndex: currentIndex,
@@ -64,7 +65,7 @@ class ClashNavBar extends StatelessWidget {
               Expanded(
                 child: _NavItem(
                   index: 2,
-                  label: NavigationTexts.settings,
+                  label: l10n.navSettings,
                   assetPath: _kSettingsAsset,
                   fallbackIcon: Icons.settings_outlined,
                   currentIndex: currentIndex,

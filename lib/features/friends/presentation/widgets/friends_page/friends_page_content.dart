@@ -57,9 +57,9 @@ class _FriendsPageContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            FriendsTexts.pageTitle,
-            style: TextStyle(
+          Text(
+            context.l10n.friendsPageTitle,
+            style: const TextStyle(
               color: AppColors.textPrimary,
               fontSize: UiConstants.textSize * 1.35,
               fontWeight: FontWeight.w900,

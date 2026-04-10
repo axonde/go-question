@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/city_constants.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 
 /// Bottom sheet выбора города.
 class CitySelectorSheet extends StatelessWidget {
@@ -17,34 +18,37 @@ class CitySelectorSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Выбор города',
-            style: TextStyle(
+          Text(
+            context.l10n.homeCitySelectorTitle,
+            style: const TextStyle(
               fontSize: UiConstants.textSize * 1.1,
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: UiConstants.boxUnit * 2),
-          ...CityConstants.cityOptions.map(
-            (city) => ListTile(
+          ...CityConstants.cityOptionKeys.map((cityKey) {
+            final city = context.l10n.cityLabel(cityKey);
+            final isSelected = CityConstants.matchesSelectedValue(
+              cityKey: cityKey,
+              localizedLabel: city,
+              selectedValue: selectedCity,
+            );
+
+            return ListTile(
               title: Text(
                 city,
                 style: TextStyle(
-                  color: city == selectedCity
-                      ? AppColors.primary
-                      : AppColors.textPrimary,
-                  fontWeight: city == selectedCity
-                      ? FontWeight.w800
-                      : FontWeight.w600,
+                  color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                 ),
               ),
-              trailing: city == selectedCity
+              trailing: isSelected
                   ? const Icon(Icons.check, color: AppColors.primary)
                   : null,
               onTap: () => Navigator.pop(context, city),
-            ),
-          ),
+            );
+          }),
         ],
       ),
     );
