@@ -185,7 +185,15 @@ class _DateFieldState extends State<_DateField> {
               bottom: UiConstants.bottomPadding * 2,
               left: UiConstants.leftPadding * 2,
             ),
-            child: FittedBox(fit: BoxFit.scaleDown, child: Text(value)),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                CityConstants.toLocalizedLabel(
+                  storedValue: value,
+                  localize: context.l10n.cityLabel,
+                ),
+              ),
+            ),
           ),
         ),
       ),

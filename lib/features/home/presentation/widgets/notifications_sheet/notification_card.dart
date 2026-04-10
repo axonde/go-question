@@ -299,7 +299,10 @@ class _UserInfo extends StatelessWidget {
                   const SizedBox(height: UiConstants.boxUnit * 0.75),
                   _UserDetailRow(
                     icon: Icons.location_city_outlined,
-                    label: data.userCity!,
+                    label: CityConstants.toLocalizedLabel(
+                      storedValue: data.userCity,
+                      localize: context.l10n.cityLabel,
+                    ),
                   ),
                 ],
                 if (data.userEventsAttended != null ||

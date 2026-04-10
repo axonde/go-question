@@ -61,8 +61,10 @@ class HomePage extends StatelessWidget {
       return;
     }
 
+    final normalizedCity = CityConstants.toStoredLegacyValue(selectedCity);
+
     context.read<ProfileBloc>().add(
-      ProfileUpdateRequested(profile.copyWith(city: selectedCity.trim())),
+      ProfileUpdateRequested(profile.copyWith(city: normalizedCity)),
     );
   }
 
@@ -184,9 +186,10 @@ class HomePage extends StatelessWidget {
         profile?.unseenAchievementIds.isNotEmpty == true;
     final hasUnreadNotifications = notificationsState.hasUnread;
     final trophies = profile?.trophies ?? 0;
-    final currentCity = profile?.city?.trim().isNotEmpty == true
-        ? profile!.city!.trim()
-        : CityConstants.fallbackLegacyCity();
+    final currentCity = CityConstants.toLocalizedLabel(
+      storedValue: profile?.city,
+      localize: context.l10n.cityLabel,
+    );
 
     if (profile != null && notificationsState.activeUserId != profile.uid) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

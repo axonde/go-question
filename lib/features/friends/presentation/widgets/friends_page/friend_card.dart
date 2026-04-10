@@ -73,7 +73,7 @@ class _FriendCard extends StatelessWidget {
                     ),
                     const SizedBox(height: UiConstants.boxUnit * 0.25),
                     Text(
-                      '${context.l10n.friendsCityPrefix}: ${user.city.isEmpty ? context.l10n.friendsCityFallback : user.city}  •  '
+                      '${context.l10n.friendsCityPrefix}: ${user.city.isEmpty ? context.l10n.friendsCityFallback : CityConstants.toLocalizedLabel(storedValue: user.city, localize: context.l10n.cityLabel)}  •  '
                       '${context.l10n.friendsLevelPrefix}: ${user.level}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
