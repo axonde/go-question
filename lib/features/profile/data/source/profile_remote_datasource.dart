@@ -718,7 +718,8 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
           .doc(friendUid);
       final notificationRef = _firestore
           .collection(NotificationsConstants.notificationsCollection)
-          .doc('${userUid}_${friendUid}_friend_removed');
+          .doc();
+      final notificationId = notificationRef.id;
 
       await _firestore.runTransaction((tx) async {
         final userSnapshot = await tx.get(userRef);
@@ -739,8 +740,7 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
               FieldValue.serverTimestamp(),
         });
         tx.set(notificationRef, {
-          NotificationsConstants.fieldId:
-              '${userUid}_${friendUid}_friend_removed',
+          NotificationsConstants.fieldId: notificationId,
           NotificationsConstants.fieldUserId: friendUid,
           NotificationsConstants.fieldTitle: 'Удаление из друзей',
           NotificationsConstants.fieldBody:
