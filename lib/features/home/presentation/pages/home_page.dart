@@ -139,7 +139,11 @@ class HomePage extends StatelessWidget {
       return;
     }
 
-    showDialog(context: context, builder: (_) => const ProfileScreen());
+    showDialog(
+      context: context,
+      useSafeArea: false,
+      builder: (_) => const ProfileScreen(),
+    );
   }
 
   Future<void> _showAchievementsDialog(BuildContext context) async {
@@ -174,6 +178,7 @@ class HomePage extends StatelessWidget {
     final profile = context.watch<ProfileBloc>().state.profile;
     final hasUnreadAchievements =
         profile?.unseenAchievementIds.isNotEmpty == true;
+    final isLegendaryArena = (profile?.trophies ?? 0) > 5000;
     final currentCity = profile?.city?.trim().isNotEmpty == true
         ? profile!.city!.trim()
         : ProfilePresentationConstants.completionCityOptions.first;
@@ -206,6 +211,7 @@ class HomePage extends StatelessWidget {
                 child: HomePlaceholder(
                   hintsEnabled: hintsEnabled,
                   compactModeEnabled: compactModeEnabled,
+                  isLegendaryArena: isLegendaryArena,
                 ),
               ),
               LayoutId(

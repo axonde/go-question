@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/event_texts.dart';
+import 'package:go_question/core/widgets/avatar_square.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/loading/firebase_action_shimmer.dart';
@@ -28,6 +29,7 @@ class NotificationData {
   final bool showAccept;
   final bool showReject;
   final String? userName;
+  final String? userAvatarUrl;
   final String? userRegistrationId;
   final String? userRating;
   final String? userAge;
@@ -50,6 +52,7 @@ class NotificationData {
     this.showAccept = false,
     this.showReject = false,
     this.userName,
+    this.userAvatarUrl,
     this.userRegistrationId,
     this.userRating,
     this.userAge,
@@ -80,6 +83,7 @@ class NotificationData {
               entity.type == NotificationType.friendRequest) &&
           !entity.isRead,
       userName: entity.requestUserName,
+      userAvatarUrl: entity.requestUserAvatarUrl,
       userRegistrationId: entity.requestUserRegistrationId,
       userRating: entity.requestUserRating,
       userAge: entity.requestUserAge,

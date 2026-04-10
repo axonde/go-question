@@ -6,6 +6,7 @@ class _FormDropdownInput<T> extends StatelessWidget {
   final T? value;
   final List<T> items;
   final ValueChanged<T?> onChanged;
+  final String Function(T)? itemLabelBuilder;
 
   const _FormDropdownInput({
     required this.label,
@@ -13,6 +14,7 @@ class _FormDropdownInput<T> extends StatelessWidget {
     required this.value,
     required this.items,
     required this.onChanged,
+    this.itemLabelBuilder,
   });
 
   @override
@@ -59,7 +61,7 @@ class _FormDropdownInput<T> extends StatelessWidget {
             .map(
               (item) => DropdownMenuItem<T>(
                 value: item,
-                child: Text(item.toString()),
+                child: Text(itemLabelBuilder?.call(item) ?? item.toString()),
               ),
             )
             .toList(),

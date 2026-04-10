@@ -31,6 +31,7 @@ mixin _$NotificationEntity {
   DateTime get createdAt => throw _privateConstructorUsedError; // Опциональные поля для запросов на участие
   String? get requestUserId => throw _privateConstructorUsedError;
   String? get requestUserName => throw _privateConstructorUsedError;
+  String? get requestUserAvatarUrl => throw _privateConstructorUsedError;
   String? get requestUserRegistrationId => throw _privateConstructorUsedError;
   String? get requestUserRating => throw _privateConstructorUsedError;
   String? get requestUserAge => throw _privateConstructorUsedError;
@@ -73,6 +74,7 @@ abstract class $NotificationEntityCopyWith<$Res> {
     @TimestampConverter() DateTime createdAt,
     String? requestUserId,
     String? requestUserName,
+    String? requestUserAvatarUrl,
     String? requestUserRegistrationId,
     String? requestUserRating,
     String? requestUserAge,
@@ -113,6 +115,7 @@ class _$NotificationEntityCopyWithImpl<$Res, $Val extends NotificationEntity>
     Object? createdAt = null,
     Object? requestUserId = freezed,
     Object? requestUserName = freezed,
+    Object? requestUserAvatarUrl = freezed,
     Object? requestUserRegistrationId = freezed,
     Object? requestUserRating = freezed,
     Object? requestUserAge = freezed,
@@ -164,6 +167,10 @@ class _$NotificationEntityCopyWithImpl<$Res, $Val extends NotificationEntity>
             requestUserName: freezed == requestUserName
                 ? _value.requestUserName
                 : requestUserName // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            requestUserAvatarUrl: freezed == requestUserAvatarUrl
+                ? _value.requestUserAvatarUrl
+                : requestUserAvatarUrl // ignore: cast_nullable_to_non_nullable
                       as String?,
             requestUserRegistrationId: freezed == requestUserRegistrationId
                 ? _value.requestUserRegistrationId
@@ -242,6 +249,7 @@ abstract class _$$NotificationEntityImplCopyWith<$Res>
     @TimestampConverter() DateTime createdAt,
     String? requestUserId,
     String? requestUserName,
+    String? requestUserAvatarUrl,
     String? requestUserRegistrationId,
     String? requestUserRating,
     String? requestUserAge,
@@ -281,6 +289,7 @@ class __$$NotificationEntityImplCopyWithImpl<$Res>
     Object? createdAt = null,
     Object? requestUserId = freezed,
     Object? requestUserName = freezed,
+    Object? requestUserAvatarUrl = freezed,
     Object? requestUserRegistrationId = freezed,
     Object? requestUserRating = freezed,
     Object? requestUserAge = freezed,
@@ -332,6 +341,10 @@ class __$$NotificationEntityImplCopyWithImpl<$Res>
         requestUserName: freezed == requestUserName
             ? _value.requestUserName
             : requestUserName // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        requestUserAvatarUrl: freezed == requestUserAvatarUrl
+            ? _value.requestUserAvatarUrl
+            : requestUserAvatarUrl // ignore: cast_nullable_to_non_nullable
                   as String?,
         requestUserRegistrationId: freezed == requestUserRegistrationId
             ? _value.requestUserRegistrationId
@@ -403,6 +416,7 @@ class _$NotificationEntityImpl implements _NotificationEntity {
     @TimestampConverter() required this.createdAt,
     this.requestUserId,
     this.requestUserName,
+    this.requestUserAvatarUrl,
     this.requestUserRegistrationId,
     this.requestUserRating,
     this.requestUserAge,
@@ -442,6 +456,8 @@ class _$NotificationEntityImpl implements _NotificationEntity {
   @override
   final String? requestUserName;
   @override
+  final String? requestUserAvatarUrl;
+  @override
   final String? requestUserRegistrationId;
   @override
   final String? requestUserRating;
@@ -471,7 +487,7 @@ class _$NotificationEntityImpl implements _NotificationEntity {
 
   @override
   String toString() {
-    return 'NotificationEntity(id: $id, userId: $userId, title: $title, body: $body, type: $type, isRead: $isRead, createdAt: $createdAt, requestUserId: $requestUserId, requestUserName: $requestUserName, requestUserRegistrationId: $requestUserRegistrationId, requestUserRating: $requestUserRating, requestUserAge: $requestUserAge, requestUserGender: $requestUserGender, requestUserCity: $requestUserCity, requestUserBio: $requestUserBio, requestUserEventsAttended: $requestUserEventsAttended, requestUserEventsOrganized: $requestUserEventsOrganized, eventId: $eventId, eventTitle: $eventTitle, eventDate: $eventDate, eventLocation: $eventLocation, eventCategory: $eventCategory)';
+    return 'NotificationEntity(id: $id, userId: $userId, title: $title, body: $body, type: $type, isRead: $isRead, createdAt: $createdAt, requestUserId: $requestUserId, requestUserName: $requestUserName, requestUserAvatarUrl: $requestUserAvatarUrl, requestUserRegistrationId: $requestUserRegistrationId, requestUserRating: $requestUserRating, requestUserAge: $requestUserAge, requestUserGender: $requestUserGender, requestUserCity: $requestUserCity, requestUserBio: $requestUserBio, requestUserEventsAttended: $requestUserEventsAttended, requestUserEventsOrganized: $requestUserEventsOrganized, eventId: $eventId, eventTitle: $eventTitle, eventDate: $eventDate, eventLocation: $eventLocation, eventCategory: $eventCategory)';
   }
 
   @override
@@ -491,6 +507,8 @@ class _$NotificationEntityImpl implements _NotificationEntity {
                 other.requestUserId == requestUserId) &&
             (identical(other.requestUserName, requestUserName) ||
                 other.requestUserName == requestUserName) &&
+            (identical(other.requestUserAvatarUrl, requestUserAvatarUrl) ||
+                other.requestUserAvatarUrl == requestUserAvatarUrl) &&
             (identical(
                   other.requestUserRegistrationId,
                   requestUserRegistrationId,
@@ -541,6 +559,7 @@ class _$NotificationEntityImpl implements _NotificationEntity {
     createdAt,
     requestUserId,
     requestUserName,
+    requestUserAvatarUrl,
     requestUserRegistrationId,
     requestUserRating,
     requestUserAge,
@@ -584,6 +603,7 @@ abstract class _NotificationEntity implements NotificationEntity {
     @TimestampConverter() required final DateTime createdAt,
     final String? requestUserId,
     final String? requestUserName,
+    final String? requestUserAvatarUrl,
     final String? requestUserRegistrationId,
     final String? requestUserRating,
     final String? requestUserAge,
@@ -621,6 +641,8 @@ abstract class _NotificationEntity implements NotificationEntity {
   String? get requestUserId;
   @override
   String? get requestUserName;
+  @override
+  String? get requestUserAvatarUrl;
   @override
   String? get requestUserRegistrationId;
   @override

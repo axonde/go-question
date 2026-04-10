@@ -19,6 +19,7 @@ _$EventEntityImpl _$$EventEntityImplFromJson(Map<String, dynamic> json) =>
       participants: (json['participants'] as num).toInt(),
       organizer: json['organizer'] as String,
       status: json['status'] as String,
+      durationMinutes: (json['durationMinutes'] as num?)?.toInt() ?? 60,
       imageUrl: json['imageUrl'] as String?,
       participantIds:
           (json['participantIds'] as List<dynamic>?)
@@ -55,6 +56,7 @@ Map<String, dynamic> _$$EventEntityImplToJson(_$EventEntityImpl instance) =>
       'participants': instance.participants,
       'organizer': instance.organizer,
       'status': instance.status,
+      'durationMinutes': instance.durationMinutes,
       'imageUrl': instance.imageUrl,
       'participantIds': instance.participantIds,
       'pendingParticipantIds': instance.pendingParticipantIds,

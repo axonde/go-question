@@ -13,6 +13,7 @@ abstract class EventsConstants {
   static const String fieldParticipants = 'participants';
   static const String fieldOrganizer = 'organizer';
   static const String fieldStatus = 'status';
+  static const String fieldDurationMinutes = 'durationMinutes';
   static const String fieldCreatedAt = 'createdAt';
   static const String fieldUpdatedAt = 'updatedAt';
   static const String fieldImageUrl = 'imageUrl';
@@ -37,6 +38,7 @@ abstract class EventsConstants {
   static const String statusUpcoming = 'upcoming';
   static const String statusCancelled = 'cancelled';
   static const String statusCompleted = 'completed';
+  static const int defaultDurationMinutes = 60;
 
   static const String joinModeOpen = 'open';
   static const String joinModeRequest = 'request';

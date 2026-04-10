@@ -504,6 +504,8 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
             NotificationsConstants.fieldRequestUserId: requesterUid,
             NotificationsConstants.fieldRequestUserName:
                 requesterData[ProfileFirestoreConstants.fieldName],
+            NotificationsConstants.fieldRequestUserAvatarUrl:
+                requesterData[ProfileFirestoreConstants.fieldAvatarUrl],
             NotificationsConstants.fieldRequestUserRegistrationId:
                 requesterData[ProfileFirestoreConstants.fieldRegistrationId]
                     ?.toString(),
@@ -711,6 +713,8 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
           NotificationsConstants.fieldRequestUserName:
               userData[ProfileFirestoreConstants.fieldName] ??
               userData[ProfileFirestoreConstants.fieldNickname],
+          NotificationsConstants.fieldRequestUserAvatarUrl:
+              userData[ProfileFirestoreConstants.fieldAvatarUrl],
           NotificationsConstants.fieldRequestUserRegistrationId:
               userData[ProfileFirestoreConstants.fieldRegistrationId]
                   ?.toString(),

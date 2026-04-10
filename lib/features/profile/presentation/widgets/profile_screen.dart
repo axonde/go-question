@@ -147,7 +147,11 @@ class _ProfileContent extends StatelessWidget {
                         );
                       },
                     ),
-                    _Profile(name: profileName, registrationId: registrationId),
+                    _Profile(
+                      name: profileName,
+                      registrationId: registrationId,
+                      trophies: profile.trophies,
+                    ),
                     _Characteristics(
                       birthDate: birthDateText,
                       isBirthDatePlaceholder: isBirthDatePlaceholder,

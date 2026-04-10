@@ -10,6 +10,7 @@ class NotificationsConstants {
   static const String fieldCreatedAt = 'createdAt';
   static const String fieldRequestUserId = 'requestUserId';
   static const String fieldRequestUserName = 'requestUserName';
+  static const String fieldRequestUserAvatarUrl = 'requestUserAvatarUrl';
   static const String fieldRequestUserRegistrationId =
       'requestUserRegistrationId';
   static const String fieldRequestUserRating = 'requestUserRating';
