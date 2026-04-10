@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/home_ui_constants.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 

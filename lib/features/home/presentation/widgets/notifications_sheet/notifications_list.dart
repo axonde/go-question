@@ -33,11 +33,11 @@ class _NotificationsList extends StatelessWidget {
         padding: const EdgeInsets.all(UiConstants.horizontalPadding * 2),
         children: [
           if (unreadNotifications.isNotEmpty)
-            const Padding(
-              padding: EdgeInsets.only(bottom: UiConstants.boxUnit),
+            Padding(
+              padding: const EdgeInsets.only(bottom: UiConstants.boxUnit),
               child: Text(
-                EventTexts.notificationsUnreadSectionTitle,
-                style: TextStyle(
+                context.l10n.notificationsUnreadSectionTitle,
+                style: const TextStyle(
                   fontFamily: 'RussoOne',
                   fontSize: UiConstants.textSize * 0.75,
                   color: AppColors.textPrimary,
@@ -46,14 +46,14 @@ class _NotificationsList extends StatelessWidget {
             ),
           ..._buildCards(unreadNotifications),
           if (readNotifications.isNotEmpty)
-            const Padding(
-              padding: EdgeInsets.only(
+            Padding(
+              padding: const EdgeInsets.only(
                 top: UiConstants.boxUnit * 2,
                 bottom: UiConstants.boxUnit,
               ),
               child: Text(
-                EventTexts.notificationsReadSectionTitle,
-                style: TextStyle(
+                context.l10n.notificationsReadSectionTitle,
+                style: const TextStyle(
                   fontFamily: 'RussoOne',
                   fontSize: UiConstants.textSize * 0.75,
                   color: AppColors.textPrimary,

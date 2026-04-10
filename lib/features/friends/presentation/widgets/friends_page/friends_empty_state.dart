@@ -18,10 +18,10 @@ class _FriendsEmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              FriendsTexts.noFriends,
+            Text(
+              context.l10n.friendsNoFriends,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppColors.textPrimary,
                 fontSize: UiConstants.textSize * 0.9,
                 fontWeight: FontWeight.w800,
@@ -29,10 +29,10 @@ class _FriendsEmptyState extends StatelessWidget {
             ),
             if (hintsEnabled) ...[
               const SizedBox(height: UiConstants.boxUnit),
-              const Text(
-                FriendsTexts.noFriendsHint,
+              Text(
+                context.l10n.friendsNoFriendsHint,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.textSecondary,
                   fontSize: UiConstants.textSize * 0.75,
                   fontWeight: FontWeight.w600,

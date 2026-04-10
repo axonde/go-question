@@ -27,8 +27,6 @@ class MainNavPage extends StatefulWidget {
 
 class _MainNavPageState extends State<MainNavPage> {
   late final PageController _pageController = PageController(initialPage: 1);
-  late final SettingsBloc _settingsBloc = sl<SettingsBloc>()
-    ..add(const SettingsRequested());
   int _currentIndex = 1;
   bool _soundEnabled = SettingsConstants.defaultSoundEnabled;
   Timer? _syncTimer;
@@ -90,76 +88,76 @@ class _MainNavPageState extends State<MainNavPage> {
   @override
   void dispose() {
     _syncTimer?.cancel();
-    _settingsBloc.close();
     _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<SettingsBloc>.value(
-      value: _settingsBloc,
-      child: BlocBuilder<SettingsBloc, SettingsState>(
-        builder: (context, state) {
-          final settings = state.settings;
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      builder: (context, state) {
+        final settings = state.settings;
 
-          return Scaffold(
-            body: PageView(
-              controller: _pageController,
-              onPageChanged: (index) => setState(() => _currentIndex = index),
-              children: [
-                FriendsPage(
-                  hintsEnabled: settings.hintsEnabled,
-                  compactModeEnabled: settings.compactModeEnabled,
-                ),
-                HomePage(
-                  notificationsEnabled: settings.notificationsEnabled,
-                  hintsEnabled: settings.hintsEnabled,
-                  compactModeEnabled: settings.compactModeEnabled,
-                ),
-                SettingsPage(
-                  notificationsEnabled: settings.notificationsEnabled,
-                  hintsEnabled: settings.hintsEnabled,
-                  compactModeEnabled: settings.compactModeEnabled,
-                  soundEnabled: _soundEnabled,
-                  onNotificationsChanged: (value) {
-                    context.read<SettingsBloc>().add(
-                      SettingsNotificationsToggled(value),
-                    );
-                  },
-                  onHintsChanged: (value) {
-                    context.read<SettingsBloc>().add(
-                      SettingsHintsToggled(value),
-                    );
-                  },
-                  onCompactModeChanged: (value) {
-                    context.read<SettingsBloc>().add(
-                      SettingsCompactModeToggled(value),
-                    );
-                  },
-                  onSoundChanged: (value) async {
-                    await sl<SharedPreferences>().setBool(
-                      SettingsConstants.soundEnabledPrefKey,
-                      value,
-                    );
-                    setState(() {
-                      _soundEnabled = value;
-                    });
-                    await sl<SfxService>().setEnabled(value);
-                    await sl<BackgroundMusicService>().setVolume(
-                      value ? 1.0 : 0.0,
-                    );
-                  },
-                ),
-              ],
-            ),
-            bottomNavigationBar: ClashNavBar(
-              currentIndex: _currentIndex,
-              onTap: _onNavTap,
-            ),
-          );
-        },
-      ),
+        return Scaffold(
+          body: PageView(
+            controller: _pageController,
+            onPageChanged: (index) => setState(() => _currentIndex = index),
+            children: [
+              FriendsPage(
+                hintsEnabled: settings.hintsEnabled,
+                compactModeEnabled: settings.compactModeEnabled,
+              ),
+              HomePage(
+                notificationsEnabled: settings.notificationsEnabled,
+                hintsEnabled: settings.hintsEnabled,
+                compactModeEnabled: settings.compactModeEnabled,
+              ),
+              SettingsPage(
+                notificationsEnabled: settings.notificationsEnabled,
+                hintsEnabled: settings.hintsEnabled,
+                compactModeEnabled: settings.compactModeEnabled,
+                soundEnabled: _soundEnabled,
+                selectedLanguageCode: settings.selectedLanguageCode,
+                onNotificationsChanged: (value) {
+                  context.read<SettingsBloc>().add(
+                    SettingsNotificationsToggled(value),
+                  );
+                },
+                onHintsChanged: (value) {
+                  context.read<SettingsBloc>().add(SettingsHintsToggled(value));
+                },
+                onCompactModeChanged: (value) {
+                  context.read<SettingsBloc>().add(
+                    SettingsCompactModeToggled(value),
+                  );
+                },
+                onLanguageChanged: (value) {
+                  context.read<SettingsBloc>().add(
+                    SettingsLanguageChanged(value),
+                  );
+                },
+                onSoundChanged: (value) async {
+                  await sl<SharedPreferences>().setBool(
+                    SettingsConstants.soundEnabledPrefKey,
+                    value,
+                  );
+                  setState(() {
+                    _soundEnabled = value;
+                  });
+                  await sl<SfxService>().setEnabled(value);
+                  await sl<BackgroundMusicService>().setVolume(
+                    value ? 1.0 : 0.0,
+                  );
+                },
+              ),
+            ],
+          ),
+          bottomNavigationBar: ClashNavBar(
+            currentIndex: _currentIndex,
+            onTap: _onNavTap,
+          ),
+        );
+      },
     );
   }
 }

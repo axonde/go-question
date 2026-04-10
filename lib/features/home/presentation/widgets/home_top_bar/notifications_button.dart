@@ -26,7 +26,7 @@ class _NotificationsButton extends StatelessWidget {
         children: [
           GQButton(
             onPressed: onTap,
-            text: 'Уведомления',
+            text: context.l10n.homeNotificationsButton,
             fontSize: UiConstants.textSize,
             baseColor: HomeUiConstants.notificationButtonBackground,
             width: constraints.maxWidth,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/router/router.dart';
-import 'package:go_question/core/constants/event_texts.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 import 'package:go_question/features/achievements/presentation/bloc/achievements_bloc.dart';
 import 'package:go_question/features/achievements/presentation/widgets/achievements_dialog.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
@@ -129,9 +129,9 @@ class HomePage extends StatelessWidget {
         ),
       );
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text(EventTexts.createSnackCreated)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.l10n.homeSnackEventCreated)));
   }
 
   void _showProfileScreen(BuildContext context) {
@@ -232,7 +232,7 @@ class HomePage extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  '${EventTexts.notificationsSnackNewPrefix} ${popupNotification.title}',
+                  '${context.l10n.homeSnackNewNotificationPrefix} ${popupNotification.title}',
                 ),
               ),
             );

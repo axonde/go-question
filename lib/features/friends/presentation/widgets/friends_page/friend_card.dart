@@ -64,7 +64,7 @@ class _FriendCard extends StatelessWidget {
                     ),
                     const SizedBox(height: UiConstants.boxUnit * 0.5),
                     Text(
-                      '${FriendsTexts.friendIdPrefix}: ${user.registrationId}',
+                      '${context.l10n.friendsIdPrefix}: ${user.registrationId}',
                       style: const TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: UiConstants.textSize * 0.7,
@@ -73,8 +73,8 @@ class _FriendCard extends StatelessWidget {
                     ),
                     const SizedBox(height: UiConstants.boxUnit * 0.25),
                     Text(
-                      '${FriendsTexts.cityPrefix}: ${user.city}  •  '
-                      '${FriendsTexts.levelPrefix}: ${user.level}',
+                      '${context.l10n.friendsCityPrefix}: ${user.city.isEmpty ? context.l10n.friendsCityFallback : user.city}  •  '
+                      '${context.l10n.friendsLevelPrefix}: ${user.level}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(

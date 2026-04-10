@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/home_ui_constants.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 import 'package:go_question/core/widgets/avatar_square.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
@@ -65,14 +66,14 @@ class _ProfileCard extends StatelessWidget {
     final authNickname = authUser?.nickname.trim() ?? '';
     final registrationId = profile?.registrationId;
     final safeName = authUser == null
-        ? 'Войти'
+        ? context.l10n.homeProfileLoginAction
         : ((profileName == null || profileName.isEmpty)
               ? (authNickname.isNotEmpty
                     ? authNickname
                     : ProfilePresentationConstants.displayNameFallback)
               : profileName);
     final idLabel = authUser == null
-        ? 'Для доступа к профилю'
+        ? context.l10n.homeProfileAccessHint
         : registrationId == null
         ? 'ID: —'
         : 'ID: $registrationId';

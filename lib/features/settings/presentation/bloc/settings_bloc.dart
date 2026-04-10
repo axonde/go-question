@@ -17,6 +17,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<SettingsNotificationsToggled>(_onNotificationsToggled);
     on<SettingsHintsToggled>(_onHintsToggled);
     on<SettingsCompactModeToggled>(_onCompactModeToggled);
+    on<SettingsLanguageChanged>(_onLanguageChanged);
   }
 
   Future<void> _onSettingsRequested(
@@ -78,6 +79,18 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       updatedSettings: state.settings.copyWith(
         compactModeEnabled: event.enabled,
       ),
+    );
+  }
+
+  Future<void> _onLanguageChanged(
+    SettingsLanguageChanged event,
+    Emitter<SettingsState> emit,
+  ) async {
+    await _persistUpdatedSettings(
+      emit: emit,
+      updatedSettings: event.languageCode == null
+          ? state.settings.copyWith(clearSelectedLanguageCode: true)
+          : state.settings.copyWith(selectedLanguageCode: event.languageCode),
     );
   }
 

@@ -55,7 +55,7 @@ class _UserProfilePlaceholderDialog extends StatelessWidget {
               ),
               const SizedBox(height: UiConstants.boxUnit),
               Text(
-                '${FriendsTexts.friendIdPrefix}: ${user.registrationId}',
+                '${context.l10n.friendsIdPrefix}: ${user.registrationId}',
                 style: const TextStyle(
                   color: AppColors.textSecondary,
                   fontSize: UiConstants.textSize * 0.8,
@@ -63,18 +63,18 @@ class _UserProfilePlaceholderDialog extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: UiConstants.boxUnit * 1.5),
-              const Text(
-                FriendsTexts.openProfileStubTitle,
-                style: TextStyle(
+              Text(
+                context.l10n.friendsOpenProfileStubTitle,
+                style: const TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: UiConstants.textSize,
                   fontWeight: FontWeight.w800,
                 ),
               ),
               const SizedBox(height: UiConstants.boxUnit),
-              const Text(
-                FriendsTexts.openProfileStubDescription,
-                style: TextStyle(
+              Text(
+                context.l10n.friendsOpenProfileStubDescription,
+                style: const TextStyle(
                   color: AppColors.textSecondary,
                   fontSize: UiConstants.textSize * 0.78,
                   fontWeight: FontWeight.w600,

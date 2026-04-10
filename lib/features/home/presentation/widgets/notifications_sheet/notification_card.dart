@@ -76,9 +76,9 @@ class NotificationCard extends StatelessWidget {
               ),
               if (!isExpanded) ...[
                 const SizedBox(height: 4),
-                const Text(
-                  EventTexts.notificationsTapHint,
-                  style: TextStyle(
+                Text(
+                  context.l10n.notificationsTapHint,
+                  style: const TextStyle(
                     fontFamily: 'RussoOne',
                     color: Color(0xFF8A93A6),
                     fontSize: 11,
@@ -101,7 +101,7 @@ class NotificationCard extends StatelessWidget {
                             baseColor: AppColors.error,
                             onPressed: onReject ?? () {},
                             isLoading: isLoading,
-                            text: EventTexts.buttonReject,
+                            text: context.l10n.notificationsButtonReject,
                             fontSize: UiConstants.textSize * 0.75,
                           ),
                         ),
@@ -114,7 +114,7 @@ class NotificationCard extends StatelessWidget {
                           baseColor: AppColors.success,
                           onPressed: onAccept ?? () {},
                           isLoading: isLoading,
-                          text: EventTexts.buttonApprove,
+                          text: context.l10n.notificationsButtonApprove,
                           fontSize: UiConstants.textSize * 0.75,
                         ),
                       ),
@@ -214,7 +214,7 @@ class _UserInfo extends StatelessWidget {
                   if (data.userRegistrationId != null)
                     const SizedBox(height: 2),
                   Text(
-                    'Рейтинг: ${data.userRating ?? '0 🏆'}',
+                    '${context.l10n.notificationsRatingPrefix}: ${data.userRating ?? '0 🏆'}',
                     style: const TextStyle(
                       fontFamily: 'RussoOne',
                       fontSize: 14,
@@ -277,7 +277,7 @@ class _UserInfo extends StatelessWidget {
                         Expanded(
                           child: _StatChip(
                             icon: Icons.event_available,
-                            label: 'Посетил',
+                            label: context.l10n.notificationsVisitedLabel,
                             value: '${data.userEventsAttended}',
                           ),
                         ),
@@ -288,7 +288,7 @@ class _UserInfo extends StatelessWidget {
                         Expanded(
                           child: _StatChip(
                             icon: Icons.event_note,
-                            label: 'Организовал',
+                            label: context.l10n.notificationsOrganizedLabel,
                             value: '${data.userEventsOrganized}',
                           ),
                         ),
@@ -301,9 +301,9 @@ class _UserInfo extends StatelessWidget {
         // Биография
         if (data.userBio != null) ...[
           const SizedBox(height: UiConstants.boxUnit * 1.25),
-          const Text(
-            'О себе:',
-            style: TextStyle(
+          Text(
+            '${context.l10n.notificationsAboutLabel}:',
+            style: const TextStyle(
               fontFamily: 'RussoOne',
               fontSize: 14,
               color: Color(0xFF3A4560),

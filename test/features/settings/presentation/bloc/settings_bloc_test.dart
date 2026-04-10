@@ -136,4 +136,31 @@ void main() {
 
     await subscription.cancel();
   });
+
+  test('saves selected language when language is changed', () async {
+    repository.loadResult = const Success(loadedSettings);
+    repository.saveResult = const Success(
+      AppSettings(
+        notificationsEnabled: false,
+        hintsEnabled: true,
+        compactModeEnabled: true,
+        selectedLanguageCode: 'ru',
+      ),
+    );
+
+    final states = <SettingsState>[];
+    final subscription = bloc.stream.listen(states.add);
+
+    bloc.add(const SettingsRequested());
+    await Future.delayed(Duration.zero);
+
+    bloc.add(const SettingsLanguageChanged('ru'));
+    await Future.delayed(Duration.zero);
+
+    expect(repository.lastSavedSettings, isNotNull);
+    expect(repository.lastSavedSettings!.selectedLanguageCode, 'ru');
+    expect(states.last.settings.selectedLanguageCode, 'ru');
+
+    await subscription.cancel();
+  });
 }

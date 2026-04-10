@@ -25,3 +25,9 @@ final class SettingsCompactModeToggled extends SettingsEvent {
 
   const SettingsCompactModeToggled(this.enabled);
 }
+
+final class SettingsLanguageChanged extends SettingsEvent {
+  final String? languageCode;
+
+  const SettingsLanguageChanged(this.languageCode);
+}

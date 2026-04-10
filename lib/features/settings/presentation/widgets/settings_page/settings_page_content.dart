@@ -5,24 +5,29 @@ class _SettingsPageContent extends StatelessWidget {
   final bool hintsEnabled;
   final bool compactModeEnabled;
   final bool soundEnabled;
+  final String? selectedLanguageCode;
   final ValueChanged<bool> onNotificationsChanged;
   final ValueChanged<bool> onHintsChanged;
   final ValueChanged<bool> onCompactModeChanged;
   final ValueChanged<bool> onSoundChanged;
+  final ValueChanged<String?> onLanguageChanged;
 
   const _SettingsPageContent({
     required this.notificationsEnabled,
     required this.hintsEnabled,
     required this.compactModeEnabled,
     required this.soundEnabled,
+    required this.selectedLanguageCode,
     required this.onNotificationsChanged,
     required this.onHintsChanged,
     required this.onCompactModeChanged,
     required this.onSoundChanged,
+    required this.onLanguageChanged,
   });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final verticalGap = compactModeEnabled
         ? UiConstants.boxUnit
         : UiConstants.boxUnit * 2;
@@ -44,9 +49,9 @@ class _SettingsPageContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            SettingsTexts.pageTitle,
-            style: TextStyle(
+          Text(
+            l10n.settingsPageTitle,
+            style: const TextStyle(
               color: AppColors.textPrimary,
               fontSize: UiConstants.textSize * 1.35,
               fontWeight: FontWeight.w900,
@@ -54,14 +59,14 @@ class _SettingsPageContent extends StatelessWidget {
           ),
           SizedBox(height: verticalGap),
           _SettingsSectionCard(
-            title: SettingsTexts.preferencesTitle,
+            title: l10n.settingsPreferencesTitle,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (hintsEnabled) ...[
-                  const Text(
-                    SettingsTexts.preferencesHint,
-                    style: TextStyle(
+                  Text(
+                    l10n.settingsPreferencesHint,
+                    style: const TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: UiConstants.textSize * 0.76,
                       fontWeight: FontWeight.w600,
@@ -70,8 +75,8 @@ class _SettingsPageContent extends StatelessWidget {
                   SizedBox(height: verticalGap),
                 ],
                 _SettingsToggleTile(
-                  title: SettingsTexts.notificationsTitle,
-                  subtitle: SettingsTexts.notificationsSubtitle,
+                  title: l10n.settingsNotificationsTitle,
+                  subtitle: l10n.settingsNotificationsSubtitle,
                   value: notificationsEnabled,
                   onChanged: onNotificationsChanged,
                 ),
@@ -81,8 +86,8 @@ class _SettingsPageContent extends StatelessWidget {
                       : UiConstants.boxUnit * 1.5,
                 ),
                 _SettingsToggleTile(
-                  title: SettingsTexts.hintsTitle,
-                  subtitle: SettingsTexts.hintsSubtitle,
+                  title: l10n.settingsHintsTitle,
+                  subtitle: l10n.settingsHintsSubtitle,
                   value: hintsEnabled,
                   onChanged: onHintsChanged,
                 ),
@@ -92,8 +97,8 @@ class _SettingsPageContent extends StatelessWidget {
                       : UiConstants.boxUnit * 1.5,
                 ),
                 _SettingsToggleTile(
-                  title: SettingsTexts.soundTitle,
-                  subtitle: SettingsTexts.soundSubtitle,
+                  title: l10n.settingsSoundTitle,
+                  subtitle: l10n.settingsSoundSubtitle,
                   value: soundEnabled,
                   onChanged: onSoundChanged,
                 ),
@@ -103,18 +108,27 @@ class _SettingsPageContent extends StatelessWidget {
                       : UiConstants.boxUnit * 1.5,
                 ),
                 _SettingsToggleTile(
-                  title: SettingsTexts.compactModeTitle,
-                  subtitle: SettingsTexts.compactModeSubtitle,
+                  title: l10n.settingsCompactModeTitle,
+                  subtitle: l10n.settingsCompactModeSubtitle,
                   value: compactModeEnabled,
                   onChanged: onCompactModeChanged,
+                ),
+                SizedBox(
+                  height: compactModeEnabled
+                      ? UiConstants.boxUnit
+                      : UiConstants.boxUnit * 1.5,
+                ),
+                _SettingsLanguageTile(
+                  selectedLanguageCode: selectedLanguageCode,
+                  onChanged: onLanguageChanged,
                 ),
               ],
             ),
           ),
           SizedBox(height: verticalGap),
-          const _SettingsSectionCard(
-            title: SettingsTexts.accountTitle,
-            child: SignOutButton(),
+          _SettingsSectionCard(
+            title: l10n.settingsAccountTitle,
+            child: const SignOutButton(),
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/city_constants.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 
 /// Bottom sheet выбора города.
 class CitySelectorSheet extends StatelessWidget {
@@ -17,9 +18,9 @@ class CitySelectorSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Выбор города',
-            style: TextStyle(
+          Text(
+            context.l10n.homeCitySelectorTitle,
+            style: const TextStyle(
               fontSize: UiConstants.textSize * 1.1,
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,

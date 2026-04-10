@@ -39,7 +39,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     );
 
     await _notificationsSubscription?.cancel();
-    _knownNotificationIds..clear();
+    _knownNotificationIds.clear();
     _streamPrimed = false;
 
     _notificationsSubscription = _repository

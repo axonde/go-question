@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
-import 'package:go_question/core/constants/settings_texts.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/auth/presentation/pages/auth_flow_page.dart';
@@ -12,6 +12,7 @@ class SignOutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final authState = context.select<AuthBloc, AuthState>((bloc) => bloc.state);
     final isLoading = authState.isLoading;
     final isLoggedOut = authState.status == AuthStatus.unauthenticated;
@@ -21,7 +22,7 @@ class SignOutButton extends StatelessWidget {
         if (isLoggedOut) {
           showGeneralDialog<void>(
             context: context,
-            barrierLabel: 'auth-overlay',
+            barrierLabel: l10n.appTitle,
             transitionDuration: Duration.zero,
             pageBuilder: (context, animation, secondaryAnimation) =>
                 const AuthFlowPage(),
@@ -33,7 +34,7 @@ class SignOutButton extends StatelessWidget {
         context.read<AuthBloc>().add(const AuthSignOutRequested());
       },
       isLoading: isLoading,
-      text: isLoggedOut ? SettingsTexts.signIn : SettingsTexts.signOut,
+      text: isLoggedOut ? l10n.settingsSignIn : l10n.settingsSignOut,
       widthFactor: 1,
       aspectRatio: 4.8,
       baseColor: isLoggedOut ? AppColors.success : AppColors.redBackground,

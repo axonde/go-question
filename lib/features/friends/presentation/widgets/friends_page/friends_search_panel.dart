@@ -54,9 +54,9 @@ class _FriendsSearchPanel extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              FriendsTexts.searchSectionTitle,
-              style: TextStyle(
+            Text(
+              context.l10n.friendsSearchSectionTitle,
+              style: const TextStyle(
                 color: AppColors.textPrimary,
                 fontSize: UiConstants.textSize * 0.9,
                 fontWeight: FontWeight.w800,
@@ -80,7 +80,7 @@ class _FriendsSearchPanel extends StatelessWidget {
                   FocusManager.instance.primaryFocus?.unfocus(),
               onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
               decoration: InputDecoration(
-                hintText: FriendsTexts.searchHint,
+                hintText: context.l10n.friendsSearchHint,
                 hintStyle: const TextStyle(color: AppColors.textSecondary),
                 filled: true,
                 fillColor: AppColors.inputBackground,

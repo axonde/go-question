@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
-import 'package:go_question/core/constants/friends_texts.dart';
 import 'package:go_question/core/constants/friends_ui_constants.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 import 'package:go_question/core/types/result.dart';
 import 'package:go_question/core/widgets/avatar_square.dart';
 import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
@@ -233,7 +233,7 @@ class _FriendUserData {
       id: profile.uid,
       registrationId: profile.registrationId,
       name: profile.name,
-      city: profile.city ?? FriendsTexts.friendCityFallback,
+      city: profile.city ?? '',
       level: profile.trophies,
       avatarColor: palette[hash % palette.length],
       avatarUrl: profile.avatarUrl,
