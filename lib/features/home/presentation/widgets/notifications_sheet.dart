@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
-import 'package:go_question/core/constants/event_texts.dart';
+import 'package:go_question/core/constants/city_constants.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
+import 'package:go_question/core/widgets/avatar_square.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
-import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
+import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
 import 'package:go_question/core/widgets/loading/firebase_action_shimmer.dart';
+import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
 import 'package:go_question/features/notifications/domain/entities/notification_entity.dart';
 import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
+import 'package:go_question/features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'package:go_question/features/profile/constants/profile_presentation.dart';
 import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
@@ -27,6 +31,7 @@ class NotificationData {
   final bool showAccept;
   final bool showReject;
   final String? userName;
+  final String? userAvatarUrl;
   final String? userRegistrationId;
   final String? userRating;
   final String? userAge;
@@ -49,6 +54,7 @@ class NotificationData {
     this.showAccept = false,
     this.showReject = false,
     this.userName,
+    this.userAvatarUrl,
     this.userRegistrationId,
     this.userRating,
     this.userAge,
@@ -79,6 +85,7 @@ class NotificationData {
               entity.type == NotificationType.friendRequest) &&
           !entity.isRead,
       userName: entity.requestUserName,
+      userAvatarUrl: entity.requestUserAvatarUrl,
       userRegistrationId: entity.requestUserRegistrationId,
       userRating: entity.requestUserRating,
       userAge: entity.requestUserAge,
@@ -103,8 +110,9 @@ class NotificationsSheet extends StatefulWidget {
 }
 
 class _NotificationsSheetState extends State<NotificationsSheet> {
-  int? _expandedIndex;
+  String? _expandedNotificationId;
   final Set<String> _processingIds = <String>{};
+  bool _isClearingAll = false;
 
   Future<void> _acceptRequest(NotificationData data) async {
     final profile = context.read<ProfileBloc>().state.profile;
@@ -119,7 +127,10 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
           organizerId: profile.uid,
         );
       }
-      await sl<INotificationsRepository>().markAsRead(data.id);
+      if (!mounted) return;
+      context.read<NotificationsBloc>().add(
+        NotificationsMarkAsReadRequested(data.id),
+      );
       if (!mounted) return;
       context.read<ProfileBloc>().add(ProfileRefreshRequested(profile.uid));
     } finally {
@@ -142,12 +153,41 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
           organizerId: profile.uid,
         );
       }
-      await sl<INotificationsRepository>().markAsRead(data.id);
+      if (!mounted) return;
+      context.read<NotificationsBloc>().add(
+        NotificationsMarkAsReadRequested(data.id),
+      );
       if (!mounted) return;
       context.read<ProfileBloc>().add(ProfileRefreshRequested(profile.uid));
     } finally {
       if (mounted) {
         setState(() => _processingIds.remove(data.id));
+      }
+    }
+  }
+
+  Future<void> _clearReadNotifications() async {
+    final profile = context.read<ProfileBloc>().state.profile;
+    if (profile == null || _isClearingAll) {
+      return;
+    }
+
+    setState(() => _isClearingAll = true);
+    try {
+      await sl<INotificationsRepository>().clearRead(profile.uid);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _expandedNotificationId = null;
+        _processingIds.clear();
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.notificationsSnackReadCleared)),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isClearingAll = false);
       }
     }
   }
@@ -178,38 +218,50 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
           _buildHeader(context),
           Expanded(
             child: profile == null
-                ? const Center(child: Text(EventTexts.notificationsEmptyState))
-                : StreamBuilder<List<NotificationEntity>>(
-                    stream: sl<INotificationsRepository>().watchNotifications(
-                      profile.uid,
-                    ),
-                    builder: (context, snapshot) {
-                      final notifications = (snapshot.data ?? const [])
+                ? Center(child: Text(context.l10n.notificationsEmptyState))
+                : BlocBuilder<NotificationsBloc, NotificationsState>(
+                    builder: (context, state) {
+                      final notifications = state.notifications
                           .map(NotificationData.fromEntity)
                           .toList(growable: false);
-                      if (snapshot.hasError && notifications.isEmpty) {
-                        return const Center(
-                          child: Text(EventTexts.notificationsEmptyState),
-                        );
-                      }
-                      if (snapshot.connectionState == ConnectionState.waiting &&
+
+                      if (state.status == NotificationsStatus.loading &&
                           notifications.isEmpty) {
                         return const Center(child: CircularProgressIndicator());
                       }
-                      if (notifications.isEmpty) {
-                        return const Center(
-                          child: Text(EventTexts.notificationsEmptyState),
+                      if (state.status == NotificationsStatus.failure &&
+                          notifications.isEmpty) {
+                        return Center(
+                          child: Text(
+                            state.errorMessage ??
+                                context.l10n.notificationsEmptyState,
+                          ),
                         );
                       }
+                      if (notifications.isEmpty) {
+                        return Center(
+                          child: Text(context.l10n.notificationsEmptyState),
+                        );
+                      }
+
                       return _NotificationsList(
                         notifications: notifications,
                         processingIds: _processingIds,
-                        expandedIndex: _expandedIndex,
-                        onToggle: (index) => setState(() {
-                          _expandedIndex = _expandedIndex == index
-                              ? null
-                              : index;
-                        }),
+                        expandedNotificationId: _expandedNotificationId,
+                        onToggle: (notification) {
+                          setState(() {
+                            _expandedNotificationId =
+                                _expandedNotificationId == notification.id
+                                ? null
+                                : notification.id;
+                          });
+
+                          if (!notification.isRead) {
+                            context.read<NotificationsBloc>().add(
+                              NotificationsMarkAsReadRequested(notification.id),
+                            );
+                          }
+                        },
                         onAccept: _acceptRequest,
                         onReject: _rejectRequest,
                       );
@@ -242,8 +294,35 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            const Center(
-              child: _StrokeTitle(text: EventTexts.notificationsHeaderTitle),
+            Align(
+              child: _StrokeTitle(text: context.l10n.notificationsHeaderTitle),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: FirebaseActionShimmer(
+                isLoading: _isClearingAll,
+                borderRadius: UiConstants.borderRadius * 4,
+                child: Pressable(
+                  onTap: _clearReadNotifications,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.stroke),
+                      borderRadius: BorderRadius.circular(
+                        UiConstants.borderRadius * 4,
+                      ),
+                      color: AppColors.redBackground,
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(UiConstants.gap),
+                      child: Icon(
+                        Icons.delete_forever_rounded,
+                        color: Colors.white,
+                        size: UiConstants.boxUnit * 2.2,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
             Align(
               alignment: Alignment.centerRight,

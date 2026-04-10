@@ -17,6 +17,7 @@ class NotificationEntity with _$NotificationEntity {
     // Опциональные поля для запросов на участие
     String? requestUserId,
     String? requestUserName,
+    String? requestUserAvatarUrl,
     String? requestUserRegistrationId,
     String? requestUserRating,
     String? requestUserAge,

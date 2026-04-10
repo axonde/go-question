@@ -20,6 +20,9 @@ class NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizedTitle = _resolveNotificationTitle(context, data);
+    final localizedBody = _resolveNotificationBody(context, data);
+
     return GestureDetector(
       onTap: onToggle,
       child: AnimatedSize(
@@ -47,13 +50,13 @@ class NotificationCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               _StrokeTitle(
-                text: data.title,
+                text: localizedTitle,
                 fontSize: UiConstants.textSize * 1.05,
                 maxLines: 2,
               ),
               const SizedBox(height: 8),
               Text(
-                data.body,
+                localizedBody,
                 maxLines: isExpanded ? null : 3,
                 overflow: isExpanded ? null : TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -76,9 +79,9 @@ class NotificationCard extends StatelessWidget {
               ),
               if (!isExpanded) ...[
                 const SizedBox(height: 4),
-                const Text(
-                  EventTexts.notificationsTapHint,
-                  style: TextStyle(
+                Text(
+                  context.l10n.notificationsTapHint,
+                  style: const TextStyle(
                     fontFamily: 'RussoOne',
                     color: Color(0xFF8A93A6),
                     fontSize: 11,
@@ -101,7 +104,7 @@ class NotificationCard extends StatelessWidget {
                             baseColor: AppColors.error,
                             onPressed: onReject ?? () {},
                             isLoading: isLoading,
-                            text: EventTexts.buttonReject,
+                            text: context.l10n.notificationsButtonReject,
                             fontSize: UiConstants.textSize * 0.75,
                           ),
                         ),
@@ -114,7 +117,7 @@ class NotificationCard extends StatelessWidget {
                           baseColor: AppColors.success,
                           onPressed: onAccept ?? () {},
                           isLoading: isLoading,
-                          text: EventTexts.buttonApprove,
+                          text: context.l10n.notificationsButtonApprove,
                           fontSize: UiConstants.textSize * 0.75,
                         ),
                       ),
@@ -127,6 +130,43 @@ class NotificationCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String _resolveNotificationTitle(BuildContext context, NotificationData data) {
+  final l10n = context.l10n;
+
+  return switch (data.type) {
+    NotificationType.friendRequest => l10n.notificationsTitleFriendRequest,
+    NotificationType.joinRequest => l10n.notificationsTitleJoinRequest,
+    NotificationType.eventReminder => l10n.notificationsTitleEventReminder,
+    NotificationType.message => l10n.notificationsTitleMessage,
+    NotificationType.system => l10n.notificationsTitleSystem,
+  };
+}
+
+String _resolveNotificationBody(BuildContext context, NotificationData data) {
+  final l10n = context.l10n;
+  final user = (data.userName?.trim().isNotEmpty ?? false)
+      ? data.userName!.trim()
+      : ProfilePresentationConstants.displayNameFallback;
+  final event = (data.eventTitle?.trim().isNotEmpty ?? false)
+      ? data.eventTitle!.trim()
+      : l10n.notificationsTitleSystem;
+
+  return switch (data.type) {
+    NotificationType.friendRequest => l10n.notificationsBodyFriendRequest(
+      user: user,
+    ),
+    NotificationType.joinRequest => l10n.notificationsBodyJoinRequest(
+      user: user,
+      event: event,
+    ),
+    NotificationType.eventReminder => l10n.notificationsBodyEventReminder(
+      event: event,
+    ),
+    NotificationType.message => l10n.notificationsBodyMessage,
+    NotificationType.system => l10n.notificationsBodySystem,
+  };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -178,21 +218,14 @@ class _UserInfo extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: UiConstants.boxUnit * 6,
-              height: UiConstants.boxUnit * 6,
-              decoration: BoxDecoration(
-                color: AppColors.primaryVariant,
-                borderRadius: BorderRadius.circular(
-                  UiConstants.borderRadius * 4,
-                ),
-                border: Border.all(color: AppColors.stroke),
-              ),
-              child: const Icon(
-                Icons.person,
-                color: Colors.white,
-                size: UiConstants.boxUnit * 4,
-              ),
+            AvatarSquare(
+              size: UiConstants.boxUnit * 6,
+              imagePathOrUrl: data.userAvatarUrl,
+              backgroundColor: AppColors.primaryVariant,
+              borderRadius: UiConstants.borderRadius * 4,
+              borderColor: AppColors.stroke,
+              fallbackAssetPath: ProfilePresentationConstants.defaultAvatarPath,
+              fallbackText: data.userName,
             ),
             const SizedBox(width: UiConstants.boxUnit * 1.5),
             Expanded(
@@ -221,7 +254,7 @@ class _UserInfo extends StatelessWidget {
                   if (data.userRegistrationId != null)
                     const SizedBox(height: 2),
                   Text(
-                    'Рейтинг: ${data.userRating ?? '0 🏆'}',
+                    '${context.l10n.notificationsRatingPrefix}: ${data.userRating ?? '0 🏆'}',
                     style: const TextStyle(
                       fontFamily: 'RussoOne',
                       fontSize: 14,
@@ -266,7 +299,10 @@ class _UserInfo extends StatelessWidget {
                   const SizedBox(height: UiConstants.boxUnit * 0.75),
                   _UserDetailRow(
                     icon: Icons.location_city_outlined,
-                    label: data.userCity!,
+                    label: CityConstants.toLocalizedLabel(
+                      storedValue: data.userCity,
+                      localize: context.l10n.cityLabel,
+                    ),
                   ),
                 ],
                 if (data.userEventsAttended != null ||
@@ -284,7 +320,7 @@ class _UserInfo extends StatelessWidget {
                         Expanded(
                           child: _StatChip(
                             icon: Icons.event_available,
-                            label: 'Посетил',
+                            label: context.l10n.notificationsVisitedLabel,
                             value: '${data.userEventsAttended}',
                           ),
                         ),
@@ -295,7 +331,7 @@ class _UserInfo extends StatelessWidget {
                         Expanded(
                           child: _StatChip(
                             icon: Icons.event_note,
-                            label: 'Организовал',
+                            label: context.l10n.notificationsOrganizedLabel,
                             value: '${data.userEventsOrganized}',
                           ),
                         ),
@@ -308,9 +344,9 @@ class _UserInfo extends StatelessWidget {
         // Биография
         if (data.userBio != null) ...[
           const SizedBox(height: UiConstants.boxUnit * 1.25),
-          const Text(
-            'О себе:',
-            style: TextStyle(
+          Text(
+            '${context.l10n.notificationsAboutLabel}:',
+            style: const TextStyle(
               fontFamily: 'RussoOne',
               fontSize: 14,
               color: Color(0xFF3A4560),

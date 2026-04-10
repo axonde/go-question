@@ -23,6 +23,8 @@ abstract final class ProfileFirestoreConstants {
   static const String fieldCreatedEventsCount = 'createdEventsCount';
   static const String fieldJoinedEventIds = 'joinedEventIds';
   static const String fieldCreatedEventIds = 'createdEventIds';
+  static const String fieldAchievementIds = 'achievementIds';
+  static const String fieldUnseenAchievementIds = 'unseenAchievementIds';
   static const String fieldFriendIds = 'friendIds';
   static const String fieldIncomingFriendRequestIds =
       'incomingFriendRequestIds';
@@ -63,6 +65,8 @@ abstract final class ProfileValidationMessages {
       'createdEventsCount must be >= 0';
   static const String eventIdCannotBeEmpty =
       'event id cannot be empty or whitespace-only';
+  static const String achievementIdCannotBeEmpty =
+      'achievement id cannot be empty or whitespace-only';
   static const String incrementByInvalid = 'by must be >= 0, got';
 }
 

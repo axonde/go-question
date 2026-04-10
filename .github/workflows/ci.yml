@@ -1,62 +1,69 @@
-# name: Flutter CI/CD
-# 
-# on:
-#   push:
-#     branches: [ master ]
-#   pull_request:
-#     branches: [ master ]
-# 
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-# 
-#     steps:
-#       - uses: actions/checkout@v4
-# 
-#       - name: Setup Java
-#         uses: actions/setup-java@v3
-#         with:
-#           distribution: 'zulu'
-#           java-version: '17'
-# 
-#       - name: Setup Flutter
-#         uses: subosito/flutter-action@v2
-#         with:
-#           flutter-version: '3.41.6'
-#           channel: 'stable'
-#           cache: true
-# 
-#       - name: Install dependencies
-#         run: flutter pub get
-# 
-#       - name: Create mock firebase_options.dart
-#         run: |
-#           cat <<EOF > lib/firebase_options.dart
-#           import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
-#           class DefaultFirebaseOptions {
-#             static FirebaseOptions get currentPlatform {
-#               return const FirebaseOptions(
-#                 apiKey: 'mock',
-#                 appId: 'mock',
-#                 messagingSenderId: 'mock',
-#                 projectId: 'mock',
-#               );
-#             }
-#           }
-#           EOF
-#           dart format lib/firebase_options.dart
-# 
-#       - name: Generate code
-#         run: dart run build_runner build --delete-conflicting-outputs
-# 
-#       - name: Check formatting
-#         run: dart format --set-exit-if-changed lib test
-# 
-#       - name: Analyze code
-#         run: flutter analyze
-# 
-#       - name: Run tests
-#         run: flutter test
-# 
-#       - name: Build APK (Release)
-#         run: flutter build apk --release --no-pub
+name: Flutter CI/CD
+
+on:
+    push:
+        branches: [master]
+    pull_request:
+        branches: [master]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup Java
+              uses: actions/setup-java@v3
+              with:
+                  distribution: "zulu"
+                  java-version: "17"
+
+            - name: Setup Flutter
+              uses: subosito/flutter-action@v2
+              with:
+                  flutter-version: "3.41.6"
+                  channel: "stable"
+                  cache: true
+
+            - name: Install dependencies
+              run: flutter pub get
+
+            - name: Create mock firebase_options.dart
+              run: |
+                  cat <<EOF > lib/firebase_options.dart
+                  import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+                  class DefaultFirebaseOptions {
+                    static FirebaseOptions get currentPlatform {
+                      return const FirebaseOptions(
+                        apiKey: 'mock',
+                        appId: 'mock',
+                        messagingSenderId: 'mock',
+                        projectId: 'mock',
+                      );
+                    }
+                  }
+                  EOF
+                  dart format lib/firebase_options.dart
+
+            - name: Generate code
+              run: dart run build_runner build --delete-conflicting-outputs
+
+            - name: Check formatting
+              run: dart format --set-exit-if-changed lib test
+
+            - name: Analyze code
+              run: flutter analyze
+
+            - name: Run tests
+              run: flutter test
+
+            - name: Build APK (Release)
+              run: flutter build apk --release --no-pub
+
+            - name: Upload APK artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: go-question-apk-release
+                  path: build/app/outputs/flutter-apk/app-release.apk
+                  if-no-files-found: error

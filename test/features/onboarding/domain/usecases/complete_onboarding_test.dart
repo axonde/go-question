@@ -16,8 +16,9 @@ void main() {
 
   test('should call setOnboardingCompleted on the repository', () async {
     // arrange
-    when(() => mockRepository.setOnboardingCompleted())
-        .thenAnswer((_) async => {});
+    when(
+      () => mockRepository.setOnboardingCompleted(),
+    ).thenAnswer((_) async => {});
     // act
     await usecase();
     // assert

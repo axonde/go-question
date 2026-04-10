@@ -21,11 +21,13 @@ class _FriendsSearchResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     if (!hasQuery) {
       return hintsEnabled
-          ? const Text(
-              FriendsTexts.searchEmpty,
-              style: TextStyle(
+          ? Text(
+              l10n.friendsSearchEmpty,
+              style: const TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: UiConstants.textSize * 0.78,
                 fontWeight: FontWeight.w600,
@@ -35,9 +37,9 @@ class _FriendsSearchResult extends StatelessWidget {
     }
 
     if (searchResult == null) {
-      return const Text(
-        FriendsTexts.searchNotFound,
-        style: TextStyle(
+      return Text(
+        l10n.friendsSearchNotFound,
+        style: const TextStyle(
           color: AppColors.textSecondary,
           fontSize: UiConstants.textSize * 0.78,
           fontWeight: FontWeight.w600,
@@ -46,18 +48,40 @@ class _FriendsSearchResult extends StatelessWidget {
     }
 
     final currentUserId = context.read<ProfileBloc>().state.profile?.uid ?? '';
-    final actionLabel = FriendRelationUtils.actionLabel(
+    final isSelf =
+        currentUserId.isNotEmpty && currentUserId == searchResult!.id;
+    final isFriend = FriendRelationUtils.isFriend(
+      currentProfile: currentProfile,
+      otherUid: searchResult!.id,
+    );
+    final isOutgoingPending = FriendRelationUtils.isOutgoingRequestPending(
       currentProfile: currentProfile,
       currentUserId: currentUserId,
       otherUid: searchResult!.id,
     );
+    final isIncomingPending = FriendRelationUtils.isIncomingRequestPending(
+      currentProfile: currentProfile,
+      currentUserId: currentUserId,
+      otherUid: searchResult!.id,
+    );
+
+    final actionLabel = isSelf
+        ? l10n.friendsSelfAccount
+        : isFriend
+        ? l10n.friendsAlreadyFriend
+        : isOutgoingPending
+        ? l10n.friendsRequestPending
+        : isIncomingPending
+        ? l10n.friendsRequestIncoming
+        : l10n.friendsAddFriend;
+
     final canSendRequest = FriendRelationUtils.canSendRequest(
       currentProfile: currentProfile,
       currentUserId: currentUserId,
       otherUid: searchResult!.id,
     );
     final isPendingAction = pendingFriendRequestIds.contains(searchResult!.id);
-    final trailing = actionLabel == FriendsTexts.alreadyFriend
+    final trailing = isFriend
         ? Container(
             constraints: const BoxConstraints(
               minWidth: UiConstants.boxUnit * 11,
@@ -72,12 +96,12 @@ class _FriendsSearchResult extends StatelessWidget {
               borderRadius: BorderRadius.circular(UiConstants.borderRadius * 4),
               border: Border.all(color: FriendsUiConstants.alreadyFriendBorder),
             ),
-            child: const Text(
-              FriendsTexts.alreadyFriend,
+            child: Text(
+              l10n.friendsAlreadyFriend,
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: UiConstants.textSize * 0.65,
                 fontWeight: FontWeight.w700,
@@ -102,9 +126,9 @@ class _FriendsSearchResult extends StatelessWidget {
                   ),
                   border: Border.all(color: AppColors.secondaryVariant),
                 ),
-                child: const Text(
-                  FriendsTexts.addFriend,
-                  style: TextStyle(
+                child: Text(
+                  l10n.friendsAddFriend,
+                  style: const TextStyle(
                     color: FriendsUiConstants.avatarText,
                     fontSize: UiConstants.textSize * 0.72,
                     fontWeight: FontWeight.w900,

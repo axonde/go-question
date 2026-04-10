@@ -16,8 +16,7 @@ void main() {
 
   test('should get onboarding status from the repository', () async {
     // arrange
-    when(() => mockRepository.getOnboardingStatus())
-        .thenReturn(true);
+    when(() => mockRepository.getOnboardingStatus()).thenReturn(true);
     // act
     final result = await usecase();
     // assert
@@ -28,8 +27,7 @@ void main() {
 
   test('should return false when onboarding is not completed', () async {
     // arrange
-    when(() => mockRepository.getOnboardingStatus())
-        .thenReturn(false);
+    when(() => mockRepository.getOnboardingStatus()).thenReturn(false);
     // act
     final result = await usecase();
     // assert

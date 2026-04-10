@@ -4,24 +4,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
-import 'package:go_question/core/constants/friends_texts.dart';
+import 'package:go_question/core/constants/city_constants.dart';
 import 'package:go_question/core/constants/friends_ui_constants.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 import 'package:go_question/core/types/result.dart';
-import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
+import 'package:go_question/core/widgets/avatar_square.dart';
+import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
 import 'package:go_question/core/widgets/loading/firebase_action_shimmer.dart';
 import 'package:go_question/core/widgets/pressable.dart';
+import 'package:go_question/features/auth/domain/entities/auth_page.dart';
+import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/friends/presentation/utils/friend_relation_utils.dart';
 import 'package:go_question/features/profile/domain/entities/profile.dart';
 import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/injection_container/injection_container.dart';
 
+part '../widgets/friends_page/friend_card.dart';
+part '../widgets/friends_page/friends_empty_state.dart';
+part '../widgets/friends_page/friends_list.dart';
 part '../widgets/friends_page/friends_page_content.dart';
 part '../widgets/friends_page/friends_search_panel.dart';
 part '../widgets/friends_page/friends_search_result.dart';
-part '../widgets/friends_page/friends_list.dart';
-part '../widgets/friends_page/friend_card.dart';
-part '../widgets/friends_page/friends_empty_state.dart';
 part '../widgets/friends_page/user_profile_placeholder_dialog.dart';
 
 class FriendsPage extends StatefulWidget {
@@ -48,7 +52,19 @@ class _FriendsPageState extends State<FriendsPage> {
 
   String get _query => _searchController.text.trim();
 
+  void _redirectToRegistration() {
+    context.read<AuthBloc>().add(const AuthPageChanged(AuthPage.login));
+    sl<AppRouter>().replace(const AuthFlowRoute());
+  }
+
   Future<void> _searchUser(String query) async {
+    if (_currentUserId == null) {
+      if (_searchResult != null) {
+        setState(() => _searchResult = null);
+      }
+      return;
+    }
+
     if (query.trim().isEmpty) {
       setState(() => _searchResult = null);
       return;
@@ -77,9 +93,11 @@ class _FriendsPageState extends State<FriendsPage> {
 
   Future<void> _addFriend(_FriendUserData user) async {
     final currentUserId = _currentUserId;
-    if (currentUserId == null || _pendingFriendRequestIds.contains(user.id)) {
+    if (currentUserId == null ||
+        user.id == currentUserId ||
+        _pendingFriendRequestIds.contains(user.id)) {
       if (currentUserId == null) {
-        sl<AppRouter>().push(const AuthFlowRoute());
+        sl<AppRouter>().replace(const AuthFlowRoute());
       }
       return;
     }
@@ -146,24 +164,38 @@ class _FriendsPageState extends State<FriendsPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
-      body: SafeArea(
-        child: _FriendsPageContent(
-          hintsEnabled: widget.hintsEnabled,
-          compactModeEnabled: widget.compactModeEnabled,
-          searchController: _searchController,
-          searchResult: _searchResult,
-          hasQuery: _query.isNotEmpty,
-          currentProfile: currentProfile,
-          profileRepository: _profileRepository,
-          pendingFriendRequestIds: _pendingFriendRequestIds,
-          pendingFriendRemovalIds: _pendingFriendRemovalIds,
-          onSearchChanged: (value) {
-            setState(() {});
-            _searchUser(value);
-          },
-          onAddFriend: _addFriend,
-          onRemoveFriend: _removeFriend,
-          onOpenProfile: _openProfilePreview,
+      body: BlocListener<AuthBloc, AuthState>(
+        listenWhen: (previous, current) => previous.status != current.status,
+        listener: (context, state) {
+          if (state.status == AuthStatus.unauthenticated) {
+            setState(() {
+              _searchController.clear();
+              _searchResult = null;
+              _pendingFriendRequestIds.clear();
+              _pendingFriendRemovalIds.clear();
+            });
+          }
+        },
+        child: SafeArea(
+          child: _FriendsPageContent(
+            hintsEnabled: widget.hintsEnabled,
+            compactModeEnabled: widget.compactModeEnabled,
+            searchController: _searchController,
+            searchResult: _searchResult,
+            hasQuery: _query.isNotEmpty,
+            currentProfile: currentProfile,
+            profileRepository: _profileRepository,
+            pendingFriendRequestIds: _pendingFriendRequestIds,
+            pendingFriendRemovalIds: _pendingFriendRemovalIds,
+            onSearchChanged: (value) {
+              setState(() {});
+              _searchUser(value);
+            },
+            onRequireRegistration: _redirectToRegistration,
+            onAddFriend: _addFriend,
+            onRemoveFriend: _removeFriend,
+            onOpenProfile: _openProfilePreview,
+          ),
         ),
       ),
     );
@@ -177,6 +209,7 @@ class _FriendUserData {
   final String city;
   final int level;
   final Color avatarColor;
+  final String? avatarUrl;
 
   const _FriendUserData({
     required this.id,
@@ -185,6 +218,7 @@ class _FriendUserData {
     required this.city,
     required this.level,
     required this.avatarColor,
+    required this.avatarUrl,
   });
 
   factory _FriendUserData.fromProfile(Profile profile) {
@@ -200,9 +234,10 @@ class _FriendUserData {
       id: profile.uid,
       registrationId: profile.registrationId,
       name: profile.name,
-      city: profile.city ?? FriendsTexts.friendCityFallback,
+      city: profile.city ?? '',
       level: profile.trophies,
       avatarColor: palette[hash % palette.length],
+      avatarUrl: profile.avatarUrl,
     );
   }
 }

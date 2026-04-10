@@ -11,6 +11,7 @@ class _FriendsPageContent extends StatelessWidget {
   final Set<String> pendingFriendRequestIds;
   final Set<String> pendingFriendRemovalIds;
   final ValueChanged<String> onSearchChanged;
+  final VoidCallback onRequireRegistration;
   final ValueChanged<_FriendUserData> onAddFriend;
   final ValueChanged<String> onRemoveFriend;
   final ValueChanged<_FriendUserData> onOpenProfile;
@@ -26,6 +27,7 @@ class _FriendsPageContent extends StatelessWidget {
     required this.pendingFriendRequestIds,
     required this.pendingFriendRemovalIds,
     required this.onSearchChanged,
+    required this.onRequireRegistration,
     required this.onAddFriend,
     required this.onRemoveFriend,
     required this.onOpenProfile,
@@ -55,9 +57,9 @@ class _FriendsPageContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            FriendsTexts.pageTitle,
-            style: TextStyle(
+          Text(
+            context.l10n.friendsPageTitle,
+            style: const TextStyle(
               color: AppColors.textPrimary,
               fontSize: UiConstants.textSize * 1.35,
               fontWeight: FontWeight.w900,
@@ -70,9 +72,11 @@ class _FriendsPageContent extends StatelessWidget {
             controller: searchController,
             searchResult: searchResult,
             hasQuery: hasQuery,
+            canSearch: currentProfile != null,
             currentProfile: currentProfile,
             pendingFriendRequestIds: pendingFriendRequestIds,
             onChanged: onSearchChanged,
+            onRequireRegistration: onRequireRegistration,
             onAddFriend: onAddFriend,
             onOpenProfile: onOpenProfile,
           ),

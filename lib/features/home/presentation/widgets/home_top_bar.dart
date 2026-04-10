@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/home_ui_constants.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 
 part 'home_top_bar/achievement_button.dart';
 part 'home_top_bar/city_button.dart';
+part 'home_top_bar/leaderboard_button.dart';
 part 'home_top_bar/notifications_button.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -37,7 +39,10 @@ class HomeTopBar extends StatelessWidget {
   final VoidCallback onAchievementsTap;
   final VoidCallback onCityTap;
   final VoidCallback onNotificationsTap;
+  final VoidCallback onLeaderboardTap;
   final bool showAchievements;
+  final bool hasUnreadAchievements;
+  final bool hasUnreadNotifications;
   final String city;
 
   const HomeTopBar({
@@ -45,8 +50,11 @@ class HomeTopBar extends StatelessWidget {
     required this.onAchievementsTap,
     required this.onCityTap,
     required this.onNotificationsTap,
+    required this.onLeaderboardTap,
     this.showAchievements = true,
-    this.city = 'Санкт-Петербург',
+    this.hasUnreadAchievements = false,
+    this.hasUnreadNotifications = false,
+    this.city = '',
   });
 
   @override
@@ -68,11 +76,18 @@ class HomeTopBar extends StatelessWidget {
                 child: _AchievementButton(
                   onTap: onAchievementsTap,
                   visible: showAchievements,
+                  hasUnreadAchievements: hasUnreadAchievements,
                   height: buttonH,
                 ),
               ),
               Expanded(
-                flex: 5,
+                child: _LeaderboardButton(
+                  onTap: onLeaderboardTap,
+                  height: buttonH,
+                ),
+              ),
+              Expanded(
+                flex: 4,
                 child: _CityButton(
                   city: city,
                   onTap: onCityTap,
@@ -80,9 +95,10 @@ class HomeTopBar extends StatelessWidget {
                 ),
               ),
               Expanded(
-                flex: 5,
+                flex: 4,
                 child: _NotificationsButton(
                   onTap: onNotificationsTap,
+                  hasUnreadNotifications: hasUnreadNotifications,
                   height: buttonH,
                 ),
               ),

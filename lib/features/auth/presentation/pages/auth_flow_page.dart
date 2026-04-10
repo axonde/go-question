@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_question/config/main_nav_page.dart';
 import 'package:go_question/features/auth/domain/entities/auth_page.dart';
 
 import '../bloc/auth_bloc.dart';
@@ -17,9 +16,25 @@ class AuthFlowPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listenWhen: (previous, current) =>
+          previous.status != current.status ||
           previous.errorMessage != current.errorMessage ||
           previous.hint != current.hint,
       listener: (context, state) {
+        if (state.status == AuthStatus.awaitingProfile ||
+            state.status == AuthStatus.authenticated) {
+          final route = ModalRoute.of(context);
+          if (route is PopupRoute<dynamic>) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!context.mounted) return;
+              final navigator = Navigator.of(context, rootNavigator: true);
+              if (navigator.canPop()) {
+                navigator.pop();
+              }
+            });
+          }
+          return;
+        }
+
         final messenger = ScaffoldMessenger.of(context);
         if (state.errorMessage != null && state.errorMessage!.isNotEmpty) {
           messenger.showSnackBar(SnackBar(content: Text(state.errorMessage!)));
@@ -32,8 +47,10 @@ class AuthFlowPage extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        if (state.status == AuthStatus.authenticated) {
-          return const MainNavPage();
+        if (state.status == AuthStatus.loading ||
+            state.status == AuthStatus.awaitingProfile ||
+            state.status == AuthStatus.authenticated) {
+          return const _AuthLoadingScreen();
         }
 
         switch (state.currentPage) {
@@ -105,5 +122,14 @@ class AuthFlowPage extends StatelessWidget {
         }
       },
     );
+  }
+}
+
+class _AuthLoadingScreen extends StatelessWidget {
+  const _AuthLoadingScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }

@@ -6,9 +6,11 @@ class _FriendsSearchPanel extends StatelessWidget {
   final TextEditingController controller;
   final _FriendUserData? searchResult;
   final bool hasQuery;
+  final bool canSearch;
   final Profile? currentProfile;
   final Set<String> pendingFriendRequestIds;
   final ValueChanged<String> onChanged;
+  final VoidCallback onRequireRegistration;
   final ValueChanged<_FriendUserData> onAddFriend;
   final ValueChanged<_FriendUserData> onOpenProfile;
 
@@ -18,9 +20,11 @@ class _FriendsSearchPanel extends StatelessWidget {
     required this.controller,
     required this.searchResult,
     required this.hasQuery,
+    required this.canSearch,
     required this.currentProfile,
     required this.pendingFriendRequestIds,
     required this.onChanged,
+    required this.onRequireRegistration,
     required this.onAddFriend,
     required this.onOpenProfile,
   });
@@ -50,9 +54,9 @@ class _FriendsSearchPanel extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              FriendsTexts.searchSectionTitle,
-              style: TextStyle(
+            Text(
+              context.l10n.friendsSearchSectionTitle,
+              style: const TextStyle(
                 color: AppColors.textPrimary,
                 fontSize: UiConstants.textSize * 0.9,
                 fontWeight: FontWeight.w800,
@@ -65,7 +69,9 @@ class _FriendsSearchPanel extends StatelessWidget {
             ),
             TextField(
               controller: controller,
-              onChanged: onChanged,
+              readOnly: !canSearch,
+              onTap: canSearch ? null : onRequireRegistration,
+              onChanged: canSearch ? onChanged : null,
               keyboardType: TextInputType.number,
               textInputAction: TextInputAction.done,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -74,7 +80,7 @@ class _FriendsSearchPanel extends StatelessWidget {
                   FocusManager.instance.primaryFocus?.unfocus(),
               onSubmitted: (_) => FocusManager.instance.primaryFocus?.unfocus(),
               decoration: InputDecoration(
-                hintText: FriendsTexts.searchHint,
+                hintText: context.l10n.friendsSearchHint,
                 hintStyle: const TextStyle(color: AppColors.textSecondary),
                 filled: true,
                 fillColor: AppColors.inputBackground,
@@ -104,7 +110,7 @@ class _FriendsSearchPanel extends StatelessWidget {
             _FriendsSearchResult(
               hintsEnabled: hintsEnabled,
               searchResult: searchResult,
-              hasQuery: hasQuery,
+              hasQuery: canSearch && hasQuery,
               currentProfile: currentProfile,
               pendingFriendRequestIds: pendingFriendRequestIds,
               onAddFriend: onAddFriend,

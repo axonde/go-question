@@ -33,6 +33,7 @@ mixin _$EventEntity {
   int get participants => throw _privateConstructorUsedError;
   String get organizer => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
+  int get durationMinutes => throw _privateConstructorUsedError;
   String? get imageUrl => throw _privateConstructorUsedError;
   List<String> get participantIds => throw _privateConstructorUsedError;
   List<String> get pendingParticipantIds => throw _privateConstructorUsedError;
@@ -74,6 +75,7 @@ abstract class $EventEntityCopyWith<$Res> {
     int participants,
     String organizer,
     String status,
+    int durationMinutes,
     String? imageUrl,
     List<String> participantIds,
     List<String> pendingParticipantIds,
@@ -112,6 +114,7 @@ class _$EventEntityCopyWithImpl<$Res, $Val extends EventEntity>
     Object? participants = null,
     Object? organizer = null,
     Object? status = null,
+    Object? durationMinutes = null,
     Object? imageUrl = freezed,
     Object? participantIds = null,
     Object? pendingParticipantIds = null,
@@ -168,6 +171,10 @@ class _$EventEntityCopyWithImpl<$Res, $Val extends EventEntity>
                 ? _value.status
                 : status // ignore: cast_nullable_to_non_nullable
                       as String,
+            durationMinutes: null == durationMinutes
+                ? _value.durationMinutes
+                : durationMinutes // ignore: cast_nullable_to_non_nullable
+                      as int,
             imageUrl: freezed == imageUrl
                 ? _value.imageUrl
                 : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -231,6 +238,7 @@ abstract class _$$EventEntityImplCopyWith<$Res>
     int participants,
     String organizer,
     String status,
+    int durationMinutes,
     String? imageUrl,
     List<String> participantIds,
     List<String> pendingParticipantIds,
@@ -268,6 +276,7 @@ class __$$EventEntityImplCopyWithImpl<$Res>
     Object? participants = null,
     Object? organizer = null,
     Object? status = null,
+    Object? durationMinutes = null,
     Object? imageUrl = freezed,
     Object? participantIds = null,
     Object? pendingParticipantIds = null,
@@ -324,6 +333,10 @@ class __$$EventEntityImplCopyWithImpl<$Res>
             ? _value.status
             : status // ignore: cast_nullable_to_non_nullable
                   as String,
+        durationMinutes: null == durationMinutes
+            ? _value.durationMinutes
+            : durationMinutes // ignore: cast_nullable_to_non_nullable
+                  as int,
         imageUrl: freezed == imageUrl
             ? _value.imageUrl
             : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -380,6 +393,7 @@ class _$EventEntityImpl implements _EventEntity {
     required this.participants,
     required this.organizer,
     required this.status,
+    this.durationMinutes = 60,
     this.imageUrl,
     final List<String> participantIds = const <String>[],
     final List<String> pendingParticipantIds = const <String>[],
@@ -419,6 +433,9 @@ class _$EventEntityImpl implements _EventEntity {
   final String organizer;
   @override
   final String status;
+  @override
+  @JsonKey()
+  final int durationMinutes;
   @override
   final String? imageUrl;
   final List<String> _participantIds;
@@ -468,7 +485,7 @@ class _$EventEntityImpl implements _EventEntity {
 
   @override
   String toString() {
-    return 'EventEntity(id: $id, title: $title, description: $description, startTime: $startTime, location: $location, category: $category, price: $price, maxUsers: $maxUsers, participants: $participants, organizer: $organizer, status: $status, imageUrl: $imageUrl, participantIds: $participantIds, pendingParticipantIds: $pendingParticipantIds, rejectedParticipantIds: $rejectedParticipantIds, requiresApproval: $requiresApproval, visibility: $visibility, joinMode: $joinMode, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'EventEntity(id: $id, title: $title, description: $description, startTime: $startTime, location: $location, category: $category, price: $price, maxUsers: $maxUsers, participants: $participants, organizer: $organizer, status: $status, durationMinutes: $durationMinutes, imageUrl: $imageUrl, participantIds: $participantIds, pendingParticipantIds: $pendingParticipantIds, rejectedParticipantIds: $rejectedParticipantIds, requiresApproval: $requiresApproval, visibility: $visibility, joinMode: $joinMode, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -494,6 +511,8 @@ class _$EventEntityImpl implements _EventEntity {
             (identical(other.organizer, organizer) ||
                 other.organizer == organizer) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.durationMinutes, durationMinutes) ||
+                other.durationMinutes == durationMinutes) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
             const DeepCollectionEquality().equals(
@@ -535,6 +554,7 @@ class _$EventEntityImpl implements _EventEntity {
     participants,
     organizer,
     status,
+    durationMinutes,
     imageUrl,
     const DeepCollectionEquality().hash(_participantIds),
     const DeepCollectionEquality().hash(_pendingParticipantIds),
@@ -573,6 +593,7 @@ abstract class _EventEntity implements EventEntity {
     required final int participants,
     required final String organizer,
     required final String status,
+    final int durationMinutes,
     final String? imageUrl,
     final List<String> participantIds,
     final List<String> pendingParticipantIds,
@@ -610,6 +631,8 @@ abstract class _EventEntity implements EventEntity {
   String get organizer;
   @override
   String get status;
+  @override
+  int get durationMinutes;
   @override
   String? get imageUrl;
   @override

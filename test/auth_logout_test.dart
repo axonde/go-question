@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_question/core/services/sfx_service.dart';
 import 'package:go_question/core/types/result.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/features/auth/domain/entities/auth_page.dart';
@@ -10,6 +11,10 @@ import 'package:go_question/features/auth/domain/repositories/i_auth_repository.
 import 'package:go_question/features/auth/domain/services/auth_page_memory.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/settings/presentation/pages/settings_page.dart';
+import 'package:go_question/injection_container/injection_container.dart';
+import 'package:mocktail/mocktail.dart';
+
+class MockSfxService extends Mock implements SfxService {}
 
 class FakeAuthRepository implements IAuthRepository {
   RegistrationInput? _currentUser;
@@ -99,6 +104,17 @@ class InMemoryAuthPageMemory implements AuthPageMemory {
 }
 
 void main() {
+  setUp(() async {
+    await sl.reset();
+    final mockSfxService = MockSfxService();
+    when(() => mockSfxService.playTap()).thenAnswer((_) async {});
+    sl.registerLazySingleton<SfxService>(() => mockSfxService);
+  });
+
+  tearDown(() async {
+    await sl.reset();
+  });
+
   testWidgets('logout from settings resets auth bloc state', (tester) async {
     final repo = FakeAuthRepository(
       currentUser: const RegistrationInput(
@@ -124,7 +140,9 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byType(GQButton));
+    final signOutFinder = find.byType(GQButton).first;
+    await tester.ensureVisible(signOutFinder);
+    await tester.tap(signOutFinder);
     await tester.pump();
     await tester.pump();
 

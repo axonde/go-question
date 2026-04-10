@@ -22,6 +22,8 @@ abstract class IProfileRemoteDataSource {
 
   /// Retrieves profiles by ids.
   Future<List<ProfileModel>> getProfilesByIds(List<String> uids);
+  Future<List<ProfileModel>> getTopProfilesByTrophies({int limit = 100});
+  Stream<List<ProfileModel>> watchTopProfilesByTrophies({int limit = 100});
 
   /// Retrieves a user's friend profiles.
   Future<List<ProfileModel>> getFriends(String uid);
@@ -186,6 +188,43 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
   }
 
   @override
+  Future<List<ProfileModel>> getTopProfilesByTrophies({int limit = 100}) async {
+    try {
+      final snapshot = await _firestore
+          .collection(ProfileFirestoreConstants.usersCollection)
+          .where(ProfileFirestoreConstants.fieldTrophies, isGreaterThan: 0)
+          .orderBy(ProfileFirestoreConstants.fieldTrophies, descending: true)
+          .limit(limit)
+          .get();
+
+      return snapshot.docs
+          .where((doc) => doc.exists && doc.data().isNotEmpty)
+          .map((doc) => ProfileModel.fromJson({...doc.data(), 'uid': doc.id}))
+          .toList(growable: false);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Stream<List<ProfileModel>> watchTopProfilesByTrophies({int limit = 100}) {
+    return _firestore
+        .collection(ProfileFirestoreConstants.usersCollection)
+        .where(ProfileFirestoreConstants.fieldTrophies, isGreaterThan: 0)
+        .orderBy(ProfileFirestoreConstants.fieldTrophies, descending: true)
+        .limit(limit)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .where((doc) => doc.exists && doc.data().isNotEmpty)
+              .map(
+                (doc) => ProfileModel.fromJson({...doc.data(), 'uid': doc.id}),
+              )
+              .toList(growable: false),
+        );
+  }
+
+  @override
   Future<List<ProfileModel>> getFriends(String uid) async {
     final profile = await getProfile(uid);
     if (profile == null) {
@@ -288,6 +327,8 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
           'createdEventsCount': 0,
           'joinedEventIds': const <String>[],
           'createdEventIds': const <String>[],
+          'achievementIds': const <String>[],
+          'unseenAchievementIds': const <String>[],
           'friendIds': const <String>[],
           'incomingFriendRequestIds': const <String>[],
           'outgoingFriendRequestIds': const <String>[],
@@ -502,6 +543,8 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
             NotificationsConstants.fieldRequestUserId: requesterUid,
             NotificationsConstants.fieldRequestUserName:
                 requesterData[ProfileFirestoreConstants.fieldName],
+            NotificationsConstants.fieldRequestUserAvatarUrl:
+                requesterData[ProfileFirestoreConstants.fieldAvatarUrl],
             NotificationsConstants.fieldRequestUserRegistrationId:
                 requesterData[ProfileFirestoreConstants.fieldRegistrationId]
                     ?.toString(),
@@ -675,7 +718,8 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
           .doc(friendUid);
       final notificationRef = _firestore
           .collection(NotificationsConstants.notificationsCollection)
-          .doc('${userUid}_${friendUid}_friend_removed');
+          .doc();
+      final notificationId = notificationRef.id;
 
       await _firestore.runTransaction((tx) async {
         final userSnapshot = await tx.get(userRef);
@@ -696,8 +740,7 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
               FieldValue.serverTimestamp(),
         });
         tx.set(notificationRef, {
-          NotificationsConstants.fieldId:
-              '${userUid}_${friendUid}_friend_removed',
+          NotificationsConstants.fieldId: notificationId,
           NotificationsConstants.fieldUserId: friendUid,
           NotificationsConstants.fieldTitle: 'Удаление из друзей',
           NotificationsConstants.fieldBody:
@@ -709,6 +752,8 @@ class ProfileRemoteDataSourceImpl implements IProfileRemoteDataSource {
           NotificationsConstants.fieldRequestUserName:
               userData[ProfileFirestoreConstants.fieldName] ??
               userData[ProfileFirestoreConstants.fieldNickname],
+          NotificationsConstants.fieldRequestUserAvatarUrl:
+              userData[ProfileFirestoreConstants.fieldAvatarUrl],
           NotificationsConstants.fieldRequestUserRegistrationId:
               userData[ProfileFirestoreConstants.fieldRegistrationId]
                   ?.toString(),

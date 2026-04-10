@@ -102,7 +102,14 @@ class AppRouter extends RootStackRouter {
       page: ProfileInitializationRoute.page,
       guards: [authGuard],
     ),
-    AutoRoute(path: '/auth', page: AuthFlowRoute.page, guards: [guestGuard]),
+    CustomRoute(
+      path: '/auth',
+      page: AuthFlowRoute.page,
+      guards: [guestGuard],
+      transitionsBuilder: TransitionsBuilders.noTransition,
+      duration: Duration.zero,
+      reverseDuration: Duration.zero,
+    ),
     AutoRoute(path: '/onboarding', page: OnboardingRoute.page),
     RedirectRoute(path: '*', redirectTo: '/'),
   ];

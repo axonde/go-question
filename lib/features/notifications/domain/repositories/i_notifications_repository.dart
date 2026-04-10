@@ -8,4 +8,6 @@ abstract interface class INotificationsRepository {
   Stream<List<NotificationEntity>> watchNotifications(String userId);
   Future<Result<void, NotificationFailure>> markAsRead(String notificationId);
   Future<Result<void, NotificationFailure>> markAllAsRead(String userId);
+  Future<Result<void, NotificationFailure>> clearRead(String userId);
+  Future<Result<void, NotificationFailure>> clearAll(String userId);
 }

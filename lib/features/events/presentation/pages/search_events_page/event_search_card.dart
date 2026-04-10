@@ -256,7 +256,7 @@ class _JoinAction extends StatelessWidget {
           ? () {}
           : () {
               if (currentUserId == null) {
-                sl<AppRouter>().push(const AuthFlowRoute());
+                sl<AppRouter>().replace(const AuthFlowRoute());
                 return;
               }
 
@@ -506,34 +506,23 @@ class _OrganizerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String?>(
-      future: _loadOrganizerName(),
+    return FutureBuilder<_OrganizerInfo?>(
+      future: _loadOrganizerInfo(),
       builder: (context, snapshot) {
-        final organizerName = snapshot.data?.trim().isNotEmpty == true
-            ? snapshot.data!.trim()
+        final organizerName = snapshot.data?.name.trim().isNotEmpty == true
+            ? snapshot.data!.name.trim()
             : event.organizer;
+        final organizerAvatarUrl = snapshot.data?.avatarUrl;
 
         return Row(
           children: [
-            Container(
-              width: UiConstants.boxUnit * 5,
-              height: UiConstants.boxUnit * 5,
-              decoration: BoxDecoration(
-                color: const Color(0xFFA5AEBB),
-                shape: BoxShape.circle,
-                border: Border.all(),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x44000000),
-                    offset: Offset(0, UiConstants.shadowOffsetY),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.person,
-                color: Colors.white,
-                size: UiConstants.boxUnit * 3,
-              ),
+            AvatarSquare(
+              size: UiConstants.boxUnit * 5,
+              imagePathOrUrl: organizerAvatarUrl,
+              borderRadius: UiConstants.borderRadius * 2,
+              backgroundColor: const Color(0xFFA5AEBB),
+              borderColor: const Color(0xFF62697B),
+              fallbackAssetPath: ProfilePresentationConstants.defaultAvatarPath,
             ),
             const SizedBox(width: UiConstants.boxUnit),
             Expanded(
@@ -570,14 +559,26 @@ class _OrganizerRow extends StatelessWidget {
     );
   }
 
-  Future<String?> _loadOrganizerName() async {
+  Future<_OrganizerInfo?> _loadOrganizerInfo() async {
     final repository = sl<IProfileRepository>();
     final result = await repository.getProfile(event.organizer);
     return result.fold(
-      onSuccess: (profile) => profile.name.trim().isEmpty
-          ? (profile.nickname.trim().isEmpty ? null : profile.nickname)
-          : profile.name,
+      onSuccess: (profile) => _OrganizerInfo(
+        name: profile.name.trim().isEmpty
+            ? (profile.nickname.trim().isEmpty
+                  ? event.organizer
+                  : profile.nickname)
+            : profile.name,
+        avatarUrl: profile.avatarUrl,
+      ),
       onFailure: (_) => null,
     );
   }
+}
+
+class _OrganizerInfo {
+  final String name;
+  final String? avatarUrl;
+
+  const _OrganizerInfo({required this.name, required this.avatarUrl});
 }

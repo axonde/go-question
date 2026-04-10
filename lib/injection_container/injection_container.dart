@@ -5,6 +5,10 @@ import 'package:go_question/config/router/router.dart';
 import 'package:go_question/core/network/network_info.dart';
 import 'package:go_question/core/services/background_music_service.dart';
 import 'package:go_question/core/services/sfx_service.dart';
+import 'package:go_question/features/achievements/data/repositories/achievements_repository_impl.dart';
+import 'package:go_question/features/achievements/data/source/achievements_remote_data_source.dart';
+import 'package:go_question/features/achievements/domain/repositories/i_achievements_repository.dart';
+import 'package:go_question/features/achievements/presentation/bloc/achievements_bloc.dart';
 import 'package:go_question/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:go_question/features/auth/data/source/auth_page_memory.dart';
 import 'package:go_question/features/auth/data/source/datasource.dart';
@@ -19,6 +23,7 @@ import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 import 'package:go_question/features/notifications/data/repositories/notifications_repository_impl.dart';
 import 'package:go_question/features/notifications/data/source/notifications_remote_data_source.dart';
 import 'package:go_question/features/notifications/domain/repositories/i_notifications_repository.dart';
+import 'package:go_question/features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'package:go_question/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:go_question/features/onboarding/data/source/onboarding_local_data_source.dart';
 import 'package:go_question/features/onboarding/domain/repositories/i_onboarding_repository.dart';
@@ -31,6 +36,11 @@ import 'package:go_question/features/profile/domain/errors/profile_exception_to_
 import 'package:go_question/features/profile/domain/repositories/i_profile_repository.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/score/presentation/bloc/score_bloc.dart';
+import 'package:go_question/features/settings/data/repositories/settings_repository_impl.dart';
+import 'package:go_question/features/settings/data/source/settings_local_data_source.dart';
+import 'package:go_question/features/settings/domain/errors/settings_exception_to_failure_mapper.dart';
+import 'package:go_question/features/settings/domain/repositories/i_settings_repository.dart';
+import 'package:go_question/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:just_audio/just_audio.dart';
@@ -101,17 +111,23 @@ Future<void> init() async {
     () => EventsRemoteDataSourceImpl(sl()),
   );
 
+  //! Features - Achievements
+
+  sl.registerFactory(() => AchievementsBloc(sl()));
+  sl.registerLazySingleton<IAchievementsRepository>(
+    () => AchievementsRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<IAchievementsRemoteDataSource>(
+    () => AchievementsRemoteDataSourceImpl(sl()),
+  );
+
   //! Router
 
   sl.registerLazySingleton<AuthGuard>(() => AuthGuard(sl(), sl()));
   sl.registerLazySingleton<GuestGuard>(() => GuestGuard(sl(), sl()));
   sl.registerLazySingleton<OnboardingGuard>(() => OnboardingGuard(sl()));
   sl.registerLazySingleton<AppRouter>(
-    () => AppRouter(
-      authGuard: sl(),
-      guestGuard: sl(),
-      onboardingGuard: sl(),
-    ),
+    () => AppRouter(authGuard: sl(), guestGuard: sl(), onboardingGuard: sl()),
   );
 
   //! Other features
@@ -119,11 +135,24 @@ Future<void> init() async {
   sl.registerFactory(() => ScoreBloc());
 
   //! Features - Notifications
+  sl.registerFactory(() => NotificationsBloc(sl()));
   sl.registerLazySingleton<INotificationsRemoteDataSource>(
     () => NotificationsRemoteDataSourceImpl(sl()),
   );
   sl.registerLazySingleton<INotificationsRepository>(
     () => NotificationsRepositoryImpl(sl()),
+  );
+
+  //! Features - Settings
+  sl.registerFactory(() => SettingsBloc(sl()));
+  sl.registerLazySingleton<SettingsExceptionToFailureMapper>(
+    () => const SettingsExceptionToFailureMapperImpl(),
+  );
+  sl.registerLazySingleton<ISettingsRepository>(
+    () => SettingsRepositoryImpl(sl(), sl()),
+  );
+  sl.registerLazySingleton<SettingsLocalDataSource>(
+    () => SharedPrefsSettingsLocalDataSource(sl()),
   );
 
   //! Core

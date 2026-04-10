@@ -1,5 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
 import 'package:go_question/features/auth/presentation/widgets/email_field.dart';
 import 'package:go_question/features/auth/presentation/widgets/google_button.dart';
 import 'package:go_question/features/auth/presentation/widgets/header.dart';
@@ -30,6 +33,15 @@ class SignUpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void closeSignUp() {
+      final navigator = Navigator.of(context, rootNavigator: true);
+      if (navigator.canPop()) {
+        navigator.pop();
+      } else if (context.mounted) {
+        context.router.replace(const MainRoute());
+      }
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -42,6 +54,10 @@ class SignUpPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Align(
+              alignment: Alignment.topRight,
+              child: GqCloseButton(onTap: closeSignUp),
+            ),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

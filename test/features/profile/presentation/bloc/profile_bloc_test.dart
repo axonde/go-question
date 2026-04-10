@@ -50,6 +50,15 @@ class FakeProfileRepository implements IProfileRepository {
   ) async => throw UnimplementedError();
 
   @override
+  Future<Result<List<Profile>, ProfileFailure>> getTopProfilesByTrophies({
+    int limit = 100,
+  }) async => throw UnimplementedError();
+
+  @override
+  Stream<List<Profile>> watchTopProfilesByTrophies({int limit = 100}) =>
+      const Stream<List<Profile>>.empty();
+
+  @override
   Future<Result<void, ProfileFailure>> sendFriendRequest({
     required String requesterUid,
     required String recipientUid,

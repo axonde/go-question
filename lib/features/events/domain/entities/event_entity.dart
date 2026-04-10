@@ -18,6 +18,7 @@ class EventEntity with _$EventEntity {
     required int participants,
     required String organizer,
     required String status,
+    @Default(60) int durationMinutes,
     String? imageUrl,
     @Default(<String>[]) List<String> participantIds,
     @Default(<String>[]) List<String> pendingParticipantIds,
