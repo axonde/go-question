@@ -5,7 +5,7 @@ import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/types/result.dart';
 import 'package:go_question/core/widgets/avatar_square.dart';
-import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
+import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
 import 'package:go_question/core/widgets/loading/firebase_action_shimmer.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/features/friends/presentation/utils/friend_relation_utils.dart';

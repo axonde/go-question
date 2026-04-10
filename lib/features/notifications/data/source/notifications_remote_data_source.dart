@@ -9,6 +9,7 @@ abstract interface class INotificationsRemoteDataSource {
   Stream<List<NotificationEntity>> watchNotifications(String userId);
   Future<void> markAsRead(String notificationId);
   Future<void> markAllAsRead(String userId);
+  Future<void> clearRead(String userId);
   Future<void> clearAll(String userId);
 }
 
@@ -83,6 +84,26 @@ class NotificationsRemoteDataSourceImpl
       final batch = _firestore.batch();
       for (final doc in snapshot.docs) {
         batch.update(doc.reference, {NotificationsConstants.fieldIsRead: true});
+      }
+      await batch.commit();
+    } on FirebaseException catch (_) {
+      throw const NotificationUpdateException();
+    } catch (_) {
+      throw const NotificationUpdateException();
+    }
+  }
+
+  @override
+  Future<void> clearRead(String userId) async {
+    try {
+      final snapshot = await _notificationsRef
+          .where(NotificationsConstants.fieldUserId, isEqualTo: userId)
+          .where(NotificationsConstants.fieldIsRead, isEqualTo: true)
+          .get();
+
+      final batch = _firestore.batch();
+      for (final doc in snapshot.docs) {
+        batch.delete(doc.reference);
       }
       await batch.commit();
     } on FirebaseException catch (_) {

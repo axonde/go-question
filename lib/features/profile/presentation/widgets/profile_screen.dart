@@ -9,7 +9,7 @@ import 'package:go_question/config/theme/app_text_styles.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/widgets/avatar_square.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
-import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
+import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/home/presentation/widgets/city_selector_sheet.dart';

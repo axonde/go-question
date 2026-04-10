@@ -59,6 +59,11 @@ class EventTexts {
   static const notificationsTapHint =
       'Нажмите на уведомление, чтобы узнать детали.';
   static const notificationsEmptyState = 'Уведомлений пока нет';
+  static const notificationsUnreadSectionTitle = 'Непрочитанные';
+  static const notificationsReadSectionTitle = 'Прочитанные';
+  static const notificationsSnackNewPrefix = 'Новое уведомление:';
+  static const notificationsSnackReadCleared =
+      'Прочитанные уведомления очищены';
 
   static const emptyEventsByFilters = 'Нет ивентов по выбранным фильтрам';
   static const createImagePlaceholder = 'Добавить фото';

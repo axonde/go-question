@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/core/constants/achievement_constants.dart';
-import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
+import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
 import 'package:go_question/core/widgets/dialogs/gq_dialog_panel.dart';
 import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
 import 'package:go_question/features/achievements/presentation/bloc/achievements_bloc.dart';
