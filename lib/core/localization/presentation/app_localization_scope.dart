@@ -12,8 +12,8 @@ class AppLocalizationScope extends InheritedWidget {
   });
 
   static AppStrings of(BuildContext context) {
-    final scope =
-        context.dependOnInheritedWidgetOfExactType<AppLocalizationScope>();
+    final scope = context
+        .dependOnInheritedWidgetOfExactType<AppLocalizationScope>();
     if (scope == null) {
       return AppStrings.fromLanguageCode('en');
     }
