@@ -46,7 +46,10 @@ class CitySelectorSheet extends StatelessWidget {
               trailing: isSelected
                   ? const Icon(Icons.check, color: AppColors.primary)
                   : null,
-              onTap: () => Navigator.pop(context, city),
+              onTap: () => Navigator.pop(
+                context,
+                CityConstants.legacyRuLabelByKey(cityKey),
+              ),
             );
           }),
         ],

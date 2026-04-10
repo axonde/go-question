@@ -125,11 +125,31 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           itemBuilder: (context, index) {
                             final player = players[index];
                             final isCurrent = currentUserId == player.uid;
-                            final actionLabel = FriendRelationUtils.actionLabel(
+                            final isFriend = FriendRelationUtils.isFriend(
                               currentProfile: currentProfile,
-                              currentUserId: currentUserId,
                               otherUid: player.uid,
                             );
+                            final isOutgoingPending =
+                                FriendRelationUtils.isOutgoingRequestPending(
+                                  currentProfile: currentProfile,
+                                  currentUserId: currentUserId,
+                                  otherUid: player.uid,
+                                );
+                            final isIncomingPending =
+                                FriendRelationUtils.isIncomingRequestPending(
+                                  currentProfile: currentProfile,
+                                  currentUserId: currentUserId,
+                                  otherUid: player.uid,
+                                );
+                            final actionLabel = isCurrent
+                                ? context.l10n.friendsSelfAccount
+                                : isFriend
+                                ? context.l10n.friendsAlreadyFriend
+                                : isOutgoingPending
+                                ? context.l10n.friendsRequestPending
+                                : isIncomingPending
+                                ? context.l10n.friendsRequestIncoming
+                                : context.l10n.friendsAddFriend;
                             final canAdd = FriendRelationUtils.canSendRequest(
                               currentProfile: currentProfile,
                               currentUserId: currentUserId,

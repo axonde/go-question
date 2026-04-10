@@ -54,7 +54,7 @@ class HomeTopBar extends StatelessWidget {
     this.showAchievements = true,
     this.hasUnreadAchievements = false,
     this.hasUnreadNotifications = false,
-    this.city = 'Санкт-Петербург',
+    this.city = '',
   });
 
   @override

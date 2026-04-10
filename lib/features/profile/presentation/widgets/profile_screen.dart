@@ -7,6 +7,8 @@ import 'package:go_question/config/router/router.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/app_text_styles.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
+import 'package:go_question/core/constants/city_constants.dart';
+import 'package:go_question/core/localization/presentation/localization_context_extension.dart';
 import 'package:go_question/core/widgets/avatar_square.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/go_button/gq_close_button.dart';
@@ -71,7 +73,12 @@ class _ProfileContent extends StatelessWidget {
         : _formatBirthDate(birthDate);
     final cityValue = profile.city?.trim() ?? '';
     final isCityPlaceholder = cityValue.isEmpty;
-    final city = isCityPlaceholder ? 'Город не указан' : cityValue;
+    final city = isCityPlaceholder
+      ? context.l10n.friendsCityFallback
+      : CityConstants.toLocalizedLabel(
+        storedValue: cityValue,
+        localize: context.l10n.cityLabel,
+        );
     final isNamePlaceholder =
         profile.name.trim().isEmpty &&
         profile.nickname.trim().isEmpty &&
@@ -186,9 +193,12 @@ class _ProfileContent extends StatelessWidget {
                         );
                       },
                       onCityChanged: (selectedCity) {
+                        final normalizedCity = CityConstants.toStoredLegacyValue(
+                          selectedCity,
+                        );
                         context.read<ProfileBloc>().add(
                           ProfileUpdateRequested(
-                            profile.copyWith(city: selectedCity),
+                            profile.copyWith(city: normalizedCity),
                           ),
                         );
                       },

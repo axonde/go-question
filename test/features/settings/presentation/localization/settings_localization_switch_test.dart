@@ -70,7 +70,8 @@ void main() {
     expect(find.text('Settings'), findsOneWidget);
 
     bloc.add(const SettingsLanguageChanged('ru'));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 20));
 
     expect(find.text('Настройки'), findsOneWidget);
     expect(repository.lastSavedSettings?.selectedLanguageCode, 'ru');
