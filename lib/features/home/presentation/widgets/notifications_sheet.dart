@@ -7,6 +7,7 @@ import 'package:go_question/core/widgets/avatar_square.dart';
 import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/loading/firebase_action_shimmer.dart';
+import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
@@ -110,14 +111,16 @@ class NotificationsSheet extends StatefulWidget {
 class _NotificationsSheetState extends State<NotificationsSheet> {
   int? _expandedIndex;
   final Set<String> _processingIds = <String>{};
+  bool _isClearingAll = false;
 
   void _resetUiState() {
-    if (_expandedIndex == null && _processingIds.isEmpty) {
+    if (_expandedIndex == null && _processingIds.isEmpty && !_isClearingAll) {
       return;
     }
     setState(() {
       _expandedIndex = null;
       _processingIds.clear();
+      _isClearingAll = false;
     });
   }
 
@@ -163,6 +166,29 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
     } finally {
       if (mounted) {
         setState(() => _processingIds.remove(data.id));
+      }
+    }
+  }
+
+  Future<void> _clearAllNotifications() async {
+    final profile = context.read<ProfileBloc>().state.profile;
+    if (profile == null || _isClearingAll) {
+      return;
+    }
+
+    setState(() => _isClearingAll = true);
+    try {
+      await sl<INotificationsRepository>().clearAll(profile.uid);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _expandedIndex = null;
+        _processingIds.clear();
+      });
+    } finally {
+      if (mounted) {
+        setState(() => _isClearingAll = false);
       }
     }
   }
@@ -272,6 +298,33 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
           children: [
             const Center(
               child: _StrokeTitle(text: EventTexts.notificationsHeaderTitle),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: FirebaseActionShimmer(
+                isLoading: _isClearingAll,
+                borderRadius: UiConstants.borderRadius * 4,
+                child: Pressable(
+                  onTap: _clearAllNotifications,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.stroke),
+                      borderRadius: BorderRadius.circular(
+                        UiConstants.borderRadius * 4,
+                      ),
+                      color: AppColors.redBackground,
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(UiConstants.gap),
+                      child: Icon(
+                        Icons.delete_forever_rounded,
+                        color: Colors.white,
+                        size: UiConstants.boxUnit * 2.2,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
             Align(
               alignment: Alignment.centerRight,

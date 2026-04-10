@@ -102,4 +102,10 @@ class NotificationsMockDataSource implements INotificationsRemoteDataSource {
       _mockNotifications[i] = _mockNotifications[i].copyWith(isRead: true);
     }
   }
+
+  @override
+  Future<void> clearAll(String userId) async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    _mockNotifications.removeWhere((n) => n.userId == userId);
+  }
 }

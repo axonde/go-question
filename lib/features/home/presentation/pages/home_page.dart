@@ -187,7 +187,7 @@ class HomePage extends StatelessWidget {
     final profile = context.watch<ProfileBloc>().state.profile;
     final hasUnreadAchievements =
         profile?.unseenAchievementIds.isNotEmpty == true;
-    final isLegendaryArena = (profile?.trophies ?? 0) > 5000;
+    final trophies = profile?.trophies ?? 0;
     final currentCity = profile?.city?.trim().isNotEmpty == true
         ? profile!.city!.trim()
         : ProfilePresentationConstants.completionCityOptions.first;
@@ -221,7 +221,7 @@ class HomePage extends StatelessWidget {
                 child: HomePlaceholder(
                   hintsEnabled: hintsEnabled,
                   compactModeEnabled: compactModeEnabled,
-                  isLegendaryArena: isLegendaryArena,
+                  trophies: trophies,
                 ),
               ),
               LayoutId(
