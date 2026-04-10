@@ -74,11 +74,11 @@ class _ProfileContent extends StatelessWidget {
     final cityValue = profile.city?.trim() ?? '';
     final isCityPlaceholder = cityValue.isEmpty;
     final city = isCityPlaceholder
-      ? context.l10n.friendsCityFallback
-      : CityConstants.toLocalizedLabel(
-        storedValue: cityValue,
-        localize: context.l10n.cityLabel,
-        );
+        ? context.l10n.friendsCityFallback
+        : CityConstants.toLocalizedLabel(
+            storedValue: cityValue,
+            localize: context.l10n.cityLabel,
+          );
     final isNamePlaceholder =
         profile.name.trim().isEmpty &&
         profile.nickname.trim().isEmpty &&
@@ -193,9 +193,8 @@ class _ProfileContent extends StatelessWidget {
                         );
                       },
                       onCityChanged: (selectedCity) {
-                        final normalizedCity = CityConstants.toStoredLegacyValue(
-                          selectedCity,
-                        );
+                        final normalizedCity =
+                            CityConstants.toStoredLegacyValue(selectedCity);
                         context.read<ProfileBloc>().add(
                           ProfileUpdateRequested(
                             profile.copyWith(city: normalizedCity),

@@ -45,21 +45,6 @@ class _NotificationsList extends StatelessWidget {
               ),
             ),
           ..._buildCards(unreadNotifications),
-          if (readNotifications.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(
-                top: UiConstants.boxUnit * 2,
-                bottom: UiConstants.boxUnit,
-              ),
-              child: Text(
-                context.l10n.notificationsReadSectionTitle,
-                style: const TextStyle(
-                  fontFamily: 'RussoOne',
-                  fontSize: UiConstants.textSize * 0.75,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-            ),
           ..._buildCards(readNotifications),
         ],
       ),
