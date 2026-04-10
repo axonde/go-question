@@ -140,7 +140,9 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byType(GQButton));
+    final signOutFinder = find.byType(GQButton).first;
+    await tester.ensureVisible(signOutFinder);
+    await tester.tap(signOutFinder);
     await tester.pump();
     await tester.pump();
 

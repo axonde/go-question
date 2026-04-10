@@ -4,17 +4,21 @@ class _SettingsPageContent extends StatelessWidget {
   final bool notificationsEnabled;
   final bool hintsEnabled;
   final bool compactModeEnabled;
+  final bool soundEnabled;
   final ValueChanged<bool> onNotificationsChanged;
   final ValueChanged<bool> onHintsChanged;
   final ValueChanged<bool> onCompactModeChanged;
+  final ValueChanged<bool> onSoundChanged;
 
   const _SettingsPageContent({
     required this.notificationsEnabled,
     required this.hintsEnabled,
     required this.compactModeEnabled,
+    required this.soundEnabled,
     required this.onNotificationsChanged,
     required this.onHintsChanged,
     required this.onCompactModeChanged,
+    required this.onSoundChanged,
   });
 
   @override
@@ -81,6 +85,17 @@ class _SettingsPageContent extends StatelessWidget {
                   subtitle: SettingsTexts.hintsSubtitle,
                   value: hintsEnabled,
                   onChanged: onHintsChanged,
+                ),
+                SizedBox(
+                  height: compactModeEnabled
+                      ? UiConstants.boxUnit
+                      : UiConstants.boxUnit * 1.5,
+                ),
+                _SettingsToggleTile(
+                  title: SettingsTexts.soundTitle,
+                  subtitle: SettingsTexts.soundSubtitle,
+                  value: soundEnabled,
+                  onChanged: onSoundChanged,
                 ),
                 SizedBox(
                   height: compactModeEnabled

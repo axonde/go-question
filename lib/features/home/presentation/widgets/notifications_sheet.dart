@@ -7,6 +7,7 @@ import 'package:go_question/core/widgets/buttons/go_button.dart';
 import 'package:go_question/core/widgets/buttons/gq_close_button.dart';
 import 'package:go_question/core/widgets/loading/firebase_action_shimmer.dart';
 import 'package:go_question/core/widgets/text/clash_stroke_text.dart';
+import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/events/domain/repositories/i_events_repository.dart';
 import 'package:go_question/features/notifications/domain/entities/notification_entity.dart';
 import 'package:go_question/features/notifications/presentation/bloc/notifications_bloc.dart';
@@ -105,6 +106,16 @@ class NotificationsSheet extends StatefulWidget {
 class _NotificationsSheetState extends State<NotificationsSheet> {
   String? _expandedNotificationId;
   final Set<String> _processingIds = <String>{};
+
+  void _resetUiState() {
+    if (_expandedIndex == null && _processingIds.isEmpty) {
+      return;
+    }
+    setState(() {
+      _expandedIndex = null;
+      _processingIds.clear();
+    });
+  }
 
   Future<void> _acceptRequest(NotificationData data) async {
     final profile = context.read<ProfileBloc>().state.profile;

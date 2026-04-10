@@ -40,7 +40,7 @@ class _ProfileContent extends StatelessWidget {
       return _GuestProfileDialog(
         onLoginTap: () {
           Navigator.of(context).pop();
-          sl<AppRouter>().push(const AuthFlowRoute());
+          sl<AppRouter>().replace(const AuthFlowRoute());
         },
       );
     }

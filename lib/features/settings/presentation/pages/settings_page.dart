@@ -15,18 +15,22 @@ class SettingsPage extends StatelessWidget {
   final bool notificationsEnabled;
   final bool hintsEnabled;
   final bool compactModeEnabled;
+  final bool soundEnabled;
   final ValueChanged<bool>? onNotificationsChanged;
   final ValueChanged<bool>? onHintsChanged;
   final ValueChanged<bool>? onCompactModeChanged;
+  final ValueChanged<bool>? onSoundChanged;
 
   const SettingsPage({
     super.key,
     this.notificationsEnabled = SettingsConstants.defaultNotificationsEnabled,
     this.hintsEnabled = SettingsConstants.defaultHintsEnabled,
     this.compactModeEnabled = SettingsConstants.defaultCompactModeEnabled,
+    this.soundEnabled = SettingsConstants.defaultSoundEnabled,
     this.onNotificationsChanged,
     this.onHintsChanged,
     this.onCompactModeChanged,
+    this.onSoundChanged,
   });
 
   @override
@@ -38,9 +42,11 @@ class SettingsPage extends StatelessWidget {
           notificationsEnabled: notificationsEnabled,
           hintsEnabled: hintsEnabled,
           compactModeEnabled: compactModeEnabled,
+          soundEnabled: soundEnabled,
           onNotificationsChanged: onNotificationsChanged ?? (_) {},
           onHintsChanged: onHintsChanged ?? (_) {},
           onCompactModeChanged: onCompactModeChanged ?? (_) {},
+          onSoundChanged: onSoundChanged ?? (_) {},
         ),
       ),
     );

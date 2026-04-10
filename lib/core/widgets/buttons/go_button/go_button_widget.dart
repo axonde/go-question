@@ -121,7 +121,9 @@ class GQButton extends StatelessWidget {
   }
 
   void _handleTap() {
-    sl<SfxService>().playTap();
+    if (sl.isRegistered<SfxService>()) {
+      sl<SfxService>().playTap();
+    }
     onPressed();
   }
 

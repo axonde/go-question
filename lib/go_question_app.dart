@@ -59,6 +59,21 @@ class GoQuestionApp extends StatelessWidget {
             appRouter.replace(const ProfileInitializationRoute());
             return;
           }
+
+          if (state.status == AuthStatus.unauthenticated) {
+            context.read<ProfileBloc>().add(
+              const ProfileSessionClearedRequested(),
+            );
+            context.read<AchievementsBloc>().add(
+              const AchievementsSessionClearedRequested(),
+            );
+            context.read<EventsBloc>().add(
+              const EventsSessionClearedRequested(),
+            );
+            context.read<EventsBloc>().add(const EventsSearchStarted());
+            appRouter.replace(const MainRoute());
+            return;
+          }
         },
         child: BlocBuilder<AuthBloc, AuthState>(
           buildWhen: (previous, current) => previous.status != current.status,
