@@ -36,7 +36,7 @@ class AvatarSquare extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(borderRadius),
+        borderRadius: BorderRadius.zero,
         border: Border.all(color: borderColor, width: borderWidth),
       ),
       clipBehavior: Clip.antiAlias,
