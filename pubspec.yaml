@@ -47,6 +47,7 @@ dependencies:
   internet_connection_checker_plus: ^2.5.1
   json_annotation: ^4.9.0
   just_audio: ^0.10.5
+  shake: ^3.0.0
   shared_preferences: ^2.5.3
   video_player: ^2.11.1
 

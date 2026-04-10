@@ -13,17 +13,20 @@ import 'package:go_question/features/profile/constants/profile_presentation.dart
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/profile/presentation/widgets/profile_screen.dart';
 import 'package:go_question/injection_container/injection_container.dart';
+import 'package:shake/shake.dart';
 import '../widgets/home_action_buttons.dart';
 import '../widgets/home_events.dart';
 import '../widgets/home_placeholder.dart';
 import '../widgets/home_top_bar.dart';
 import '../widgets/notifications_sheet.dart';
 import '../widgets/profile_button.dart';
+import '../widgets/shake_video_overlay.dart';
+import '../widgets/shake_warning_overlay.dart';
 
 part 'home_page/home_layout_delegate.dart';
 
 /// Главная страница приложения.
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final bool notificationsEnabled;
   final bool hintsEnabled;
   final bool compactModeEnabled;
@@ -34,6 +37,48 @@ class HomePage extends StatelessWidget {
     this.hintsEnabled = true,
     this.compactModeEnabled = false,
   });
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool _showShakeVideo = false;
+  bool _showShakeWarning = false;
+  int _shakeTriggerCount = 0;
+
+  late ShakeDetector _detector;
+
+  @override
+  void initState() {
+    super.initState();
+    _detector = ShakeDetector.autoStart(
+      shakeThresholdGravity: 5,
+      // useFilter: true,
+      onPhoneShake: (event) {
+        // Если уже показываем какое-то окно, не реагируем
+        if (_showShakeVideo || _showShakeWarning) return;
+        _handleShakeTrigger();
+      },
+    );
+  }
+
+  void _handleShakeTrigger() {
+    setState(() {
+      _shakeTriggerCount++;
+      if (_shakeTriggerCount == 1) {
+        _showShakeWarning = true;
+      } else {
+        _showShakeVideo = true;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _detector.stopListening();
+    super.dispose();
+  }
 
   Future<void> _showCitySelector(BuildContext context) async {
     final authUser = context.read<AuthBloc>().state.user;
@@ -62,7 +107,7 @@ class HomePage extends StatelessWidget {
   }
 
   void _showNotifications(BuildContext context) {
-    if (!notificationsEnabled) {
+    if (!widget.notificationsEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text(HomeTexts.notificationsDisabled)),
       );
@@ -148,44 +193,69 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: ClipRect(
-        child: SafeArea(
-          child: CustomMultiChildLayout(
-            delegate: _HomeLayoutDelegate(),
-            children: [
-              LayoutId(
-                id: _HomeSlot.topBar,
-                child: HomeTopBar(
-                  onAchievementsTap: () {}, // TODO: экран достижений
-                  onCityTap: () => _showCitySelector(context),
-                  onNotificationsTap: () => _showNotifications(context),
-                  city: currentCity,
-                ),
+      body: Stack(
+        children: [
+          ClipRect(
+            child: SafeArea(
+              child: CustomMultiChildLayout(
+                delegate: _HomeLayoutDelegate(),
+                children: [
+                  LayoutId(
+                    id: _HomeSlot.topBar,
+                    child: HomeTopBar(
+                      onAchievementsTap: () {}, // TODO: экран достижений
+                      onCityTap: () => _showCitySelector(context),
+                      onNotificationsTap: () => _showNotifications(context),
+                      city: currentCity,
+                    ),
+                  ),
+                  LayoutId(
+                    id: _HomeSlot.profile,
+                    child: ProfileButton(
+                      onPressed: () => _showProfileScreen(context),
+                    ),
+                  ),
+                  LayoutId(
+                    id: _HomeSlot.placeholder,
+                    child: HomePlaceholder(
+                      hintsEnabled: widget.hintsEnabled,
+                      compactModeEnabled: widget.compactModeEnabled,
+                    ),
+                  ),
+                  LayoutId(
+                    id: _HomeSlot.actions,
+                    child: HomeActionButtons(
+                      onBattleSheetTap: () => _showSearchEvents(context),
+                      onCreateEventTap: () => _showCreateEventDialog(context),
+                    ),
+                  ),
+                  LayoutId(id: _HomeSlot.events, child: const HomeEvents()),
+                ],
               ),
-              LayoutId(
-                id: _HomeSlot.profile,
-                child: ProfileButton(
-                  onPressed: () => _showProfileScreen(context),
-                ),
-              ),
-              LayoutId(
-                id: _HomeSlot.placeholder,
-                child: HomePlaceholder(
-                  hintsEnabled: hintsEnabled,
-                  compactModeEnabled: compactModeEnabled,
-                ),
-              ),
-              LayoutId(
-                id: _HomeSlot.actions,
-                child: HomeActionButtons(
-                  onBattleSheetTap: () => _showSearchEvents(context),
-                  onCreateEventTap: () => _showCreateEventDialog(context),
-                ),
-              ),
-              LayoutId(id: _HomeSlot.events, child: const HomeEvents()),
-            ],
+            ),
           ),
-        ),
+
+          // GQ ЗАГЛУШКА ПРИ ПЕРВОЙ ТРЯСКЕ
+          if (_showShakeWarning)
+            ShakeWarningOverlay(
+              onClose: () {
+                setState(() {
+                  _showShakeWarning = false;
+                });
+              },
+            ),
+
+          // ВИДЕО ПРИ ВТОРОЙ ТРЯСКЕ
+          if (_showShakeVideo)
+            ShakeVideoOverlay(
+              videoAsset: 'assets/videos/vid_240p.mp4',
+              onClose: () {
+                setState(() {
+                  _showShakeVideo = false;
+                });
+              },
+            ),
+        ],
       ),
     );
   }
