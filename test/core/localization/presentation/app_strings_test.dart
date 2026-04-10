@@ -37,3 +37,5 @@
 //   //   expect(strings.value('missing.translation.key'), 'missing.translation.key');
 //   // });
 // }
+
+void main() {}
