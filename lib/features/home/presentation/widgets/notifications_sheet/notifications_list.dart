@@ -7,7 +7,6 @@ class _NotificationsList extends StatelessWidget {
   final ValueChanged<NotificationData> onToggle;
   final Future<void> Function(NotificationData) onAccept;
   final Future<void> Function(NotificationData) onReject;
-  final VoidCallback? onClearRead;
 
   const _NotificationsList({
     required this.notifications,
@@ -16,7 +15,6 @@ class _NotificationsList extends StatelessWidget {
     required this.onToggle,
     required this.onAccept,
     required this.onReject,
-    this.onClearRead,
   });
 
   @override
@@ -34,14 +32,6 @@ class _NotificationsList extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.all(UiConstants.horizontalPadding * 2),
         children: [
-          if (onClearRead != null)
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: onClearRead,
-                child: const Text(EventTexts.notificationsButtonClearRead),
-              ),
-            ),
           if (unreadNotifications.isNotEmpty)
             const Padding(
               padding: EdgeInsets.only(bottom: UiConstants.boxUnit),

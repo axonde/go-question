@@ -112,6 +112,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
   String? _expandedNotificationId;
   final Set<String> _processingIds = <String>{};
   bool _isClearingAll = false;
+
   Future<void> _acceptRequest(NotificationData data) async {
     final profile = context.read<ProfileBloc>().state.profile;
     if (profile == null || _processingIds.contains(data.id)) return;
@@ -164,7 +165,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
     }
   }
 
-  Future<void> _clearAllNotifications() async {
+  Future<void> _clearReadNotifications() async {
     final profile = context.read<ProfileBloc>().state.profile;
     if (profile == null || _isClearingAll) {
       return;
@@ -172,7 +173,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
 
     setState(() => _isClearingAll = true);
     try {
-      await sl<INotificationsRepository>().clearAll(profile.uid);
+      await sl<INotificationsRepository>().clearRead(profile.uid);
       if (!mounted) {
         return;
       }
@@ -180,6 +181,9 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         _expandedNotificationId = null;
         _processingIds.clear();
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(EventTexts.notificationsSnackReadCleared)),
+      );
     } finally {
       if (mounted) {
         setState(() => _isClearingAll = false);
@@ -219,9 +223,6 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
                       final notifications = state.notifications
                           .map(NotificationData.fromEntity)
                           .toList(growable: false);
-                      final hasReadNotifications = notifications.any(
-                        (notification) => notification.isRead,
-                      );
 
                       if (state.status == NotificationsStatus.loading &&
                           notifications.isEmpty) {
@@ -262,20 +263,6 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
                         },
                         onAccept: _acceptRequest,
                         onReject: _rejectRequest,
-                        onClearRead: hasReadNotifications
-                            ? () {
-                                context.read<NotificationsBloc>().add(
-                                  const NotificationsClearReadRequested(),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      EventTexts.notificationsSnackReadCleared,
-                                    ),
-                                  ),
-                                );
-                              }
-                            : null,
                       );
                     },
                   ),
@@ -315,7 +302,7 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
                 isLoading: _isClearingAll,
                 borderRadius: UiConstants.borderRadius * 4,
                 child: Pressable(
-                  onTap: _clearAllNotifications,
+                  onTap: _clearReadNotifications,
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: AppColors.stroke),

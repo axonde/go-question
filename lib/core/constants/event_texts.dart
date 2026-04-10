@@ -61,7 +61,6 @@ class EventTexts {
   static const notificationsEmptyState = 'Уведомлений пока нет';
   static const notificationsUnreadSectionTitle = 'Непрочитанные';
   static const notificationsReadSectionTitle = 'Прочитанные';
-  static const notificationsButtonClearRead = 'Очистить прочитанные';
   static const notificationsSnackNewPrefix = 'Новое уведомление:';
   static const notificationsSnackReadCleared =
       'Прочитанные уведомления очищены';
