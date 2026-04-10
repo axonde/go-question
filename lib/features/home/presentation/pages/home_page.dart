@@ -11,6 +11,7 @@ import 'package:go_question/features/events/presentation/bloc/events_bloc.dart';
 import 'package:go_question/features/events/presentation/pages/create_event_dialog.dart';
 import 'package:go_question/features/events/presentation/pages/search_events_page.dart';
 import 'package:go_question/features/home/presentation/widgets/city_selector_sheet.dart';
+import 'package:go_question/features/leaderboard/presentation/pages/leaderboard_page.dart';
 import 'package:go_question/features/profile/constants/profile_presentation.dart';
 import 'package:go_question/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:go_question/features/profile/presentation/widgets/profile_screen.dart';
@@ -83,6 +84,14 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  Future<void> _showLeaderboard(BuildContext context) async {
+    await showDialog<void>(
+      context: context,
+      useSafeArea: false,
+      builder: (_) => const LeaderboardPage(),
+    );
+  }
+
   void _showSearchEvents(BuildContext context) => showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -139,7 +148,11 @@ class HomePage extends StatelessWidget {
       return;
     }
 
-    showDialog(context: context, builder: (_) => const ProfileScreen());
+    showDialog(
+      context: context,
+      useSafeArea: false,
+      builder: (_) => const ProfileScreen(),
+    );
   }
 
   Future<void> _showAchievementsDialog(BuildContext context) async {
@@ -174,6 +187,7 @@ class HomePage extends StatelessWidget {
     final profile = context.watch<ProfileBloc>().state.profile;
     final hasUnreadAchievements =
         profile?.unseenAchievementIds.isNotEmpty == true;
+    final trophies = profile?.trophies ?? 0;
     final currentCity = profile?.city?.trim().isNotEmpty == true
         ? profile!.city!.trim()
         : ProfilePresentationConstants.completionCityOptions.first;
@@ -191,6 +205,7 @@ class HomePage extends StatelessWidget {
                   onAchievementsTap: () => _showAchievementsDialog(context),
                   onCityTap: () => _showCitySelector(context),
                   onNotificationsTap: () => _showNotifications(context),
+                  onLeaderboardTap: () => _showLeaderboard(context),
                   hasUnreadAchievements: hasUnreadAchievements,
                   city: currentCity,
                 ),
@@ -206,6 +221,7 @@ class HomePage extends StatelessWidget {
                 child: HomePlaceholder(
                   hintsEnabled: hintsEnabled,
                   compactModeEnabled: compactModeEnabled,
+                  trophies: trophies,
                 ),
               ),
               LayoutId(

@@ -178,21 +178,14 @@ class _UserInfo extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: UiConstants.boxUnit * 6,
-              height: UiConstants.boxUnit * 6,
-              decoration: BoxDecoration(
-                color: AppColors.primaryVariant,
-                borderRadius: BorderRadius.circular(
-                  UiConstants.borderRadius * 4,
-                ),
-                border: Border.all(color: AppColors.stroke),
-              ),
-              child: const Icon(
-                Icons.person,
-                color: Colors.white,
-                size: UiConstants.boxUnit * 4,
-              ),
+            AvatarSquare(
+              size: UiConstants.boxUnit * 6,
+              imagePathOrUrl: data.userAvatarUrl,
+              backgroundColor: AppColors.primaryVariant,
+              borderRadius: UiConstants.borderRadius * 4,
+              borderColor: AppColors.stroke,
+              fallbackAssetPath: ProfilePresentationConstants.defaultAvatarPath,
+              fallbackText: data.userName,
             ),
             const SizedBox(width: UiConstants.boxUnit * 1.5),
             Expanded(

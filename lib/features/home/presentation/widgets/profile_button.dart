@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_question/config/theme/app_colors.dart';
 import 'package:go_question/config/theme/ui_constants.dart';
 import 'package:go_question/core/constants/home_ui_constants.dart';
+import 'package:go_question/core/widgets/avatar_square.dart';
 import 'package:go_question/core/widgets/pressable.dart';
 import 'package:go_question/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:go_question/features/profile/constants/profile_presentation.dart';
@@ -95,7 +96,10 @@ class _ProfileCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            _ProfileAvatar(size: slotHeight * 0.72),
+            _ProfileAvatar(
+              size: slotHeight * 0.72,
+              avatarUrl: profile?.avatarUrl,
+            ),
             const SizedBox(width: UiConstants.boxUnit),
             Expanded(
               child: _ProfileUserInfo(

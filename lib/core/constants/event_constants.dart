@@ -20,6 +20,14 @@ class EventConstants {
   static const joinModeRequest = 'request';
   static const joinModeInvite = 'invite';
 
+  static const List<EventDurationOption> durationOptions = [
+    EventDurationOption.minutes30,
+    EventDurationOption.hour1,
+    EventDurationOption.hour2,
+    EventDurationOption.hour3,
+    EventDurationOption.hour4,
+  ];
+
   static const monthsLong = [
     '',
     'января',
@@ -51,4 +59,17 @@ class EventConstants {
     'ноя',
     'дек',
   ];
+}
+
+enum EventDurationOption {
+  minutes30(30, '30 минут'),
+  hour1(60, '1 час'),
+  hour2(120, '2 часа'),
+  hour3(180, '3 часа'),
+  hour4(240, '4 часа');
+
+  final int minutes;
+  final String label;
+
+  const EventDurationOption(this.minutes, this.label);
 }

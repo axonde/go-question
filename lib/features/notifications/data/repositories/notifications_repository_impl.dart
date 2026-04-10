@@ -69,4 +69,20 @@ class NotificationsRepositoryImpl implements INotificationsRepository {
       );
     }
   }
+
+  @override
+  Future<Result<void, NotificationFailure>> clearAll(String userId) async {
+    try {
+      await _remoteDataSource.clearAll(userId);
+      return const Success(null);
+    } on NotificationUpdateException {
+      return const Failure(
+        NotificationFailure(NotificationFailureType.updateFailed),
+      );
+    } catch (_) {
+      return const Failure(
+        NotificationFailure(NotificationFailureType.updateFailed),
+      );
+    }
+  }
 }

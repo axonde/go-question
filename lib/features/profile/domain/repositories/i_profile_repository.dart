@@ -47,6 +47,10 @@ abstract class IProfileRepository {
   Future<Result<List<Profile>, ProfileFailure>> getProfilesByIds(
     List<String> uids,
   );
+  Future<Result<List<Profile>, ProfileFailure>> getTopProfilesByTrophies({
+    int limit = 100,
+  });
+  Stream<List<Profile>> watchTopProfilesByTrophies({int limit = 100});
 
   /// Sends a friend request from one user to another.
   Future<Result<void, ProfileFailure>> sendFriendRequest({

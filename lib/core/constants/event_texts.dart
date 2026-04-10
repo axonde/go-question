@@ -66,6 +66,7 @@ class EventTexts {
   static const createFieldId = 'ID';
   static const createFieldTitle = 'Название ивента';
   static const createFieldStart = 'Начало';
+  static const createFieldDuration = 'Длительность';
   static const createFieldLocation = 'Место';
   static const createFieldCategory = 'Категория';
   static const createFieldEventType = 'Тип мероприятия';
@@ -79,6 +80,7 @@ class EventTexts {
   static const createHintId = 'auto-generated';
   static const createHintTitle = 'Введите название';
   static const createHintLocation = 'Введите локацию';
+  static const createHintDuration = 'Выберите длительность';
   static const createHintCategory = 'Например, Турнир';
   static const createHintEventType = 'Выберите тип';
   static const createHintPrice = '0';

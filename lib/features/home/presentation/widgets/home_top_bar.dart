@@ -7,6 +7,7 @@ import 'package:go_question/core/widgets/pressable.dart';
 
 part 'home_top_bar/achievement_button.dart';
 part 'home_top_bar/city_button.dart';
+part 'home_top_bar/leaderboard_button.dart';
 part 'home_top_bar/notifications_button.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -37,6 +38,7 @@ class HomeTopBar extends StatelessWidget {
   final VoidCallback onAchievementsTap;
   final VoidCallback onCityTap;
   final VoidCallback onNotificationsTap;
+  final VoidCallback onLeaderboardTap;
   final bool showAchievements;
   final bool hasUnreadAchievements;
   final String city;
@@ -46,6 +48,7 @@ class HomeTopBar extends StatelessWidget {
     required this.onAchievementsTap,
     required this.onCityTap,
     required this.onNotificationsTap,
+    required this.onLeaderboardTap,
     this.showAchievements = true,
     this.hasUnreadAchievements = false,
     this.city = 'Санкт-Петербург',
@@ -75,7 +78,13 @@ class HomeTopBar extends StatelessWidget {
                 ),
               ),
               Expanded(
-                flex: 5,
+                child: _LeaderboardButton(
+                  onTap: onLeaderboardTap,
+                  height: buttonH,
+                ),
+              ),
+              Expanded(
+                flex: 4,
                 child: _CityButton(
                   city: city,
                   onTap: onCityTap,
@@ -83,7 +92,7 @@ class HomeTopBar extends StatelessWidget {
                 ),
               ),
               Expanded(
-                flex: 5,
+                flex: 4,
                 child: _NotificationsButton(
                   onTap: onNotificationsTap,
                   height: buttonH,

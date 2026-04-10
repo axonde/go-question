@@ -79,5 +79,7 @@
 		<string>49427015791-ibfsh55e50lr4ua11ppr30lv9scmt1g3.apps.googleusercontent.com</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Нужно для выбора аватара из галереи.</string>
 	</dict>
 </plist>

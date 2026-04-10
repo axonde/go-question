@@ -7,20 +7,18 @@ part of '../profile_button.dart';
 
 class _ProfileAvatar extends StatelessWidget {
   final double size;
+  final String? avatarUrl;
 
-  const _ProfileAvatar({required this.size});
+  const _ProfileAvatar({required this.size, required this.avatarUrl});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(size * 0.2),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Icon(Icons.person, size: size * 0.65, color: Colors.grey.shade600),
+    return AvatarSquare(
+      size: size,
+      imagePathOrUrl: avatarUrl,
+      borderRadius: size * 0.2,
+      borderColor: Colors.white.withValues(alpha: 0.65),
+      fallbackAssetPath: ProfilePresentationConstants.defaultAvatarPath,
     );
   }
 }
