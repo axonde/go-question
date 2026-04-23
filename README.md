@@ -1,5 +1,16 @@
 # go-question
 
+## Disclaimer
+
+This is a fun, creative, non-commercial project for only and only educational (and fan content) purposes. All used images are provided by the [supercell fankit](fankit.supercell.com) and are used under their [policy](https://supercell.com/en/fan-content-policy/).
+
+We respect Supercell's brand and warn you:
+
+This material is unofficial and is not endorsed by Supercell. For more information see Supercell's Fan Content Policy: www.supercell.com/fan-content-policy.
+---
+
+---
+
 Go Question is a Flutter mobile application for social event activity: profile management, friends, event discovery/creation, achievements, and notifications.
 
 ## Stack
